@@ -1,0 +1,22 @@
+package entity.components.render
+
+import objects.Image
+import objects.Shader
+import org.joml.Vector4f
+import org.lwjgl.opengl.GL30.GL_FRAGMENT_SHADER
+import org.lwjgl.opengl.GL30.GL_VERTEX_SHADER
+import util.white
+
+open class ImageRender(
+    private val image: Image, vertices: FloatArray, indices: IntArray, private val color: Vector4f = white
+) : Render(vertices, indices) {
+    override val shader = Shader(
+        GL_VERTEX_SHADER to "/shaders/base.vert", GL_FRAGMENT_SHADER to "/shaders/modulateTexture.frag"
+    )
+
+    override fun renderBind() {
+        super.renderBind()
+        image.bind()
+        shader["color"] = color
+    }
+}
