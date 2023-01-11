@@ -1,7 +1,7 @@
 package entity
 
 import entity.components.Transform2D
-import objects.Window
+import objects.gl.Window
 import org.joml.Matrix4f
 
 class Root(window: Window) : Entity2D("") {

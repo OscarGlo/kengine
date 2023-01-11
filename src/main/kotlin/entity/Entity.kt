@@ -27,9 +27,9 @@ open class Entity(private val id: String) {
         }
     }
 
-    fun forEach(fn: (Entity) -> Unit): Unit = children.values.forEach {
-        fn(it)
-        it.forEach(fn)
+    fun forEach(fn: (Entity) -> Unit) {
+        fn(this)
+        children.values.forEach { it.forEach(fn) }
     }
 
     inline fun <reified T : Component> forEachComponent(crossinline fn: (T) -> Unit) = forEach {

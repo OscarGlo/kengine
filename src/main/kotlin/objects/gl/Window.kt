@@ -1,13 +1,18 @@
-package objects
+package objects.gl
 
 import org.joml.Vector4f
+import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.openal.AL
+import org.lwjgl.openal.ALC
+import org.lwjgl.openal.ALC10.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
-import org.lwjgl.system.MemoryUtil
 import org.lwjgl.system.MemoryUtil.NULL
-import util.bool
+import util.glBool
 import util.terminateError
+import java.nio.ByteBuffer
+import java.nio.IntBuffer
 
 class Window(width: Int, height: Int, title: String, resizable: Boolean = true) {
     val id: Long
@@ -31,13 +36,21 @@ class Window(width: Int, height: Int, title: String, resizable: Boolean = true) 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6)
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
-        glfwWindowHint(GLFW_RESIZABLE, bool(resizable))
+        glfwWindowHint(GLFW_RESIZABLE, glBool(resizable))
 
         id = glfwCreateWindow(width, height, title, NULL, NULL)
         if (id == NULL)
             terminateError("Failed to create GLFW window")
         glfwMakeContextCurrent(id)
         GL.createCapabilities()
+
+        // Audio init
+        // TODO: Move to separate file
+        val device = alcOpenDevice(null as ByteBuffer?)
+        val capabilities = ALC.createCapabilities(device)
+        val context = alcCreateContext(device, null as IntBuffer?)
+        alcMakeContextCurrent(context)
+        AL.createCapabilities(capabilities)
 
         glViewport(0, 0, width, height)
 
@@ -52,10 +65,10 @@ class Window(width: Int, height: Int, title: String, resizable: Boolean = true) 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        val prevPosX = MemoryUtil.memAllocInt(1)
-        val prevPosY = MemoryUtil.memAllocInt(1)
-        val prevSizeX = MemoryUtil.memAllocInt(1)
-        val prevSizeY = MemoryUtil.memAllocInt(1)
+        val prevPosX = BufferUtils.createIntBuffer(1)
+        val prevPosY = BufferUtils.createIntBuffer(1)
+        val prevSizeX = BufferUtils.createIntBuffer(1)
+        val prevSizeY = BufferUtils.createIntBuffer(1)
         var fullscreen = false
 
         glfwSetKeyCallback(id) { _, key, scancode, action, mods ->

@@ -1,4 +1,4 @@
-package objects
+package objects.gl
 
 import org.lwjgl.opengl.GL30.glBindVertexArray
 import org.lwjgl.opengl.GL30.glGenVertexArrays

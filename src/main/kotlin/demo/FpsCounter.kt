@@ -3,7 +3,7 @@ package demo
 import entity.components.Script
 import entity.components.render.Text
 import entity.components.Transform2D
-import objects.Window
+import objects.gl.Window
 import org.joml.Matrix4f
 import kotlin.math.round
 

@@ -4,6 +4,7 @@ import entity.Entity
 import entity.Root
 import entity.components.Script
 import entity.components.render.Render
+import objects.gl.Window
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL30.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL30.glClear
@@ -32,7 +33,7 @@ class Runtime(private val window: Window) {
 
         while (!glfwWindowShouldClose(window.id)) {
             glClear(GL_COLOR_BUFFER_BIT)
-            root.forEachComponent<Render> { it.render() }
+            root.forEachComponent(Render::render)
 
             val t0 = t
             t = System.currentTimeMillis()

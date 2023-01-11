@@ -1,13 +1,17 @@
 package demo
 
 import entity.Entity2D
+import entity.components.AudioPlayer
 import entity.components.render.GridAtlasTexture
 import entity.components.render.Text
 import entity.components.render.Texture
-import objects.Image
 import objects.KEFont
 import objects.Runtime
-import objects.Window
+import objects.al.Audio
+import objects.al.Source
+import objects.al.Vorbis
+import objects.gl.Image
+import objects.gl.Window
 import org.joml.Vector4f
 
 fun main() {
@@ -18,17 +22,20 @@ fun main() {
 
     val font = KEFont("/fonts/GeomanistBook.ttf", 16)
 
-    runtime.root.children(
-        Entity2D("fps")
-            .with(Text(font, "0 fps"))
-            .with(FpsCounter(window)),
-        Entity2D("player")
-            .with(Texture(Image("/images/test.png")))
-            .with(PlayerController()),
-        Entity2D("testAtlas")
-            .with(GridAtlasTexture(Image("/images/test.png"), 2, 2))
-            .with(CycleAtlas())
-    )
+    runtime.root
+        .with(AudioPlayer())
+        .with(PlayMusic())
+        .children(
+            Entity2D("fps")
+                .with(Text(font, "0 fps"))
+                .with(FpsCounter(window)),
+            Entity2D("player")
+                .with(Texture(Image("/images/test.png")))
+                .with(PlayerController()),
+            Entity2D("testAtlas")
+                .with(GridAtlasTexture(Image("/images/test.png"), 2, 2))
+                .with(CycleAtlas())
+        )
 
     runtime.loop()
 }

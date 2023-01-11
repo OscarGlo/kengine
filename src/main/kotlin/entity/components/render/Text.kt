@@ -2,7 +2,7 @@ package entity.components.render
 
 import entity.components.Transform2D
 import objects.KEFont
-import objects.Shader
+import objects.gl.Shader
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*

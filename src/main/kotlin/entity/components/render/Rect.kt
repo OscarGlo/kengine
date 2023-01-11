@@ -1,6 +1,6 @@
 package entity.components.render
 
-import objects.Shader
+import objects.gl.Shader
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL20.GL_VERTEX_SHADER

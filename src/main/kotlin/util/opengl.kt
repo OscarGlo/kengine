@@ -20,16 +20,14 @@ fun sizeof(type: Int) = when (type) {
     else -> terminateError("Size of type $type is not defined")
 }
 
-fun bool(b: Boolean) = when (b) {
+fun glBool(b: Boolean) = when (b) {
     true -> GL_TRUE
     false -> GL_FALSE
 }
 
 fun terminateError(message: String): Nothing {
-    System.err.println(message)
-    Thread.dumpStack()
     glfwTerminate()
-    exitProcess(1)
+    error(message)
 }
 
 fun rectVertices(

@@ -1,5 +1,6 @@
 package objects
 
+import objects.gl.Image
 import org.joml.Vector4f
 import util.Resource
 import java.awt.Color

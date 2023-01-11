@@ -1,4 +1,4 @@
-package objects
+package objects.gl
 
 import org.joml.Matrix4f
 import org.joml.Vector4f

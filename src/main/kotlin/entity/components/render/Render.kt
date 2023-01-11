@@ -2,7 +2,7 @@ package entity.components.render
 
 import entity.Entity
 import entity.components.Transform2D
-import objects.*
+import objects.gl.*
 import org.lwjgl.opengl.GL30.*
 
 abstract class Render(
@@ -15,14 +15,16 @@ abstract class Render(
     }
 
     protected val vertexArray = VertexArray()
-    protected val arrayBuffer = Buffer(GL_ARRAY_BUFFER, vertices, GL_STATIC_DRAW)
-    protected val elementBuffer = Buffer(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW)
+    protected val arrayBuffer = GLBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW)
+    protected val elementBuffer = GLBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW)
 
     private val arrayBufferLength = vertices.size
 
     abstract val shader: Shader
 
     init {
+        arrayBuffer.store(vertices)
+        elementBuffer.store(indices)
         vertexAttributes.use()
     }
 

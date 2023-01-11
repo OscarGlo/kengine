@@ -1,6 +1,6 @@
 package entity.components.render
 
-import objects.Image
+import objects.gl.Image
 import org.joml.Vector4f
 import util.white
 

@@ -1,4 +1,4 @@
-package objects
+package objects.gl
 
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL30.*
