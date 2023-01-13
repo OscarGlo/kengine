@@ -30,7 +30,7 @@ abstract class Render(
 
     open fun renderBind() {
         shader.use()
-        shader["transform"] = entity.get<Transform2D>().global()
+        shader["transform"] = entity.get<Transform2D>().viewport()
 
         vertexArray.bind()
         elementBuffer.bind()

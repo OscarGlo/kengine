@@ -8,15 +8,23 @@ import util.Resource
 import util.terminateError
 
 class Shader(vararg steps: Pair<Int, String>) {
+    companion object {
+        val cache = mutableMapOf<String, Int>()
+    }
+
     private val id = glCreateProgram()
 
     init {
+        println("Program: $id")
         steps.forEach { (type, path) ->
-            val sid = glCreateShader(type)
-
-            val source = Resource.global(path).readText()
-            glShaderSource(sid, source)
-            glCompileShader(sid)
+            val sid = cache.getOrPut(path) {
+                glCreateShader(type).also {
+                    println(it)
+                    val source = Resource.global(path).readText()
+                    glShaderSource(it, source)
+                    glCompileShader(it)
+                }
+            }
 
             glAttachShader(id, sid)
             glDeleteShader(sid)

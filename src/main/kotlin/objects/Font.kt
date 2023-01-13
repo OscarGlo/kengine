@@ -4,7 +4,7 @@ import objects.gl.Image
 import org.joml.Vector4f
 import util.Resource
 import java.awt.Color
-import java.awt.Font
+import java.awt.Font as AWTFont
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import kotlin.math.sqrt
@@ -12,19 +12,19 @@ import kotlin.math.sqrt
 const val V_STRETCH = 1.3f
 const val MARGIN = 1
 
-class KEFont(path: String, val size: Int) {
+class Font(path: String, val size: Int) {
     companion object {
-        val cache = mutableMapOf<String, Font>()
+        val cache = mutableMapOf<String, AWTFont>()
     }
 
-    val font: Font
+    val font: AWTFont
     val characterBounds = mutableMapOf<Int, Vector4f>()
     val texture: Image
 
     init {
         val res = Resource.local(path).openStream()
         font = cache.getOrPut(path) {
-            Font.createFont(Font.TRUETYPE_FONT, res)
+            AWTFont.createFont(AWTFont.TRUETYPE_FONT, res)
         }.deriveFont(size.toFloat())
 
         // Calculate character bounding boxes

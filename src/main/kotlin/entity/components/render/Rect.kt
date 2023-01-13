@@ -9,10 +9,14 @@ import util.rectVertices
 
 open class Rect(width: Int, height: Int, private val color: Vector4f) :
     Render(rectVertices(width.toFloat(), height.toFloat()), rectIndices) {
-    override val shader = Shader(
-        GL_VERTEX_SHADER to "/shaders/base.vert",
-        GL_FRAGMENT_SHADER to "/shaders/solidColor.frag"
-    )
+    companion object {
+        val shader = Shader(
+            GL_VERTEX_SHADER to "/shaders/base.vert",
+            GL_FRAGMENT_SHADER to "/shaders/solidColor.frag"
+        )
+    }
+
+    override val shader = Rect.shader
 
     override fun renderBind() {
         super.renderBind()

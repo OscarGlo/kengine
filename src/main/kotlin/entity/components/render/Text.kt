@@ -1,8 +1,6 @@
 package entity.components.render
 
-import entity.components.Transform2D
-import objects.KEFont
-import objects.gl.Shader
+import objects.Font
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
@@ -14,9 +12,10 @@ import java.awt.font.GlyphMetrics
 import java.awt.geom.Point2D
 import java.awt.image.BufferedImage
 
-class Text(val font: KEFont, text: String = "", private var color: Vector4f = white) : Render(stringVertices(font, text), rectIndicesN(text.length)) {
+class Text(val font: Font, text: String = "", private var color: Vector4f = white) :
+    ImageRender(font.texture, stringVertices(font, text), rectIndicesN(text.length)) {
     companion object {
-        private fun stringVertices(font: KEFont, s: String): FloatArray {
+        private fun stringVertices(font: Font, s: String): FloatArray {
             val tmp = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
             val tmpGfx = tmp.createGraphics()
             tmpGfx.font = font.font
@@ -28,7 +27,7 @@ class Text(val font: KEFont, text: String = "", private var color: Vector4f = wh
             }.reduce(FloatArray::plus)
         }
 
-        private fun characterVertices(font: KEFont, c: Char, metrics: GlyphMetrics, pos: Point2D) =
+        private fun characterVertices(font: Font, c: Char, metrics: GlyphMetrics, pos: Point2D) =
             metrics.bounds2D.let {
                 rectVertices(
                     it.width.toFloat(),
@@ -42,11 +41,6 @@ class Text(val font: KEFont, text: String = "", private var color: Vector4f = wh
             }
     }
 
-    override val shader = Shader(
-        GL_VERTEX_SHADER to "/shaders/base.vert",
-        GL_FRAGMENT_SHADER to "/shaders/modulateTexture.frag"
-    )
-
     var text = text
         set(t) {
             field = t
@@ -55,17 +49,8 @@ class Text(val font: KEFont, text: String = "", private var color: Vector4f = wh
         }
 
     override fun render() {
-        shader.use()
-        shader["transform"] = entity.get<Transform2D>().global()
-        shader["color"] = color
-
-        font.texture.bind()
-        vertexArray.bind()
-        elementBuffer.bind()
-
-        for (i in text.indices) {
-            val n = i * 6
-            glDrawRangeElements(GL_TRIANGLES, n, n + 6, 6, GL_UNSIGNED_INT, n.toLong() * sizeof(GL_UNSIGNED_INT))
-        }
+        renderBind()
+        for (i in text.indices.map { it * 6 })
+            glDrawRangeElements(GL_TRIANGLES, i, i + 6, 6, GL_UNSIGNED_INT, i.toLong() * sizeof(GL_UNSIGNED_INT))
     }
 }

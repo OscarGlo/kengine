@@ -1,15 +1,12 @@
 package demo
 
 import entity.Entity2D
-import entity.components.AudioPlayer
+import entity.components.Camera2D
 import entity.components.render.GridAtlasTexture
 import entity.components.render.Text
 import entity.components.render.Texture
-import objects.KEFont
+import objects.Font
 import objects.Runtime
-import objects.al.Audio
-import objects.al.Source
-import objects.al.Vorbis
 import objects.gl.Image
 import objects.gl.Window
 import org.joml.Vector4f
@@ -20,22 +17,20 @@ fun main() {
 
     val runtime = Runtime(window)
 
-    val font = KEFont("/fonts/GeomanistBook.ttf", 16)
+    val font = Font("/fonts/GeomanistBook.ttf", 16)
 
-    runtime.root
-        .with(AudioPlayer())
-        .with(PlayMusic())
-        .children(
-            Entity2D("fps")
-                .with(Text(font, "0 fps"))
-                .with(FpsCounter(window)),
-            Entity2D("player")
-                .with(Texture(Image("/images/test.png")))
-                .with(PlayerController()),
-            Entity2D("testAtlas")
-                .with(GridAtlasTexture(Image("/images/test.png"), 2, 2))
-                .with(CycleAtlas())
-        )
+    runtime.root.children(
+        Entity2D("fps")
+            .with(Text(font, "0 fps"))
+            .with(FpsCounter(window)),
+        Entity2D("player")
+            .with(Texture(Image("/images/test.png")))
+            .with(Camera2D(true))
+            .with(PlayerController()),
+        Entity2D("testAtlas")
+            .with(GridAtlasTexture(Image("/images/test.png"), 2, 2))
+            .with(CycleAtlas())
+    )
 
     runtime.loop()
 }
