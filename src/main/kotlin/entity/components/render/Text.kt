@@ -50,7 +50,7 @@ class Text(val font: Font, text: String = "", color: Vector4f = white) :
     override fun render() {
         if (!visible) return
         renderBind()
-        for (i in text.indices.map { it * 6 })
-            glDrawRangeElements(GL_TRIANGLES, i, i + 6, 6, GL_UNSIGNED_INT, i.toLong() * sizeof(GL_UNSIGNED_INT))
+        for (i in text.indices)
+            glDrawRangeElements(GL_TRIANGLES, i * 6, i * 6 + 6, 6, GL_UNSIGNED_INT, (i * 6).toLong() * sizeof(GL_UNSIGNED_INT))
     }
 }
