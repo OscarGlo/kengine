@@ -1,5 +1,6 @@
 package objects.gl
 
+import org.joml.Vector2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL30.*
 import util.Resource
@@ -11,16 +12,15 @@ class Image(private val image: BufferedImage, bpp: Int = 4, private val filter: 
     constructor(path: String, bpp: Int = 4, filter: Boolean = true) :
             this(ImageIO.read(Resource.local(path)), bpp, filter)
 
-    val width = image.width
-    val height = image.height
+    val size = Vector2i(image.width, image.height)
 
-    private val buffer = BufferUtils.createByteBuffer(width * height * bpp).also {
-        val pixels = IntArray(width * height)
-        image.getRGB(0, 0, width, height, pixels, 0, width)
+    private val buffer = BufferUtils.createByteBuffer(size.x * size.y * bpp).also {
+        val pixels = IntArray(size.x * size.y)
+        image.getRGB(0, 0, size.x, size.y, pixels, 0, size.x)
 
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val pixel = pixels[y * width + x]
+        for (y in 0 until size.y) {
+            for (x in 0 until size.x) {
+                val pixel = pixels[y * size.x + x]
                 it.put((pixel shr 16 and 0xFF).toByte())
                 it.put((pixel shr 8 and 0xFF).toByte())
                 it.put((pixel and 0xFF).toByte())
@@ -41,7 +41,7 @@ class Image(private val image: BufferedImage, bpp: Int = 4, private val filter: 
 
         glTexImage2D(
             GL_TEXTURE_2D, 0,
-            GL_RGBA8, width, height, 0,
+            GL_RGBA8, size.x, size.y, 0,
             GL_RGBA,
             GL_UNSIGNED_BYTE, buffer
         )

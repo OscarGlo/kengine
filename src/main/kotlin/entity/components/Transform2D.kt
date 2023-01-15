@@ -2,6 +2,7 @@ package entity.components
 
 import entity.Entity
 import org.joml.Matrix4f
+import org.joml.Vector2f
 import org.joml.Vector3f
 import util.times
 
@@ -25,9 +26,9 @@ open class Transform2D : Entity.Component() {
     fun set(m: Matrix4f) = apply { matrix.set(m) }
 
     fun scale(xy: Float) = apply { matrix.scale(xy, xy, 0f) }
-    fun scale(x: Float, y: Float) = apply { matrix.scale(x, y, 0f) }
+    fun scale(scale: Vector2f) = apply { matrix.scaleXY(scale.x, scale.y) }
 
     fun rotate(a: Float) = apply { matrix.rotate(a, axis) }
 
-    fun translate(x: Float, y: Float) = apply { matrix.translate(x, y, 0f) }
+    fun translate(offset: Vector2f) = apply { matrix.translate(offset.x, offset.y, 0f) }
 }

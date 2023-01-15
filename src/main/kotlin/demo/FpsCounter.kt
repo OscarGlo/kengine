@@ -1,10 +1,11 @@
 package demo
 
 import entity.components.Script
-import entity.components.render.Text
 import entity.components.Transform2D
+import entity.components.render.Text
 import objects.gl.Window
 import org.joml.Matrix4f
+import util.f
 import kotlin.math.round
 
 class FpsCounter(private val window: Window) : Script() {
@@ -14,7 +15,7 @@ class FpsCounter(private val window: Window) : Script() {
     private val deltas = mutableListOf<Long>()
 
     override fun init() {
-        transform.translate(-window.width / 2f + 5, window.height / 2f - 16)
+        transform.translate(window.size.f().div(-2f, 2f).add(5f, -16f))
     }
 
     override fun update(delta: Long, time: Long) {
@@ -28,6 +29,6 @@ class FpsCounter(private val window: Window) : Script() {
     override fun onResize(width: Int, height: Int) {
         transform
             .set(Matrix4f())
-            .translate(-window.width / 2f + 5, window.height / 2f - text.font.size)
+            .translate(window.size.f().div(-2f, 2f).add(5f, -16f))
     }
 }

@@ -8,8 +8,8 @@ import org.lwjgl.opengl.GL30.GL_VERTEX_SHADER
 import util.white
 
 open class ImageRender(
-    private val image: Image, vertices: FloatArray, indices: IntArray, private val color: Vector4f = white
-) : Render(vertices, indices) {
+    protected val image: Image, vertices: FloatArray, indices: IntArray, color: Vector4f = white
+) : ColorRender(color, vertices, indices) {
     companion object {
         val shader = Shader(
             GL_VERTEX_SHADER to "/shaders/base.vert",
@@ -22,6 +22,5 @@ open class ImageRender(
     override fun renderBind() {
         super.renderBind()
         image.bind()
-        shader["color"] = color
     }
 }

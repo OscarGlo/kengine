@@ -3,10 +3,7 @@ package entity.components.render
 import objects.gl.Image
 import org.joml.Vector2f
 import org.joml.Vector4f
-import util.rectIndices
-import util.rectVertices
-import util.terminateError
-import util.white
+import util.*
 
 open class AtlasTexture(
     image: Image,
@@ -20,10 +17,8 @@ open class AtlasTexture(
 ) {
     companion object {
         fun genVertices(image: Image, uv: Vector4f) = rectVertices(
-            (uv.z - uv.x) * image.width,
-            (uv.w - uv.y) * image.height,
-            Vector2f(),
-            uv
+            Vector2f(uv.z - uv.x, uv.w - uv.y) * image.size.f(),
+            uv = uv
         )
     }
 

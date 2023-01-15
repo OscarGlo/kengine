@@ -3,7 +3,7 @@ package entity
 import util.terminateError
 import kotlin.reflect.KClass
 
-open class Entity(private val id: String) {
+open class Entity(private val id: String, vararg components: Component) {
     abstract class Component {
         lateinit var entity: Entity
 
@@ -14,7 +14,7 @@ open class Entity(private val id: String) {
 
     private val children = mutableMapOf<String, Entity>()
     var parent: Entity? = null
-    val components = mutableListOf<Component>()
+    val components = components.toMutableList().onEach { it.entity = this }
 
     init {
         parent?.children?.set(id, this)
@@ -41,7 +41,7 @@ open class Entity(private val id: String) {
     operator fun get(id: String) = children[id] ?: terminateError("Entity ${path()} has no child with id $id")
 
     // Components
-    fun with(component: Component) = apply { components.add(component.attach(this)) }
+    fun add(component: Component) = apply { components.add(component.attach(this)) }
 
     inline fun <reified T : Component> has() = components.any { T::class.isInstance(it) }
 

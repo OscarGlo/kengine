@@ -1,5 +1,6 @@
 package objects.gl
 
+import org.joml.Vector2i
 import org.joml.Vector4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.*
@@ -14,7 +15,7 @@ import util.terminateError
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 
-class Window(width: Int, height: Int, title: String, resizable: Boolean = true) {
+class Window(size: Vector2i, title: String, resizable: Boolean = true) {
     val id: Long
 
     val resizeListeners = mutableListOf<(Int, Int) -> Unit>()
@@ -28,8 +29,7 @@ class Window(width: Int, height: Int, title: String, resizable: Boolean = true) 
             field = c
         }
 
-    var width = width; private set
-    var height = height; private set
+    var size = size; private set
 
     init {
         glfwInit()
@@ -38,7 +38,7 @@ class Window(width: Int, height: Int, title: String, resizable: Boolean = true) 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
         glfwWindowHint(GLFW_RESIZABLE, glBool(resizable))
 
-        id = glfwCreateWindow(width, height, title, NULL, NULL)
+        id = glfwCreateWindow(size.x, size.y, title, NULL, NULL)
         if (id == NULL)
             terminateError("Failed to create GLFW window")
         glfwMakeContextCurrent(id)
@@ -52,11 +52,10 @@ class Window(width: Int, height: Int, title: String, resizable: Boolean = true) 
         alcMakeContextCurrent(context)
         AL.createCapabilities(capabilities)
 
-        glViewport(0, 0, width, height)
+        glViewport(0, 0, size.x, size.y)
 
         glfwSetWindowSizeCallback(id) { _, w, h ->
-            this.width = w
-            this.height = h
+            this.size = Vector2i(w, h)
             glViewport(0, 0, w, h)
 
             resizeListeners.forEach { it(w, h) }

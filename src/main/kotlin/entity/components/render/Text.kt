@@ -12,8 +12,8 @@ import java.awt.font.GlyphMetrics
 import java.awt.geom.Point2D
 import java.awt.image.BufferedImage
 
-class Text(val font: Font, text: String = "", private var color: Vector4f = white) :
-    ImageRender(font.texture, stringVertices(font, text), rectIndicesN(text.length)) {
+class Text(val font: Font, text: String = "", color: Vector4f = white) :
+    ImageRender(font.texture, stringVertices(font, text), rectIndicesN(text.length), color) {
     companion object {
         private fun stringVertices(font: Font, s: String): FloatArray {
             val tmp = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
@@ -30,8 +30,7 @@ class Text(val font: Font, text: String = "", private var color: Vector4f = whit
         private fun characterVertices(font: Font, c: Char, metrics: GlyphMetrics, pos: Point2D) =
             metrics.bounds2D.let {
                 rectVertices(
-                    it.width.toFloat(),
-                    it.height.toFloat(),
+                    Vector2f(it.width.toFloat(), it.height.toFloat()),
                     Vector2f(
                         (pos.x + it.centerX).toFloat(),
                         (pos.y - it.centerY).toFloat()
@@ -49,6 +48,7 @@ class Text(val font: Font, text: String = "", private var color: Vector4f = whit
         }
 
     override fun render() {
+        if (!visible) return
         renderBind()
         for (i in text.indices.map { it * 6 })
             glDrawRangeElements(GL_TRIANGLES, i, i + 6, 6, GL_UNSIGNED_INT, i.toLong() * sizeof(GL_UNSIGNED_INT))

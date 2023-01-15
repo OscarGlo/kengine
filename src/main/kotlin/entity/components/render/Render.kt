@@ -7,8 +7,7 @@ import org.lwjgl.opengl.GL30.*
 
 abstract class Render(
     vertices: FloatArray,
-    indices: IntArray,
-    vertexAttributes: VertexAttributes = defaultAttributes
+    indices: IntArray
 ) : Entity.Component() {
     companion object {
         val defaultAttributes = VertexAttributes(VertexAttribute(2), VertexAttribute(2))
@@ -22,10 +21,12 @@ abstract class Render(
 
     abstract val shader: Shader
 
+    var visible = true
+
     init {
         arrayBuffer.store(vertices)
         elementBuffer.store(indices)
-        vertexAttributes.use()
+        defaultAttributes.use()
     }
 
     open fun renderBind() {
@@ -37,7 +38,8 @@ abstract class Render(
     }
 
     open fun render() {
+        if (!visible) return
         renderBind()
-        glDrawRangeElements(GL_TRIANGLES, 0, arrayBufferLength, arrayBufferLength, GL_UNSIGNED_INT, 0)
+        glDrawElements(GL_TRIANGLES, arrayBufferLength, GL_UNSIGNED_INT, 0)
     }
 }

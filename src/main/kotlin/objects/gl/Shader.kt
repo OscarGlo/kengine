@@ -15,11 +15,9 @@ class Shader(vararg steps: Pair<Int, String>) {
     private val id = glCreateProgram()
 
     init {
-        println("Program: $id")
         steps.forEach { (type, path) ->
             val sid = cache.getOrPut(path) {
                 glCreateShader(type).also {
-                    println(it)
                     val source = Resource.global(path).readText()
                     glShaderSource(it, source)
                     glCompileShader(it)

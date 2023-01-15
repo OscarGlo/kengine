@@ -4,6 +4,7 @@ import entity.Entity
 import entity.Root2D
 import entity.components.Camera2D
 import entity.components.Script
+import entity.components.physics.Collider2D
 import entity.components.render.Render
 import objects.gl.Window
 import org.joml.Matrix4f
@@ -24,6 +25,7 @@ class Runtime(private val window: Window) {
     }
 
     fun loop() {
+        // Init script listeners
         window.resizeListeners.add { width, height ->
             root.forEachComponent<Script> { it.onResize(width, height) }
         }
@@ -45,9 +47,20 @@ class Runtime(private val window: Window) {
         while (!glfwWindowShouldClose(window.id)) {
             updateCameraPosition()
 
+            // Render
             glClear(GL_COLOR_BUFFER_BIT)
             root.forEachComponent(Render::render)
 
+            // Calculate collisions
+            root.forEachComponent<Collider2D> { a ->
+                a.collisions.clear()
+                root.forEachComponent<Collider2D> { b ->
+                    if (a != b && a.collide(b))
+                        a.collisions.add(b.entity)
+                }
+            }
+
+            // Run script updates
             val t0 = t
             t = System.currentTimeMillis()
             root.forEachComponent<Script> { it.update(t - t0, t - start) }

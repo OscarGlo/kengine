@@ -17,12 +17,12 @@ class Root2D(window: Window) : Entity("") {
 
     val transform = RootTransform(
         Matrix4f()
-            .scale(2f / window.width, 2f / window.height, 0f)
+            .scale(2f / window.size.x, 2f / window.size.y.toFloat(), 1f)
             .translate(-1f, -1f, 0f)
     )
 
     init {
-        with(transform)
+        add(transform)
         window.resizeListeners.add(::setRootTransform)
     }
 
