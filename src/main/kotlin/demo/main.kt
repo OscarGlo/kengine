@@ -18,7 +18,6 @@ import objects.gl.Window
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.joml.Vector4f
-import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 fun main() {
@@ -29,25 +28,16 @@ fun main() {
 
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png")
-    val tilemapImage = Image("/images/tilemap.png")
+    val img = Image("/images/autotilemap.png")
 
-    val tileset = listOf(
-        Tilemap.Tile(tilemapImage, Vector4f(0f, 0f, 0.5f, 0.5f), intArrayOf()),
-        Tilemap.Tile(tilemapImage, Vector4f(0.5f, 0f, 1f, 0.5f), intArrayOf()),
-        Tilemap.Tile(tilemapImage, Vector4f(0f, 0.5f, 0.5f, 1f), intArrayOf()),
-        Tilemap.Tile(tilemapImage, Vector4f(0.5f, 0.5f, 1f, 1f), intArrayOf()),
-    )
-
-    val tiles = (0..5).flatMap { x ->
-        (5..10).map { y ->
-            Vector2f(x.toFloat(), y.toFloat()) to Random.nextInt().absoluteValue % 4
-        }
-    }.toMap()
+    val tiles = (0..100).associate {
+        Vector2i(Random.nextInt(10), Random.nextInt(10)) to Tilemap.Ref(Random.nextInt(2), true)
+    }
 
     runtime.root.children(
         Entity2D(
             "background",
-            Tilemap(Vector2f(32f), tileset, tiles.toMutableMap())
+            Tilemap(Vector2f(32f), Tilemap.edgeTileset(img, 0) + Tilemap.edgeTileset(img, 1), tiles.toMutableMap())
         ),
         Entity2D(
             "rect",

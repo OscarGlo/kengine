@@ -50,8 +50,8 @@ fun rectVertices(
 val rectIndices = intArrayOf(0, 1, 3, 1, 2, 3)
 
 fun rectIndicesN(count: Int) = (0 until count)
-        .flatMap { i -> rectIndices.map { it + i * 4 } }
-        .toIntArray()
+    .flatMap { i -> rectIndices.map { it + i * 4 } }
+    .toIntArray()
 
 fun ellipseVertices(
     size: Vector2f,
@@ -80,3 +80,6 @@ fun ellipseVertices(
 fun ellipseIndices(count: Int) = (0..count)
     .flatMap { i -> listOf(0, i, i % count + 1) }
     .toIntArray()
+
+fun gridUvs(rows: Int, cols: Int, x: Int, y: Int) =
+    Vector4f(x.toFloat() / cols, y.toFloat() / rows, (x.toFloat() + 1) / cols, (y.toFloat() + 1) / rows)
