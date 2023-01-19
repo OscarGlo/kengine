@@ -17,7 +17,7 @@ abstract class Script : Entity.Component() {
                         && it.returnType.isSubtypeOf(Entity.Component::class.starProjectedType)
             }
             .filterIsInstance<KMutableProperty<*>>()
-            .forEach { it.setter.call(this, entity.getInstance(it.returnType.jvmErasure)) }
+            .forEach { prop -> entity.getInstance(prop.returnType.jvmErasure)?.let { prop.setter.call(this, it) } }
 
         init()
     }

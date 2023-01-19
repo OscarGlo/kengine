@@ -14,6 +14,7 @@ class PlayerController : Script() {
     lateinit var camera: Camera2D
     lateinit var texture: Texture
     lateinit var collider: Collider2D
+    lateinit var transform: Transform2D
 
     private var direction = Vector2f()
     private var velocity = Vector2f()
@@ -47,6 +48,6 @@ class PlayerController : Script() {
             .run { if (direction.length() > 0) normalize(Vector2f()) else this }
             .mul(speed * delta / 1000f, Vector2f())
         velocity.add(dir).mul(0.9f)
-        entity.get<Transform2D>().translate(velocity)
+        transform.translate(velocity)
     }
 }

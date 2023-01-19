@@ -30,14 +30,14 @@ fun main() {
     val circle = Image("/images/circle.png")
     val img = Image("/images/autotilemap.png")
 
-    val tiles = (0..100).associate {
-        Vector2i(Random.nextInt(10), Random.nextInt(10)) to Tilemap.Ref(Random.nextInt(2), true)
+    val tiles = (0..50).associate {
+        Vector2i(Random.nextInt(10), Random.nextInt(10)) to Tilemap.Ref(0, true)
     }
 
     runtime.root.children(
         Entity2D(
             "background",
-            Tilemap(Vector2f(32f), Tilemap.edgeTileset(img, 0) + Tilemap.edgeTileset(img, 1), tiles.toMutableMap())
+            Tilemap(Vector2f(32f), Tilemap.edgeTileset(img, 0), tiles.toMutableMap())
         ),
         Entity2D(
             "rect",

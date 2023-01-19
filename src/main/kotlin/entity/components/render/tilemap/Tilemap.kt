@@ -51,7 +51,7 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
 
     init {
         tiles.forEach { (pos, ref) -> this[pos] = ref }
-        arrayBuffer.store(vertices(size, tileset, tileIds))
+        update()
         updateBuffer = true
     }
 
@@ -66,8 +66,12 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
                 for (y in (pos.y - 1)..(pos.y + 1))
                     update(Vector2i(x, y))
 
-        if (updateBuffer)
-            arrayBuffer.store(vertices(size, tileset, tileIds))
+        if (updateBuffer) update()
+    }
+
+    private fun update() {
+        arrayBuffer.store(vertices(size, tileset, tileIds))
+        elementBuffer.store(rectIndicesN(tileIds.size))
     }
 
     private fun update(pos: Vector2i) {
