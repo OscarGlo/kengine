@@ -25,24 +25,26 @@ fun main() {
 
     val runtime = Runtime(window)
 
+    // Resources
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png")
-    val img = Image("/images/autotilemap_corner.png")
+    val tilemap = Image("/images/autotilemap_corner.png")
 
-    val tiles = mapOf(
-        Vector2i(0, 1) to Tilemap.Ref(0, true),
-        Vector2i(0, 2) to Tilemap.Ref(0, true),
-        Vector2i(1, 0) to Tilemap.Ref(0, true),
-        Vector2i(1, 1) to Tilemap.Ref(0, true),
-        Vector2i(1, 2) to Tilemap.Ref(0, true),
-        Vector2i(2, 0) to Tilemap.Ref(0, true),
-        Vector2i(2, 1) to Tilemap.Ref(0, true),
-    )
+    val tiles = listOf(
+        Vector2i(0, 1),
+        Vector2i(0, 2),
+        Vector2i(1, 0),
+        Vector2i(1, 1),
+        Vector2i(1, 2),
+        Vector2i(2, 0),
+        Vector2i(2, 1),
+        Vector2i(3, 2)
+    ).associateWith { Tilemap.Ref(0, true) }
 
     runtime.root.children(
         Entity2D(
             "background",
-            Tilemap(Vector2f(32f), Tilemap.cornerTileset(img, 0), tiles.toMutableMap())
+            Tilemap(Vector2f(32f), Tilemap.cornerTileset(tilemap, 0), tiles.toMutableMap())
         ),
         Entity2D(
             "rect",
