@@ -28,6 +28,26 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
             )
         }
 
+        private val corners = listOf(
+            listOf(1, 3, 7, 8, 9, 11, 13, 14),
+            listOf(0, 2, 3, 8, 9, 10, 11, 12),
+            listOf(5, 6, 7, 9, 10, 11, 12, 13),
+            listOf(2, 4, 6, 8, 11, 12, 13, 14)
+        )
+
+        fun cornerTileset(image: Image, id: Int) = (0..15).map {
+            val c = corners.map { corner -> corner.contains(it) }
+            Tile(
+                image,
+                gridUvs(4, 4, it % 4, it.floorDiv(4)),
+                intArrayOf(
+                    if (c[0]) id else ANY, if (c[0] || c[1]) id else OTHER, if (c[1]) id else ANY,
+                    if (c[0] || c[2]) id else OTHER, id, if (c[1] || c[3]) id else OTHER,
+                    if (c[2]) id else ANY, if (c[2] || c[3]) id else OTHER, if (c[3]) id else ANY
+                )
+            )
+        }
+
         private val vectorComparator = compareBy<Vector2i> { it.y }.thenBy { it.x }
         private val mapComparator: Comparator<Entry<Vector2i, Int>> = compareBy(vectorComparator) { it.key }
 
@@ -47,11 +67,12 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
     override val shader = ImageRender.shader
 
     private val tileIds = mutableMapOf<Vector2i, Int>()
+    private val bitmaskCache = mutableMapOf<Vector2i, IntArray>()
     private var updateBuffer = false
 
     init {
         tiles.forEach { (pos, ref) -> this[pos] = ref }
-        update()
+        updateBuffers()
         updateBuffer = true
     }
 
@@ -62,14 +83,15 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
         if (!ref.auto)
             tileIds[pos] = ref.id
         else
+            // Update all neighboring tiles
             for (x in (pos.x - 1)..(pos.x + 1))
                 for (y in (pos.y - 1)..(pos.y + 1))
                     update(Vector2i(x, y))
 
-        if (updateBuffer) update()
+        if (updateBuffer) updateBuffers()
     }
 
-    private fun update() {
+    private fun updateBuffers() {
         arrayBuffer.store(vertices(size, tileset, tileIds))
         elementBuffer.store(rectIndicesN(tileIds.size))
     }
@@ -84,6 +106,12 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
             }
         }.toIntArray()
 
+        // Ignore useless updates
+        if (bitmask.contentEquals(bitmaskCache[pos]))
+            return
+        bitmaskCache[pos] = bitmask
+
+        // Pick random tile of type with matching bitmask, or default to first tile of type
         val typeTiles = tileset.withIndex().filter { it.value.type == tiles[pos]!!.id }
         val validTiles = typeTiles.filter {
             it.value.bitmask != null && it.value.bitmask!!.matches(bitmask, tiles[pos]!!.id)

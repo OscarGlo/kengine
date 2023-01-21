@@ -18,7 +18,6 @@ import objects.gl.Window
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.joml.Vector4f
-import kotlin.random.Random
 
 fun main() {
     val window = Window(Vector2i(800, 600), "KEngine")
@@ -28,16 +27,22 @@ fun main() {
 
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png")
-    val img = Image("/images/autotilemap.png")
+    val img = Image("/images/autotilemap_corner.png")
 
-    val tiles = (0..50).associate {
-        Vector2i(Random.nextInt(10), Random.nextInt(10)) to Tilemap.Ref(0, true)
-    }
+    val tiles = mapOf(
+        Vector2i(0, 1) to Tilemap.Ref(0, true),
+        Vector2i(0, 2) to Tilemap.Ref(0, true),
+        Vector2i(1, 0) to Tilemap.Ref(0, true),
+        Vector2i(1, 1) to Tilemap.Ref(0, true),
+        Vector2i(1, 2) to Tilemap.Ref(0, true),
+        Vector2i(2, 0) to Tilemap.Ref(0, true),
+        Vector2i(2, 1) to Tilemap.Ref(0, true),
+    )
 
     runtime.root.children(
         Entity2D(
             "background",
-            Tilemap(Vector2f(32f), Tilemap.edgeTileset(img, 0), tiles.toMutableMap())
+            Tilemap(Vector2f(32f), Tilemap.cornerTileset(img, 0), tiles.toMutableMap())
         ),
         Entity2D(
             "rect",
