@@ -3,16 +3,16 @@ package entity
 import entity.components.Transform2D
 import objects.gl.Window
 import org.joml.Matrix4f
+import util.roundTransform
 import util.times
 
 class Root2D(window: Window) : Entity("") {
     class RootTransform(val viewMatrix: Matrix4f) : Transform2D() {
         var cameraTransform: Matrix4f? = null
 
-        override fun viewport() =
-            if (cameraTransform != null)
-                cameraTransform!! * viewMatrix
-            else viewMatrix
+        override fun rootViewport() = if (cameraTransform != null)
+            viewMatrix * cameraTransform!!.roundTransform()
+        else viewMatrix
     }
 
     val transform = RootTransform(

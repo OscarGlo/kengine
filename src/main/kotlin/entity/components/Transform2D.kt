@@ -4,6 +4,8 @@ import entity.Entity
 import org.joml.Matrix4f
 import org.joml.Vector2f
 import org.joml.Vector3f
+import util.roundTransform
+import util.terminateError
 import util.times
 
 open class Transform2D : Entity.Component() {
@@ -18,10 +20,10 @@ open class Transform2D : Entity.Component() {
             matrix * entity.parent!!.get<Transform2D>().global()
         else matrix
 
-    open fun viewport(): Matrix4f =
-        if (entity.parent != null && entity.has<Transform2D>())
-            matrix * entity.parent!!.get<Transform2D>().viewport()
-        else matrix
+    open fun rootViewport(): Matrix4f = entity.parent?.get<Transform2D>()?.rootViewport()
+        ?: terminateError("No root transform for entity ${entity.path()}")
+
+    fun viewport() = rootViewport() * global().roundTransform()
 
     fun set(m: Matrix4f) = apply { matrix.set(m) }
 
