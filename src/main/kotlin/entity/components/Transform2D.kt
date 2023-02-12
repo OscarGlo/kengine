@@ -8,7 +8,7 @@ import util.roundTransform
 import util.terminateError
 import util.times
 
-open class Transform2D : Entity.Component() {
+open class Transform2D(var fixed: Boolean = false) : Entity.Component() {
     companion object {
         val axis = Vector3f(0f, 0f, 1f)
     }
@@ -20,10 +20,11 @@ open class Transform2D : Entity.Component() {
             matrix * entity.parent!!.get<Transform2D>().global()
         else matrix
 
-    open fun rootViewport(): Matrix4f = entity.parent?.get<Transform2D>()?.rootViewport()
-        ?: terminateError("No root transform for entity ${entity.path()}")
+    open fun rootViewport(fixed: Boolean = false): Matrix4f =
+        entity.parent?.get<Transform2D>()?.rootViewport(this.fixed || fixed)
+            ?: terminateError("No root transform for entity ${entity.path()}")
 
-    fun viewport() = rootViewport() * global().roundTransform()
+    fun viewport() = rootViewport(fixed) * global().roundTransform()
 
     fun set(m: Matrix4f) = apply { matrix.set(m) }
 

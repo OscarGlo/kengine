@@ -1,7 +1,6 @@
 package demo
 
 import entity.Entity
-import entity.Entity2D
 import entity.components.Camera2D
 import entity.components.Transform2D
 import entity.components.physics.CircleCollider
@@ -42,12 +41,14 @@ fun main() {
     ).associateWith { Tilemap.Ref(0, true) }
 
     runtime.root.children(
-        Entity2D(
+        Entity(
             "background",
+            Transform2D(),
             Tilemap(Vector2f(32f), Tilemap.cornerTileset(tilemap, 0), tiles.toMutableMap())
         ),
-        Entity2D(
+        Entity(
             "rect",
+            Transform2D(),
             Rect(Vector2f(50f, 100f), Vector4f(0.5f, 0.2f, 0.8f, 0.5f)),
             RectCollider(Vector2f(50f, 100f))
         ),
@@ -57,15 +58,17 @@ fun main() {
             Ellipse(Vector2f(50f, 50f), 32, Vector4f(0.5f, 0.2f, 0.8f, 0.5f)),
             CircleCollider(25f)
         ),
-        Entity2D(
+        Entity(
             "player",
+            Transform2D(),
             Texture(circle),
             CircleCollider(circle.size.x / 2f),
             Camera2D(true),
             PlayerController()
         ),
-        Entity2D(
+        Entity(
             "fps",
+            Transform2D(true),
             Text(font, "0 fps"),
             FpsCounter(window)
         )

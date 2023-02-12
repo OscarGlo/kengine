@@ -10,7 +10,7 @@ class Root2D(window: Window) : Entity("") {
     class RootTransform(val viewMatrix: Matrix4f) : Transform2D() {
         var cameraTransform: Matrix4f? = null
 
-        override fun rootViewport() = if (cameraTransform != null)
+        override fun rootViewport(fixed: Boolean) = if (!fixed && cameraTransform != null)
             viewMatrix * cameraTransform!!.roundTransform()
         else viewMatrix
     }
