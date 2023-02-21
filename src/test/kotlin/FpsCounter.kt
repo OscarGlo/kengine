@@ -3,7 +3,7 @@ import kengine.entity.components.Transform2D
 import kengine.entity.components.render.Text
 import kengine.objects.gl.Window
 import org.joml.Matrix4f
-import kengine.objects.util.f
+import kengine.util.f
 import kotlin.math.round
 
 class FpsCounter(private val window: Window) : Script() {

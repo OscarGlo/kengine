@@ -1,6 +1,6 @@
 package kengine.objects.al
 
-import kengine.objects.util.alBool
+import kengine.util.alBool
 import org.joml.Vector3f
 import org.lwjgl.openal.AL10.*
 

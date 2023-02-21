@@ -1,8 +1,8 @@
 package kengine.objects.gl
 
 import kengine.objects.Buffer
+import kengine.util.terminateError
 import org.lwjgl.opengl.GL30.*
-import kengine.objects.util.terminateError
 import java.nio.*
 
 class GLBuffer(private val target: Int, private val usage: Int) : Buffer<Any>() {

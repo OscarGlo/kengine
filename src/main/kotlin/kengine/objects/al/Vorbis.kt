@@ -2,8 +2,8 @@ package kengine.objects.al
 
 import org.lwjgl.BufferUtils
 import org.lwjgl.stb.STBVorbis.stb_vorbis_decode_filename
-import kengine.objects.util.Resource
-import kengine.objects.util.terminateError
+import kengine.util.Resource
+import kengine.util.terminateError
 import java.nio.ShortBuffer
 
 class Vorbis(path: String) {

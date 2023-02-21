@@ -1,7 +1,7 @@
 package kengine.objects.gl
 
+import kengine.util.sizeof
 import org.lwjgl.opengl.GL20.*
-import kengine.objects.util.sizeof
 
 class VertexAttribute(
     val size: Int,

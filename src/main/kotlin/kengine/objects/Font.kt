@@ -1,7 +1,7 @@
 package kengine.objects
 
 import kengine.objects.gl.Image
-import kengine.objects.util.Resource
+import kengine.util.Resource
 import org.joml.Vector4f
 import java.awt.Color
 import java.awt.RenderingHints

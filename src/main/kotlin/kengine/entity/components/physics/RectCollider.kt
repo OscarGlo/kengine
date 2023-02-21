@@ -1,6 +1,6 @@
 package kengine.entity.components.physics
 
-import kengine.objects.util.as3
+import kengine.util.as3
 import org.joml.Vector2f
 
 class RectCollider(val size: Vector2f, position: Vector2f = Vector2f()) : Collider2D(position) {

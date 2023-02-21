@@ -1,4 +1,4 @@
-package kengine.objects.util
+package kengine.util
 
 import org.joml.Vector2f
 import org.joml.Vector4f

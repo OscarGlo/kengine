@@ -1,13 +1,13 @@
 package kengine.entity.components.render
 
 import kengine.objects.Font
+import kengine.util.rectIndicesN
+import kengine.util.rectVertices
+import kengine.util.sizeof
+import kengine.util.white
 import org.joml.Vector2f
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
-import kengine.objects.util.rectIndicesN
-import kengine.objects.util.rectVertices
-import kengine.objects.util.sizeof
-import kengine.objects.util.white
 import java.awt.font.GlyphMetrics
 import java.awt.geom.Point2D
 import java.awt.image.BufferedImage

@@ -1,5 +1,7 @@
 package kengine.objects.gl
 
+import kengine.util.glBool
+import kengine.util.terminateError
 import org.joml.Vector2i
 import org.joml.Vector4f
 import org.lwjgl.BufferUtils
@@ -10,8 +12,6 @@ import org.lwjgl.openal.ALC10.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.system.MemoryUtil.NULL
-import kengine.objects.util.glBool
-import kengine.objects.util.terminateError
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 

@@ -1,4 +1,4 @@
-package kengine.objects.util
+package kengine.util
 
 import java.net.URL
 import java.nio.file.Paths

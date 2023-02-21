@@ -14,7 +14,7 @@ import kengine.objects.Font
 import kengine.objects.Runtime
 import kengine.objects.gl.Image
 import kengine.objects.gl.Window
-import kengine.objects.util.Resource
+import kengine.util.Resource
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.joml.Vector4f

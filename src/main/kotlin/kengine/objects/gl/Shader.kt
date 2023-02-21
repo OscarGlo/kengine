@@ -1,11 +1,11 @@
 package kengine.objects.gl
 
+import kengine.util.Resource
+import kengine.util.terminateError
 import org.joml.Matrix4f
 import org.joml.Vector4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20.*
-import kengine.objects.util.Resource
-import kengine.objects.util.terminateError
 
 class Shader(vararg steps: Pair<Int, String>) {
     companion object {

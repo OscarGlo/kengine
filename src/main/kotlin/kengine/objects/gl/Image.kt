@@ -1,9 +1,9 @@
 package kengine.objects.gl
 
+import kengine.util.Resource
 import org.joml.Vector2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL30.*
-import kengine.objects.util.Resource
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO

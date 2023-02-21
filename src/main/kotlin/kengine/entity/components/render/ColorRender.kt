@@ -1,9 +1,9 @@
 package kengine.entity.components.render
 
 import kengine.objects.gl.Shader
+import kengine.util.white
 import org.joml.Vector4f
 import org.lwjgl.opengl.GL20
-import kengine.objects.util.white
 
 abstract class ColorRender(
     var color: Vector4f = white,

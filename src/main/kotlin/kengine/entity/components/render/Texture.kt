@@ -1,7 +1,7 @@
 package kengine.entity.components.render
 
 import kengine.objects.gl.Image
-import kengine.objects.util.*
+import kengine.util.*
 import org.joml.Vector2f
 import org.joml.Vector4f
 

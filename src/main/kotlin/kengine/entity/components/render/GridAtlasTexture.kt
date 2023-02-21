@@ -1,9 +1,9 @@
 package kengine.entity.components.render
 
 import kengine.objects.gl.Image
+import kengine.util.gridUvs
+import kengine.util.white
 import org.joml.Vector4f
-import kengine.objects.util.gridUvs
-import kengine.objects.util.white
 
 class GridAtlasTexture(image: Image, rows: Int = 1, cols: Int = 1, color: Vector4f = white) :
     AtlasTexture(image, generateUVs(rows, cols), color) {

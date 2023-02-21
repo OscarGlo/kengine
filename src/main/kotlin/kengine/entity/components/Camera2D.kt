@@ -1,9 +1,9 @@
 package kengine.entity.components
 
 import kengine.entity.Entity
+import kengine.util.times
 import org.joml.Matrix4f
 import org.joml.Vector3f
-import kengine.objects.util.times
 
 class Camera2D(
     var current: Boolean = false,

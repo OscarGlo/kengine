@@ -1,6 +1,6 @@
 package kengine.entity
 
-import kengine.objects.util.terminateError
+import kengine.util.terminateError
 import kotlin.reflect.KClass
 
 open class Entity(private val id: String, vararg components: Component) {

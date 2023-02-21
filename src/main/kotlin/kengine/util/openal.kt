@@ -1,4 +1,4 @@
-package kengine.objects.util
+package kengine.util
 
 import org.lwjgl.openal.AL10.*
 

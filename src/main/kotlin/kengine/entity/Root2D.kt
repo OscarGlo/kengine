@@ -2,9 +2,9 @@ package kengine.entity
 
 import kengine.entity.components.Transform2D
 import kengine.objects.gl.Window
+import kengine.util.roundTransform
+import kengine.util.times
 import org.joml.Matrix4f
-import kengine.objects.util.roundTransform
-import kengine.objects.util.times
 
 class Root2D(window: Window) : Entity("") {
     class RootTransform(val viewMatrix: Matrix4f) : Transform2D() {
