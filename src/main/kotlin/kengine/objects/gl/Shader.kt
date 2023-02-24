@@ -1,20 +1,23 @@
 package kengine.objects.gl
 
+import kengine.math.Four
+import kengine.math.Matrix4
+import kengine.math.Vector
 import kengine.util.Resource
 import kengine.util.terminateError
-import org.joml.Matrix4f
-import org.joml.Vector4f
-import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL20.*
+import kotlin.properties.Delegates
 
-class Shader(vararg steps: Pair<Int, String>) {
+class Shader(private vararg val steps: Pair<Int, String>) {
     companion object {
         val cache = mutableMapOf<String, Int>()
     }
 
-    private val id = glCreateProgram()
+    private var id by Delegates.notNull<Int>()
 
-    init {
+    fun init() {
+        id = glCreateProgram()
+
         steps.forEach { (type, path) ->
             val sid = cache.getOrPut(path) {
                 glCreateShader(type).also {
@@ -37,13 +40,11 @@ class Shader(vararg steps: Pair<Int, String>) {
 
     private fun <T> set(name: String, value: T, fn: (Int, T) -> Unit) = fn(glGetUniformLocation(id, name), value)
 
-    operator fun set(name: String, value: Matrix4f) = set(name, value) { loc, mat ->
-        val buf = BufferUtils.createFloatBuffer(16)
-        mat.get(buf)
-        glUniformMatrix4fv(loc, false, buf)
+    operator fun set(name: String, value: Matrix4) = set(name, value) { loc, mat ->
+        glUniformMatrix4fv(loc, false, mat.toBuffer())
     }
 
-    operator fun set(name: String, value: Vector4f) = set(name, value) { loc, vec ->
-        glUniform4f(loc, vec.x, vec.y, vec.z, vec.w)
+    operator fun <V : Vector<Four, Float, V>> set(name: String, value: V) = set(name, value) { loc, vec ->
+        glUniform4f(loc, vec[0], vec[1], vec[2], vec[3])
     }
 }

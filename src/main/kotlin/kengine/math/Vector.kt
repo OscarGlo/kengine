@@ -6,147 +6,170 @@ import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.primaryConstructor
 
-open class Vector<S : Size, T : Number>(val kClass: KClass<T>, components: List<T>) {
-    constructor(kClass: KClass<T>, vararg components: T) : this(kClass, components.toList())
+abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
+    private val numClass: KClass<T>, private val vecClass: KClass<V>, components: List<T>
+) {
+    constructor(numClass: KClass<T>, vecClass: KClass<V>, vararg components: T) : this(
+        numClass, vecClass, components.toList()
+    )
 
     val components = components.toMutableList()
 
-    class Component<S : Size, T : Number>(private val index: Int) : ReadWriteProperty<Vector<S, T>, T> {
-        override fun getValue(thisRef: Vector<S, T>, property: KProperty<*>) = thisRef[index]
+    class Component<S : Size, T : Number, V : Vector<S, T, V>>(private val index: Int) :
+        ReadWriteProperty<Vector<S, T, V>, T> {
+        override fun getValue(thisRef: Vector<S, T, V>, property: KProperty<*>) = thisRef[index]
 
-        override fun setValue(thisRef: Vector<S, T>, property: KProperty<*>, value: T) {
+        override fun setValue(thisRef: Vector<S, T, V>, property: KProperty<*>, value: T) {
             thisRef[index] = value
         }
     }
 
     init {
         components.map { it.javaClass }.toSet().let {
-            if (it.size > 1)
-                terminateError("Mismatched Vector component types ${it.map { it.simpleName }}")
+            if (it.size > 1) terminateError("Mismatched Vector component types ${it.map { it.simpleName }}")
         }
     }
 
     operator fun get(i: Int) = components.getOrElse(i) { terminateError("Invalid vector index $i") }
 
     operator fun set(i: Int, t: T) {
-        if (i !in 0 until components.size)
-            terminateError("Invalid vector index $i")
+        if (i !in 0 until components.size) terminateError("Invalid vector index $i")
         components[i] = t
     }
 
     // IMMUTABLE
-    inline fun <reified U : Number> to() = Vector<S, U>(U::class, components.map(Number::to))
+    fun getOrZero(i: Int) = components.getOrElse(i) { 0.to(numClass) }
 
-    fun copy() = Vector<S, T>(kClass, components)
+    private fun <U : Number, W : Vector<S, U, W>> map(
+        vecClass: KClass<W>, fn: (it: T, index: Int) -> U
+    ) = vecClass.primaryConstructor!!.call(
+        *components.mapIndexed { i, a -> fn(a, i) }.array()
+    )
 
-    fun getOrZero(i: Int) = components.getOrElse(i) { 0.to(kClass) }
+    private fun map(fn: (it: T, index: Int) -> T) = map(vecClass, fn)
 
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified S : Size> resize(): Vector<S, T> {
-        return when (S::class) {
-            Two::class -> Vector2(kClass, getOrZero(0), getOrZero(1))
-            Three::class -> Vector3(kClass, getOrZero(0), getOrZero(1), getOrZero(2))
-            Four::class -> Vector4(kClass, getOrZero(0), getOrZero(1), getOrZero(2), getOrZero(3))
+    private fun componentwise(other: V, fn: (it: T, other: T) -> T) = map { a, i -> fn(a, other[i]) }
 
-            else -> terminateError("Unexpected length on vector resize")
-        } as Vector<S, T>
+    operator fun plus(other: V) = componentwise(other) { a, b -> a.numPlus(b) }
+    operator fun plus(n: T) = map { a, _ -> a.numPlus(n) }
+
+    operator fun minus(other: V) = componentwise(other) { a, b -> a.numMinus(b) }
+    operator fun minus(n: T) = map { a, _ -> a.numMinus(n) }
+
+    operator fun times(other: V) = componentwise(other) { a, b -> a.numTimes(b) }
+    operator fun times(n: T) = map { a, _ -> a.numTimes(n) }
+
+    operator fun div(other: V) = componentwise(other) { a, b -> a.numDiv(b) }
+    operator fun div(n: T) = map { a, _ -> a.numDiv(n) }
+
+    operator fun unaryMinus() = map { a, _ -> 0.to(numClass).numMinus(a) }
+
+    fun inverse() = map { a, _ -> 1.to(numClass).numDiv(a) }
+
+    fun max(other: V) = componentwise(other) { a, b -> numMax(a, b) }
+    fun min(other: V) = componentwise(other) { a, b -> numMin(a, b) }
+
+    fun floor() = map { a, _ -> kotlin.math.floor(a.to()).to(numClass) }
+    fun ceil() = map { a, _ -> kotlin.math.ceil(a.to()).to(numClass) }
+    fun round() = map { a, _ -> kotlin.math.round(a.to()).to(numClass) }
+
+    fun length() = sqrt(components.fold(0.0) { acc, a -> acc + a.toDouble().pow(2.0) }).to(numClass)
+    fun normalize() = length().let {
+        div(if (it == 0.to(numClass)) 1.to(numClass) else it)
     }
 
-    private fun <U : Number> map(kClass: KClass<U>, fn: (it: T, index: Int) -> U) =
-        Vector<S, U>(kClass, components.mapIndexed { i, a -> fn(a, i) }.toMutableList())
-
-    private fun map(fn: (it: T, index: Int) -> T) = map(kClass, fn)
-
-    private fun componentwise(other: Vector<S, T>, fn: (it: T, other: T) -> T) =
-        map { a, i -> fn(a, other[i]) }
-
-    operator fun plus(other: Vector<S, T>) = componentwise(other) { a, b -> a.numPlus(kClass, b) }
-    operator fun plus(n: T) = map { a, _ -> a.numPlus(kClass, n) }
-
-    operator fun minus(other: Vector<S, T>) = componentwise(other) { a, b -> a.numMinus(kClass, b) }
-    operator fun minus(n: T) = map { a, _ -> a.numMinus(kClass, n) }
-
-    operator fun times(other: Vector<S, T>) = componentwise(other) { a, b -> a.numTimes(kClass, b) }
-    operator fun times(n: T) = map { a, _ -> a.numTimes(kClass, n) }
-
-    operator fun div(other: Vector<S, T>) = componentwise(other) { a, b -> a.numDiv(kClass, b) }
-    operator fun div(n: T) = map { a, _ -> a.numDiv(kClass, n) }
-
-    fun floor() = map { a, _ -> kotlin.math.floor(a.to()).to(kClass) }
-    fun ceil() = map { a, _ -> kotlin.math.ceil(a.to()).to(kClass) }
-    fun round() = map { a, _ -> kotlin.math.round(a.to()).to(kClass) }
-
-    fun length() = sqrt(components.fold(0.0) { acc, a -> acc + a.to<Double>().pow(2.0) }).to(kClass)
-    fun distance(other: Vector<S, T>) = (other - this).length()
+    @Suppress("UNCHECKED_CAST")
+    fun distance(other: V) = (other - this as V).length()
 
     // MUTABLE
     private fun mapAssign(fn: (it: T, index: Int) -> T) = apply {
         components.forEachIndexed { i, a -> components[i] = fn(a, i) }
     }
 
-    private fun componentAssign(other: Vector<S, T>, fn: (it: T, other: T) -> T) = apply {
+    private fun componentAssign(other: V, fn: (it: T, other: T) -> T) = apply {
         mapAssign { a, i -> fn(a, other[i]) }
     }
 
-    fun add(other: Vector<S, T>) = componentAssign(other) { a, b -> a.numPlus(kClass, b) }
-    fun add(n: T) = mapAssign { a, _ -> a.numPlus(kClass, n) }
+    fun add(other: V) = componentAssign(other) { a, b -> a.numPlus(b) }
+    fun add(n: T) = mapAssign { a, _ -> a.numPlus(n) }
 
-    fun subtract(other: Vector<S, T>) = componentAssign(other) { a, b -> a.numMinus(kClass, b) }
-    fun subtract(n: T) = mapAssign { a, _ -> a.numMinus(kClass, n) }
+    fun subtract(other: V) = componentAssign(other) { a, b -> a.numMinus(b) }
+    fun subtract(n: T) = mapAssign { a, _ -> a.numMinus(n) }
 
-    fun multiply(other: Vector<S, T>) = componentAssign(other) { a, b -> a.numTimes(kClass, b) }
-    fun multiply(n: T) = mapAssign { a, _ -> a.numTimes(kClass, n) }
+    fun multiply(other: V) = componentAssign(other) { a, b -> a.numTimes(b) }
+    fun multiply(n: T) = mapAssign { a, _ -> a.numTimes(n) }
 
-    fun divide(other: Vector<S, T>) = componentAssign(other) { a, b -> a.numDiv(kClass, b) }
-    fun divide(n: T) = mapAssign { a, _ -> a.numDiv(kClass, n) }
+    fun divide(other: V) = componentAssign(other) { a, b -> a.numDiv(b) }
+    fun divide(n: T) = mapAssign { a, _ -> a.numDiv(n) }
+
+    override fun equals(other: Any?) = other is Vector<*, *, *> && components == other.components
 
     override fun toString() = components.joinToString(", ", "(", ")")
+
+    override fun hashCode() = components.hashCode()
 }
 
-class Vector2<T : Number>(kClass: KClass<T>, x: T, y: T) : Vector<Two, T>(kClass, x, y) {
+abstract class Vector2<T : Number, V : Vector2<T, V>>(numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T) :
+    Vector<Two, T, V>(numClass, vecClass, x, y) {
     var x by Component(0)
     var y by Component(1)
-
-    companion object {
-        inline fun <reified T : Number> new(x: T, y: T = x) = Vector2(T::class, x, y)
-    }
 }
 
-class Vector3<T : Number>(kClass: KClass<T>, x: T, y: T, z: T) : Vector<Three, T>(kClass, x, y, z) {
+class Vector2f(x: Float, y: Float) : Vector2<Float, Vector2f>(Float::class, Vector2f::class, x, y) {
+    constructor(xy: Float = 0f) : this(xy, xy)
+    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to())
+}
+
+class Vector2i(x: Int, y: Int) : Vector2<Int, Vector2i>(Int::class, Vector2i::class, x, y) {
+    constructor(xy: Int = 0) : this(xy, xy)
+    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to())
+}
+
+abstract class Vector3<T : Number, V : Vector3<T, V>>(numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T, z: T) :
+    Vector<Three, T, V>(numClass, vecClass, x, y, z) {
     var x by Component(0)
     var y by Component(1)
     var z by Component(2)
-
-    companion object {
-        inline fun <reified T : Number> new(x: T, y: T, z: T) = Vector3(T::class, x, y, z)
-        inline fun <reified T : Number> new(n: T) = Vector3(T::class, n, n, n)
-    }
 }
 
-class Vector4<T : Number>(kClass: KClass<T>, x: T, y: T, z: T, w: T) : Vector<Four, T>(kClass, x, y, z, w) {
+class Vector3f(x: Float, y: Float, z: Float) : Vector3<Float, Vector3f>(Float::class, Vector3f::class, x, y, z) {
+    constructor(xyz: Float = 0f) : this(xyz, xyz, xyz)
+    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to(), v.getOrZero(2).to())
+}
+
+abstract class Vector4<T : Number, V : Vector4<T, V>>(
+    numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T, z: T, w: T
+) : Vector<Four, T, V>(numClass, vecClass, x, y, z, w) {
     var x by Component(0)
     var y by Component(1)
     var z by Component(2)
     var w by Component(3)
-
-    companion object {
-        inline fun <reified T : Number> new(x: T, y: T, z: T, w: T) = Vector4(T::class, x, y, z, w)
-        inline fun <reified T : Number> new(n: T) = Vector4(T::class, n, n, n, n)
-    }
 }
 
-class Color<T : Number>(kClass: KClass<T>, r: T, g: T, b: T, a: T) : Vector<Four, T>(kClass, r, g, b, a) {
+class Vector4f(x: Float, y: Float, z: Float, w: Float) :
+    Vector4<Float, Vector4f>(Float::class, Vector4f::class, x, y, z, w) {
+    constructor(xyzw: Float = 0f) : this(xyzw, xyzw, xyzw, xyzw)
+    constructor(v: Vector<*, *, *>) : this(
+        v.getOrZero(0).to(),
+        v.getOrZero(1).to(),
+        v.getOrZero(2).to(),
+        v.getOrZero(2).to()
+    )
+}
+
+class Color(r: Float, g: Float, b: Float, a: Float = 1f) :
+    Vector<Four, Float, Color>(Float::class, Color::class, r, g, b, a) {
+    constructor(gray: Float, a: Float = 1f) : this(gray, gray, gray, a)
+
     var r by Component(0)
     var g by Component(1)
     var b by Component(2)
     var a by Component(3)
 
     companion object {
-        inline fun <reified T : Number> new(r: T, g: T, b: T, a: T = 0.to(T::class)) = Color(T::class, r, g, b, a)
-        inline fun <reified T : Number> new(gray: T, a: T = 0.to(T::class)) = Color(T::class, gray, gray, gray, a)
-
-        val black = new(0f)
-        val white = new(1f)
+        val black = Color(0f)
+        val white = Color(1f)
     }
 }

@@ -6,8 +6,8 @@ import kengine.objects.gl.*
 import org.lwjgl.opengl.GL30.*
 
 abstract class Render(
-    vertices: FloatArray,
-    indices: IntArray
+    private val vertices: FloatArray,
+    private val indices: IntArray
 ) : Entity.Component() {
     companion object {
         val defaultAttributes = VertexAttributes(VertexAttribute(2), VertexAttribute(2))
@@ -19,17 +19,23 @@ abstract class Render(
 
     private val arrayBufferLength = vertices.size
 
-    abstract val shader: Shader
+    abstract fun getShader(): Shader
 
     var visible = true
 
-    init {
-        arrayBuffer.store(vertices)
-        elementBuffer.store(indices)
+    override fun initialize() {
+        vertexArray.init().bind()
+
+        arrayBuffer.init().store(vertices)
+        elementBuffer.init().store(indices)
+
         defaultAttributes.use()
+
+        getShader().init()
     }
 
     open fun renderBind() {
+        val shader = getShader()
         shader.use()
         shader["transform"] = entity.get<Transform2D>().viewport()
 

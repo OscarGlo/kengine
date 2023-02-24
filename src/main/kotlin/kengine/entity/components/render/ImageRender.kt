@@ -1,14 +1,13 @@
 package kengine.entity.components.render
 
+import kengine.math.Color
 import kengine.objects.gl.Image
 import kengine.objects.gl.Shader
-import kengine.util.white
-import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.GL_FRAGMENT_SHADER
 import org.lwjgl.opengl.GL30.GL_VERTEX_SHADER
 
-open class ImageRender(
-    protected val image: Image, vertices: FloatArray, indices: IntArray, color: Vector4f = white
+abstract class ImageRender(
+    protected val image: Image, vertices: FloatArray, indices: IntArray, color: Color = Color.white
 ) : ColorRender(color, vertices, indices) {
     companion object {
         val shader = Shader(
@@ -17,7 +16,12 @@ open class ImageRender(
         )
     }
 
-    override val shader = Companion.shader
+    override fun initialize() {
+        super.initialize()
+        image.init()
+    }
+
+    override fun getShader() = shader
 
     override fun renderBind() {
         super.renderBind()

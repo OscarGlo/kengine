@@ -170,11 +170,5 @@
 			<artifactId>lwjgl-stb</artifactId>
 			<classifier>${lwjgl.natives}</classifier>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.joml</groupId>
-			<artifactId>joml</artifactId>
-			<version>1.10.5</version>
-		</dependency>
 	</dependencies>
 </project>

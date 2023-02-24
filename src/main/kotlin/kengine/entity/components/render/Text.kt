@@ -1,18 +1,17 @@
 package kengine.entity.components.render
 
+import kengine.math.Color
+import kengine.math.Vector2f
 import kengine.objects.Font
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
 import kengine.util.sizeof
-import kengine.util.white
-import org.joml.Vector2f
-import org.joml.Vector4f
 import org.lwjgl.opengl.GL30.*
 import java.awt.font.GlyphMetrics
 import java.awt.geom.Point2D
 import java.awt.image.BufferedImage
 
-class Text(val font: Font, text: String = "", color: Vector4f = white) :
+class Text(val font: Font, text: String = "", color: Color = Color.white) :
     ImageRender(font.texture, stringVertices(font, text), rectIndicesN(text.length), color) {
     companion object {
         private fun stringVertices(font: Font, s: String): FloatArray {

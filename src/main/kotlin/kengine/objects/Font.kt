@@ -1,8 +1,8 @@
 package kengine.objects
 
+import kengine.math.Vector4f
 import kengine.objects.gl.Image
 import kengine.util.Resource
-import org.joml.Vector4f
 import java.awt.Color
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage

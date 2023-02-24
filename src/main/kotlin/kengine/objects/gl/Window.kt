@@ -1,9 +1,9 @@
 package kengine.objects.gl
 
+import kengine.math.Color
+import kengine.math.Vector2i
 import kengine.util.glBool
 import kengine.util.terminateError
-import org.joml.Vector2i
-import org.joml.Vector4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.openal.AL
@@ -15,24 +15,28 @@ import org.lwjgl.system.MemoryUtil.NULL
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 
-class Window(size: Vector2i, title: String, resizable: Boolean = true) {
-    val id: Long
+class Window(size: Vector2i, private val title: String, private val resizable: Boolean = true) {
+    var id: Long = -1L
 
     val resizeListeners = mutableListOf<(Int, Int) -> Unit>()
     val keyListeners = mutableListOf<(Int, Int, Int, Int) -> Unit>()
     val mouseButtonListeners = mutableListOf<(Int, Int, Int) -> Unit>()
     val mouseMoveListeners = mutableListOf<(Double, Double) -> Unit>()
 
-    var clearColor = Vector4f()
+    var clearColor = Color.black
         set(c) {
-            glClearColor(c.x, c.y, c.z, c.w)
+            if (id != -1L)
+                glClearColor(c.r, c.g, c.b, c.a)
             field = c
         }
 
     var size = size; private set
 
-    init {
+    fun init() {
+        if (id != -1L) return
+
         glfwInit()
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6)
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
@@ -61,6 +65,8 @@ class Window(size: Vector2i, title: String, resizable: Boolean = true) {
             resizeListeners.forEach { it(w, h) }
         }
 
+        // Update clear color
+        clearColor = clearColor
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 

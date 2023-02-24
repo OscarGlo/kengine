@@ -1,13 +1,13 @@
 package kengine.objects.al
 
+import kengine.math.Vector3f
 import kengine.util.alBool
-import org.joml.Vector3f
 import org.lwjgl.openal.AL10.*
 
 class Source(gain: Float = 1f, pitch: Float = 1f, position: Vector3f = Vector3f(), loop: Boolean = false) {
     val id = alGenSources()
 
-    init {
+    fun init() {
         alSourcef(id, AL_GAIN, gain)
         alSourcef(id, AL_PITCH, pitch)
         alSource3f(id, AL_POSITION, position.x, position.y, position.z)

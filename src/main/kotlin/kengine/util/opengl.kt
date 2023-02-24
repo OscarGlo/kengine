@@ -1,7 +1,7 @@
 package kengine.util
 
-import org.joml.Vector2f
-import org.joml.Vector4f
+import kengine.math.Vector2f
+import kengine.math.Vector4f
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.opengl.GL41.*
 import kotlin.math.PI
@@ -59,8 +59,8 @@ fun ellipseVertices(
     offset: Vector2f = Vector2f(0f, 0f),
     uv: Vector4f = Vector4f(0f, 0f, 1f, 1f)
 ): FloatArray {
-    val uvCenter = Vector2f(uv.x, uv.y).add(uv.z / 2f, uv.w / 2f)
-    val uvSize = Vector2f(uv.z - uv.x, uv.w - uv.y).div(2f)
+    val uvCenter = Vector2f(uv.x + uv.z / 2f, uv.y + uv.w / 2f)
+    val uvSize = Vector2f(uv.z - uv.x, uv.w - uv.y) / 2f
     return floatArrayOf(
         offset.x, offset.y, uvCenter.x, uvCenter.y,
         *(0 until count)

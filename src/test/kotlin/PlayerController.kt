@@ -1,13 +1,11 @@
 import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
-import kengine.entity.components.Transform2D
 import kengine.entity.components.physics.Body2D
-import org.joml.Vector2f
+import kengine.math.Vector2f
 import org.lwjgl.glfw.GLFW.*
 
 class PlayerController : Script() {
     lateinit var camera: Camera2D
-    lateinit var transform: Transform2D
     lateinit var body: Body2D
 
     private var direction = Vector2f()
@@ -24,16 +22,15 @@ class PlayerController : Script() {
                 GLFW_KEY_UP -> direction.y += sign
             }
 
-            // Toggle camera
-            if (action == GLFW_PRESS && key == GLFW_KEY_SPACE)
-                camera.current = !camera.current
+            // On press
+            if (action == GLFW_PRESS) when (key) {
+                GLFW_KEY_SPACE -> camera.current = !camera.current
+            }
         }
     }
 
-    override fun update(delta: Long, time: Long) {
-        val dir = direction
-            .run { if (direction.length() > 0) normalize(Vector2f()) else this }
-            .mul(speed.toFloat(), Vector2f())
-        body.velocity.add(dir).mul(0.9f)
+    override fun update(delta: Double, time: Double) {
+        val dir = direction.normalize() * speed.toFloat()
+        body.velocity.add(dir).multiply(0.9f)
     }
 }

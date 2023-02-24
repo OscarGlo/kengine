@@ -1,19 +1,22 @@
 package kengine.entity.components
 
 import kengine.entity.Entity
-import kengine.util.times
-import org.joml.Matrix4f
-import org.joml.Vector3f
+import kengine.math.Matrix3
+import kengine.math.Matrix4
+import kengine.math.Vector3f
 
 class Camera2D(
     var current: Boolean = false,
-    private val customTransform: Matrix4f = Matrix4f(),
+    private val keepScaling: Boolean = false,
+    private val customTransform: Matrix4 = Matrix4(),
 ) : Entity.Component() {
-    fun transform() = entity.get<Transform2D>().global().run {
-        val pos = transformPosition(Vector3f())
-        // Lock rotation and scale
-        // TODO: Allow disabling this
-        setRotationXYZ(0f, 0f, 0f)
-        setTranslation(-pos.x, -pos.y, 0f)
-    } * customTransform
+    fun transform(): Matrix4 {
+        val entityTransform = entity.get<Transform2D>().global()
+        val baseTransform = entityTransform.apply {
+            scaling = if (!keepScaling) Vector3f(1f) else scaling.inverse()
+            rotation = Matrix3()
+            position = scaling * -position
+        }
+        return baseTransform * customTransform
+    }
 }

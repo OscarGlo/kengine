@@ -1,9 +1,9 @@
 package kengine.entity.components.render
 
-import org.joml.Vector2f
-import org.joml.Vector4f
+import kengine.math.Color
+import kengine.math.Vector2f
 import kengine.util.rectIndices
 import kengine.util.rectVertices
 
-open class Rect(size: Vector2f, color: Vector4f) :
+open class Rect(size: Vector2f, color: Color) :
     ColorRender(color, rectVertices(size), rectIndices)

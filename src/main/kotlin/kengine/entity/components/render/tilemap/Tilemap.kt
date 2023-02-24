@@ -2,11 +2,14 @@ package kengine.entity.components.render.tilemap
 
 import kengine.entity.components.render.ImageRender
 import kengine.entity.components.render.Render
+import kengine.math.Vector2f
+import kengine.math.Vector2i
+import kengine.math.Vector4f
 import kengine.objects.gl.Image
-import kengine.util.*
-import org.joml.Vector2f
-import org.joml.Vector2i
-import org.joml.Vector4f
+import kengine.util.gridUvs
+import kengine.util.rectIndicesN
+import kengine.util.rectVertices
+import kengine.util.sizeof
 import org.lwjgl.opengl.GL30.*
 import kotlin.collections.Map.Entry
 
@@ -54,7 +57,7 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
 
         private fun vertices(size: Vector2f, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
             tileIds.entries.sortedWith(mapComparator).fold(floatArrayOf()) { acc, (pos, id) ->
-                acc + rectVertices(size, pos.f().mul(size, Vector2f()), tileset[id].uvs)
+                acc + rectVertices(size, Vector2f(pos) * size, tileset[id].uvs)
             }
     }
 
@@ -65,13 +68,17 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
             get() = bitmask?.getOrNull(4) ?: 0
     }
 
-    override val shader = ImageRender.shader
+    override fun getShader() = ImageRender.shader
 
     private val tileIds = mutableMapOf<Vector2i, Int>()
     private val bitmaskCache = mutableMapOf<Vector2i, IntArray>()
     private var updateBuffer = false
 
-    init {
+    override fun initialize() {
+        super.initialize()
+
+        tileset.forEach { tile -> tile.image.init() }
+
         tiles.forEach { (pos, ref) -> this[pos] = ref }
         updateBuffers()
         updateBuffer = true
@@ -83,8 +90,7 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
         tiles[pos] = ref
         if (!ref.auto)
             tileIds[pos] = ref.id
-        else
-            // Update all neighboring tiles
+        else // Update all neighboring tiles
             for (x in (pos.x - 1)..(pos.x + 1))
                 for (y in (pos.y - 1)..(pos.y + 1))
                     update(Vector2i(x, y))

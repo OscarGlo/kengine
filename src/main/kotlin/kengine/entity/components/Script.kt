@@ -23,7 +23,7 @@ abstract class Script : Entity.Component() {
     }
 
     open fun init() {}
-    open fun update(delta: Long, time: Long) {}
+    open fun update(delta: Double, time: Double) {}
 
     // Event functions
     open fun onResize(width: Int, height: Int) {}
