@@ -18,6 +18,7 @@ import kengine.objects.Runtime
 import kengine.objects.gl.Image
 import kengine.objects.gl.Window
 import kengine.util.Resource
+import java.util.*
 
 fun main() {
     Resource.localPath = "src/test/resources"
@@ -28,6 +29,9 @@ fun main() {
     val runtime = Runtime(window)
 
     // Resources
+    Resource.addLanguage(Locale.ENGLISH, Resource.local("lang/en.txt"))
+    Resource.addLanguage(Locale.FRENCH, Resource.local("lang/fr.txt"))
+
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png", filter = false)
     val tilemap = Image("/images/autotilemap_corner.png", filter = false)
