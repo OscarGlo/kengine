@@ -40,7 +40,7 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     }
 
     // IMMUTABLE
-    fun getOrZero(i: Int) = components.getOrElse(i) { 0.to(numClass) }
+    fun getOrElse(i: Int, n: Number = 0) = components.getOrElse(i) { n.to(numClass) }
 
     private fun <U : Number, W : Vector<S, U, W>> map(
         vecClass: KClass<W>, fn: (it: T, index: Int) -> U
@@ -119,12 +119,18 @@ abstract class Vector2<T : Number, V : Vector2<T, V>>(numClass: KClass<T>, vecCl
 
 class Vector2f(x: Float, y: Float) : Vector2<Float, Vector2f>(Float::class, Vector2f::class, x, y) {
     constructor(xy: Float = 0f) : this(xy, xy)
-    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to())
+    constructor(v: Vector<*, *, *>, default: Float = 0f) : this(
+        v.getOrElse(0, default).toFloat(),
+        v.getOrElse(1, default).toFloat()
+    )
 }
 
 class Vector2i(x: Int, y: Int) : Vector2<Int, Vector2i>(Int::class, Vector2i::class, x, y) {
     constructor(xy: Int = 0) : this(xy, xy)
-    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to())
+    constructor(v: Vector<*, *, *>, default: Int = 0) : this(
+        v.getOrElse(0, default).toInt(),
+        v.getOrElse(1, default).toInt()
+    )
 }
 
 abstract class Vector3<T : Number, V : Vector3<T, V>>(numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T, z: T) :
@@ -136,7 +142,11 @@ abstract class Vector3<T : Number, V : Vector3<T, V>>(numClass: KClass<T>, vecCl
 
 class Vector3f(x: Float, y: Float, z: Float) : Vector3<Float, Vector3f>(Float::class, Vector3f::class, x, y, z) {
     constructor(xyz: Float = 0f) : this(xyz, xyz, xyz)
-    constructor(v: Vector<*, *, *>) : this(v.getOrZero(0).to(), v.getOrZero(1).to(), v.getOrZero(2).to())
+    constructor(v: Vector<*, *, *>, default: Float = 0f) : this(
+        v.getOrElse(0, default).to(),
+        v.getOrElse(1, default).to(),
+        v.getOrElse(2, default).to()
+    )
 }
 
 abstract class Vector4<T : Number, V : Vector4<T, V>>(
@@ -151,11 +161,11 @@ abstract class Vector4<T : Number, V : Vector4<T, V>>(
 class Vector4f(x: Float, y: Float, z: Float, w: Float) :
     Vector4<Float, Vector4f>(Float::class, Vector4f::class, x, y, z, w) {
     constructor(xyzw: Float = 0f) : this(xyzw, xyzw, xyzw, xyzw)
-    constructor(v: Vector<*, *, *>) : this(
-        v.getOrZero(0).to(),
-        v.getOrZero(1).to(),
-        v.getOrZero(2).to(),
-        v.getOrZero(2).to()
+    constructor(v: Vector<*, *, *>, default: Float = 0f) : this(
+        v.getOrElse(0, default).to(),
+        v.getOrElse(1, default).to(),
+        v.getOrElse(2, default).to(),
+        v.getOrElse(3, default).to()
     )
 }
 
