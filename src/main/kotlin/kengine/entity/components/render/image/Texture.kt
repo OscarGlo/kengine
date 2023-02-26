@@ -1,4 +1,4 @@
-package kengine.entity.components.render
+package kengine.entity.components.render.image
 
 import kengine.math.Color
 import kengine.math.Vector2f

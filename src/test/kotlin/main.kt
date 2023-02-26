@@ -6,9 +6,9 @@ import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
 import kengine.entity.components.render.Rect
-import kengine.entity.components.render.Text
-import kengine.entity.components.render.Texture
-import kengine.entity.components.render.tilemap.Tilemap
+import kengine.entity.components.render.image.Text
+import kengine.entity.components.render.image.Texture
+import kengine.entity.components.render.Tilemap
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i

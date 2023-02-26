@@ -1,5 +1,6 @@
-package kengine.entity.components.render
+package kengine.entity.components.render.image
 
+import kengine.entity.components.render.ColorRender
 import kengine.math.Color
 import kengine.objects.gl.Image
 import kengine.objects.gl.Shader

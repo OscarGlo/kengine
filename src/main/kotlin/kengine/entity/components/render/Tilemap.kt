@@ -1,7 +1,6 @@
-package kengine.entity.components.render.tilemap
+package kengine.entity.components.render
 
-import kengine.entity.components.render.ImageRender
-import kengine.entity.components.render.Render
+import kengine.entity.components.render.image.ImageRender
 import kengine.math.Vector2f
 import kengine.math.Vector2i
 import kengine.math.Vector4f

@@ -1,6 +1,6 @@
 import kengine.entity.components.Script
 import kengine.entity.components.Transform2D
-import kengine.entity.components.render.Text
+import kengine.entity.components.render.image.Text
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.gl.Window
