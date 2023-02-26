@@ -1,7 +1,9 @@
 package kengine.objects.gl
 
 import kengine.math.Color
+import kengine.math.Vector2f
 import kengine.math.Vector2i
+import kengine.util.Event
 import kengine.util.glBool
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
@@ -15,13 +17,13 @@ import org.lwjgl.system.MemoryUtil.NULL
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
 
-class Window(size: Vector2i, private val title: String, private val resizable: Boolean = true) {
+class Window(size: Vector2i, private val title: String, private val resizable: Boolean = true) : Event.Manager() {
     var id: Long = -1L
 
-    val resizeListeners = mutableListOf<(Int, Int) -> Unit>()
-    val keyListeners = mutableListOf<(Int, Int, Int, Int) -> Unit>()
-    val mouseButtonListeners = mutableListOf<(Int, Int, Int) -> Unit>()
-    val mouseMoveListeners = mutableListOf<(Double, Double) -> Unit>()
+    class ResizeEvent(val size: Vector2i) : Event()
+    class KeyEvent(val key: Int, val code: Int, val action: Int, val mods: Int) : Event()
+    class MouseButtonEvent(val button: Int, val action: Int, val mods: Int) : Event()
+    class MouseMoveEvent(val pos: Vector2f) : Event()
 
     var clearColor = Color.black
         set(c) {
@@ -62,7 +64,7 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
             this.size = Vector2i(w, h)
             glViewport(0, 0, w, h)
 
-            resizeListeners.forEach { it(w, h) }
+            notify(ResizeEvent(this.size))
         }
 
         // Update clear color
@@ -77,34 +79,35 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         var fullscreen = false
 
         glfwSetKeyCallback(id) { _, key, scancode, action, mods ->
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(id, true)
+            if (action == GLFW_PRESS) when (key) {
+                GLFW_KEY_ESCAPE -> glfwSetWindowShouldClose(id, true)
+                GLFW_KEY_F -> {
+                    if (fullscreen) {
+                        glfwSetWindowPos(id, prevPosX[0], prevPosY[0])
+                        glfwSetWindowSize(id, prevSizeX[0], prevSizeY[0])
+                    } else {
+                        val monitor = glfwGetPrimaryMonitor()
+                        val mode = glfwGetVideoMode(monitor)!!
 
-            if (key == GLFW_KEY_F && action == GLFW_PRESS) {
-                if (fullscreen) {
-                    glfwSetWindowPos(id, prevPosX[0], prevPosY[0])
-                    glfwSetWindowSize(id, prevSizeX[0], prevSizeY[0])
-                } else {
-                    val monitor = glfwGetPrimaryMonitor()
-                    val mode = glfwGetVideoMode(monitor)!!
+                        glfwGetWindowPos(id, prevPosX, prevPosY)
+                        glfwGetWindowSize(id, prevSizeX, prevSizeY)
 
-                    glfwGetWindowPos(id, prevPosX, prevPosY)
-                    glfwGetWindowSize(id, prevSizeX, prevSizeY)
-
-                    glfwSetWindowPos(id, 0, 0)
-                    glfwSetWindowSize(id, mode.width(), mode.height())
+                        glfwSetWindowPos(id, 0, 0)
+                        glfwSetWindowSize(id, mode.width(), mode.height())
+                    }
+                    fullscreen = !fullscreen
                 }
-                fullscreen = !fullscreen
             }
 
-            keyListeners.forEach { it(key, scancode, action, mods) }
+            notify(KeyEvent(key, scancode, action, mods))
         }
 
         glfwSetMouseButtonCallback(id) { _, button, action, mods ->
-            mouseButtonListeners.forEach { it(button, action, mods) }
+            notify(MouseButtonEvent(button, action, mods))
         }
 
         glfwSetCursorPosCallback(id) { _, x, y ->
-            mouseMoveListeners.forEach { it(x, y) }
+            notify(MouseMoveEvent(Vector2f(x.toFloat(), y.toFloat())))
         }
     }
 }

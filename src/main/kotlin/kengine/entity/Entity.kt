@@ -1,10 +1,11 @@
 package kengine.entity
 
+import kengine.util.Event
 import kengine.util.terminateError
 import kotlin.reflect.KClass
 
-open class Entity(private val id: String, vararg components: Component) {
-    abstract class Component {
+open class Entity(private val id: String, vararg components: Component) : Event.Manager() {
+    abstract class Component : Event.Manager() {
         lateinit var entity: Entity
         lateinit var root: Entity
 
@@ -19,6 +20,21 @@ open class Entity(private val id: String, vararg components: Component) {
 
     init {
         parent?.children?.set(id, this)
+    }
+
+    @Event.Listener(Event::class)
+    fun onEvent(evt: Event): Boolean {
+        var cont = true
+        forEachComponent<Component> {
+            if (!it.update(evt))
+                cont = false
+        }
+        if (cont)
+            children.values.forEach {
+                if (cont && !it.onEvent(evt))
+                    cont = false
+            }
+        return cont
     }
 
     fun children(vararg entities: Entity) = apply {

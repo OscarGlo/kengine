@@ -4,6 +4,7 @@ import kengine.entity.components.render.Text
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.gl.Window
+import kengine.util.Event
 import kengine.util.Resource
 
 class FpsCounter(private val window: Window) : Script() {
@@ -28,7 +29,6 @@ class FpsCounter(private val window: Window) : Script() {
         text.text = Resource.getString("fps").format(1 / deltas.average())
     }
 
-    override fun onResize(width: Int, height: Int) {
-        anchor()
-    }
+    @Event.Listener(Window.ResizeEvent::class)
+    fun onResize(evt: Window.ResizeEvent) = anchor()
 }

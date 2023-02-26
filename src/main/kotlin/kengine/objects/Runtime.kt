@@ -8,12 +8,13 @@ import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Render
 import kengine.math.Matrix4
 import kengine.objects.gl.Window
+import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glFlush
 import org.lwjgl.opengl.GL30.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL30.glClear
 
-class Runtime(private val window: Window, var vSync: Boolean = true) {
+class Runtime(private val window: Window, var vSync: Boolean = true): Event.Manager() {
     companion object {
         private fun doubleTime() = System.nanoTime() / 1_000_000_000.0
     }
@@ -29,22 +30,13 @@ class Runtime(private val window: Window, var vSync: Boolean = true) {
         root.transform.cameraTransform = transform
     }
 
+    // Pass global events to Scripts
+    @Event.Listener(eventClass = Event::class)
+    fun onEvent(evt: Event) = root.update(evt)
+
     fun init() {
         window.init()
-
-        // Init script listeners
-        window.resizeListeners.add { width, height ->
-            root.forEachComponent<Script> { it.onResize(width, height) }
-        }
-        window.keyListeners.add { key, scancode, action, mods ->
-            root.forEachComponent<Script> { it.onKey(key, scancode, action, mods) }
-        }
-        window.mouseButtonListeners.add { button, action, mods ->
-            root.forEachComponent<Script> { it.onMouseButton(button, action, mods) }
-        }
-        window.mouseMoveListeners.add { x, y ->
-            root.forEachComponent<Script> { it.onMouseMove(x, y) }
-        }
+        window.listeners.add(this)
 
         root.forEachComponent<Entity.Component> {
             it.root = root

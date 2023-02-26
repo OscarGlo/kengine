@@ -2,6 +2,8 @@ import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
 import kengine.entity.components.physics.Body2D
 import kengine.math.Vector2f
+import kengine.objects.gl.Window
+import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 
 class PlayerController : Script() {
@@ -11,11 +13,12 @@ class PlayerController : Script() {
     private var direction = Vector2f()
     private val speed = 50
 
-    override fun onKey(key: Int, scancode: Int, action: Int, mods: Int) {
-        if (action == GLFW_PRESS || action == GLFW_RELEASE) {
+    @Event.Listener(Window.KeyEvent::class)
+    fun onKey(evt: Window.KeyEvent) {
+        if (evt.action == GLFW_PRESS || evt.action == GLFW_RELEASE) {
             // Character movement
-            val sign = if (action == GLFW_PRESS) 1 else -1
-            when (key) {
+            val sign = if (evt.action == GLFW_PRESS) 1 else -1
+            when (evt.key) {
                 GLFW_KEY_LEFT -> direction.x -= sign
                 GLFW_KEY_RIGHT -> direction.x += sign
                 GLFW_KEY_DOWN -> direction.y -= sign
@@ -23,7 +26,7 @@ class PlayerController : Script() {
             }
 
             // On press
-            if (action == GLFW_PRESS) when (key) {
+            if (evt.action == GLFW_PRESS) when (evt.key) {
                 GLFW_KEY_SPACE -> camera.current = !camera.current
             }
         }
