@@ -23,7 +23,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
 
     private fun updateCameraPosition() {
         var transform: Matrix4? = null
-        root.forEachComponent<Camera2D> {
+        root.forEachComponentRec<Camera2D> {
             if (transform == null && it.current)
                 transform = it.transform()
         }
@@ -38,7 +38,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         window.init()
         window.listeners.add(this)
 
-        root.forEachComponent<Entity.Component> {
+        root.forEachComponentRec<Entity.Component> {
             it.root = root
             it.initialize()
         }
@@ -52,13 +52,13 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         val time = t - start
 
         // Updates
-        root.forEachComponent<Body2D> { it.physicsUpdate(delta) }
-        root.forEachComponent<Script> { it.update(delta, time) }
+        root.forEachComponentRec<Body2D> { it.physicsUpdate(delta) }
+        root.forEachComponentRec<Script> { it.update(delta, time) }
 
         // Render
         updateCameraPosition()
         glClear(GL_COLOR_BUFFER_BIT)
-        root.forEachComponent(Render::render)
+        root.forEachComponentRec(Render::render)
 
         // Update viewport
         glfwSwapBuffers(window.id)

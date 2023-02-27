@@ -23,18 +23,12 @@ open class Entity(private val id: String, vararg components: Component) : Event.
     }
 
     @Event.Listener(Event::class)
-    fun onEvent(evt: Event): Boolean {
+    fun onEvent(evt: Event) {
         var cont = true
-        forEachComponent<Component> {
-            if (!it.update(evt))
+        forEachComponentRec<Component> {
+            if (cont && !it.update(evt))
                 cont = false
         }
-        if (cont)
-            children.values.forEach {
-                if (cont && !it.onEvent(evt))
-                    cont = false
-            }
-        return cont
     }
 
     fun children(vararg entities: Entity) = apply {
@@ -51,11 +45,11 @@ open class Entity(private val id: String, vararg components: Component) : Event.
 
     fun <R> map(fn: (Entity) -> R): List<R> = listOf(fn(this)) + children.values.flatMap { it.map(fn) }
 
-    inline fun <reified T : Component> forEachComponent(crossinline fn: (T) -> Unit) = forEach {
+    inline fun <reified T : Component> forEachComponentRec(crossinline fn: (T) -> Unit) = forEach {
         it.getAll<T>().forEach(fn)
     }
 
-    inline fun <reified T : Component, R> mapComponents(crossinline fn: (T) -> R) = map {
+    inline fun <reified T : Component, R> mapComponentsRec(crossinline fn: (T) -> R) = map {
         it.getAll<T>().map(fn)
     }.flatten()
 
