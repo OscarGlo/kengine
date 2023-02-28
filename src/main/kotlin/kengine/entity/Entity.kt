@@ -4,7 +4,7 @@ import kengine.util.Event
 import kengine.util.terminateError
 import kotlin.reflect.KClass
 
-open class Entity(private val id: String, vararg components: Component) : Event.Manager() {
+open class Entity(val id: String, vararg components: Component) : Event.Manager() {
     abstract class Component : Event.Manager() {
         lateinit var entity: Entity
         lateinit var root: Entity

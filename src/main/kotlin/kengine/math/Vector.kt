@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.full.primaryConstructor
 
 abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
-    private val numClass: KClass<T>, private val vecClass: KClass<V>, components: List<T>
+    protected val numClass: KClass<T>, protected val vecClass: KClass<V>, components: List<T>
 ) {
     constructor(numClass: KClass<T>, vecClass: KClass<V>, vararg components: T) : this(
         numClass, vecClass, components.toList()
@@ -64,6 +64,12 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     operator fun div(other: V) = componentwise(other) { a, b -> a.numDiv(b) }
     operator fun div(n: T) = map { a, _ -> a.numDiv(n) }
 
+    infix fun dot(other: V): Float = components
+        .mapIndexed { i, a -> a.toFloat() * other[i].toFloat() }
+        .fold(0f) { acc, a -> acc + a }
+
+    infix fun proj(other: V): Float = dot(other) / other.length()
+
     operator fun unaryMinus() = map { a, _ -> 0.to(numClass).numMinus(a) }
 
     fun inverse() = map { a, _ -> 1.to(numClass).numDiv(a) }
@@ -75,9 +81,9 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     fun ceil() = map { a, _ -> kotlin.math.ceil(a.to()).to(numClass) }
     fun round() = map { a, _ -> kotlin.math.round(a.to()).to(numClass) }
 
-    fun length() = sqrt(components.fold(0.0) { acc, a -> acc + a.toDouble().pow(2.0) }).to(numClass)
+    fun length() = sqrt(components.fold(0.0) { acc, a -> acc + a.toDouble().pow(2.0) }).toFloat()
     fun normalize() = length().let {
-        div(if (it == 0.to(numClass)) 1.to(numClass) else it)
+        div(if (it == 0f) 1.to(numClass) else it.to(numClass))
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -115,6 +121,8 @@ abstract class Vector2<T : Number, V : Vector2<T, V>>(numClass: KClass<T>, vecCl
     Vector<Two, T, V>(numClass, vecClass, x, y) {
     var x by Component(0)
     var y by Component(1)
+
+    fun perpendicular() = vecClass.primaryConstructor!!.call(0.to(numClass).numMinus(y), x)
 }
 
 class Vector2f(x: Float, y: Float) : Vector2<Float, Vector2f>(Float::class, Vector2f::class, x, y) {

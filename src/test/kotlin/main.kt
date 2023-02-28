@@ -6,9 +6,9 @@ import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
 import kengine.entity.components.render.Rect
+import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.image.Text
 import kengine.entity.components.render.image.Texture
-import kengine.entity.components.render.Tilemap
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i
@@ -62,7 +62,7 @@ fun main() {
         ),
         Entity(
             "circle",
-            Transform2D().apply { matrix.translate(Vector3f(150f, 0f, 0f)) },
+            Transform2D().apply { matrix.translate(Vector3f(25f, 0f, 0f)) },
             Ellipse(Vector2f(50f, 50f), 32, Color(0.5f, 0.2f, 0.8f, 0.5f)),
             CircleCollider(25f),
             Body2D(true)
