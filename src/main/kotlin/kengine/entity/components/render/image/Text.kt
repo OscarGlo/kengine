@@ -41,6 +41,8 @@ class Text(val font: Font, text: String = "", color: Color = Color.white) :
 
     var text = text
         set(t) {
+            if (t == field) return
+
             field = t
             arrayBuffer.store(stringVertices(font, t))
             elementBuffer.store(rectIndicesN(text.length))
