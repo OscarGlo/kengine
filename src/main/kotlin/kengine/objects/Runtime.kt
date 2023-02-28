@@ -2,11 +2,9 @@ package kengine.objects
 
 import kengine.entity.Entity
 import kengine.entity.Root2D
-import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Render
-import kengine.math.Matrix4
 import kengine.objects.gl.Window
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
@@ -20,15 +18,6 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
     }
 
     val root = Root2D(window)
-
-    private fun updateCameraPosition() {
-        var transform: Matrix4? = null
-        root.forEachComponentRec<Camera2D> {
-            if (transform == null && it.current)
-                transform = it.transform()
-        }
-        root.transform.cameraTransform = transform
-    }
 
     // Pass global events to Scripts
     @Event.Listener(eventClass = Event::class)
@@ -56,7 +45,6 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         root.forEachComponentRec<Script> { it.update(delta, time) }
 
         // Render
-        updateCameraPosition()
         glClear(GL_COLOR_BUFFER_BIT)
         root.forEachComponentRec(Render::render)
 

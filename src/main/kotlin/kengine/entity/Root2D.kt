@@ -1,5 +1,6 @@
 package kengine.entity
 
+import kengine.entity.components.Camera2D
 import kengine.entity.components.Transform2D
 import kengine.math.Matrix4
 import kengine.math.Vector3f
@@ -8,10 +9,10 @@ import kengine.util.Event
 
 class Root2D(window: Window) : Entity("") {
     class RootTransform(val viewMatrix: Matrix4) : Transform2D() {
-        var cameraTransform: Matrix4? = null
+        var currentCamera: Camera2D? = null
 
         override fun rootViewport(fixed: Boolean) =
-            if (!fixed && cameraTransform != null) viewMatrix * cameraTransform!!
+            if (!fixed && currentCamera != null) viewMatrix * currentCamera!!.transform()
             else viewMatrix
 
         @Event.Listener(Window.ResizeEvent::class)
@@ -24,5 +25,10 @@ class Root2D(window: Window) : Entity("") {
 
     init {
         add(transform)
+    }
+
+    @Event.Listener(Camera2D.SetCurrentEvent::class)
+    fun onCameraChange(evt: Camera2D.SetCurrentEvent) {
+        transform.currentCamera = evt.camera
     }
 }
