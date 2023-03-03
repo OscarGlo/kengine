@@ -22,15 +22,22 @@ class Body2D(val static: Boolean = false) : Entity.Component() {
             val frameVelocity = Vector3f(velocity) * delta.toFloat()
             transform.matrix.translate(frameVelocity)
 
+            // Calculate collisions
+            val collisions = mutableListOf<Collider2D.Collision>()
             colliders.forEach { collider ->
                 root.forEachComponentRec<Collider2D> {
                     if (it.entity != entity) {
                         val col = collider.collide(it)
-                        // Resolve collision
                         if (col != null)
-                            transform.matrix.translate(Vector3f(col.axis) * col.distance)
+                            collisions += col
                     }
                 }
+            }
+
+            // Resolve collisions
+            if (collisions.isNotEmpty()) {
+                val col = collisions.minBy { it.distance }
+                transform.matrix.translate(-Vector3f(col.axis) * col.distance)
             }
         }
     }

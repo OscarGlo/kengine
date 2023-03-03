@@ -4,11 +4,24 @@ import kengine.entity.Entity
 import kengine.entity.components.Transform2D
 import kengine.math.Vector2f
 import kengine.math.Vector3f
+import kotlin.math.abs
 import kotlin.math.max
 
 open class Collider2D(private val points: List<Vector2f>, private val offset: Vector2f = Vector2f()) :
     Entity.Component() {
-    class Collision(val axis: Vector2f, val distance: Float)
+    class Collision(val axis: Vector2f, separation: Float) {
+        val distance = abs(separation)
+
+        fun fix(from: Collider2D, to: Collider2D): Collision {
+            val a = axis
+            val p1 = from.globalPosition()
+            val p2 = to.globalPosition()
+            if (p1.x > p2.x && a.x > 0 || p1.x < p2.x && a.x < 0) a.x = -a.x
+            if (p1.y > p2.y && a.y > 0 || p1.y < p2.y && a.y < 0) a.y = -a.y
+
+            return Collision(a, distance)
+        }
+    }
 
     fun globalPosition(): Vector2f {
         val entityTransform = entity.get<Transform2D>().global()
@@ -43,13 +56,8 @@ open class Collider2D(private val points: List<Vector2f>, private val offset: Ve
             val sep = separation(other, axis)
             if (sep > 0) return null
             if (col == null || sep > col.distance) Collision(axis, sep) else col
-        }?.apply {
-            // Fix axis direction
-            val p1 = globalPosition()
-            val p2 = other.globalPosition()
-            if (p1.x > p2.x && axis.x < 0 || p1.x < p2.x && axis.x > 0) axis.x = -axis.x
-            if (p1.y > p2.y && axis.y < 0 || p1.y < p2.y && axis.y > 0) axis.y = -axis.y
         }
 
-    fun collide(other: Collider2D) = this.collideOne(other) ?: other.collideOne(this)
+    fun collide(other: Collider2D) =
+        this.collideOne(other)?.fix(this, other) ?: other.collideOne(this)?.fix(this, other)
 }

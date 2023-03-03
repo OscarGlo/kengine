@@ -9,16 +9,31 @@ import kengine.entity.components.render.Rect
 import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.image.Text
 import kengine.entity.components.render.image.Texture
-import kengine.math.Color
-import kengine.math.Vector2f
-import kengine.math.Vector2i
-import kengine.math.Vector3f
+import kengine.math.*
 import kengine.objects.Font
 import kengine.objects.Runtime
 import kengine.objects.gl.Image
 import kengine.objects.gl.Window
 import kengine.util.Resource
 import java.util.*
+import kotlin.math.PI
+
+class Block(pos: Vector2f) : Entity(
+    "Block$count",
+    Transform2D().apply { matrix.position = Vector3f(pos) },
+    Rect(Vector2f(25f), Color(0.5f, 0.2f, 0.8f, 0.5f)),
+    RectCollider(Vector2f(25f)),
+    Body2D(true)
+) {
+    companion object {
+        var count = 0
+            get() {
+                val tmp = field
+                field++
+                return tmp
+            }
+    }
+}
 
 fun main() {
     Resource.localPath = "src/test/resources"
@@ -53,13 +68,14 @@ fun main() {
             Transform2D(),
             Tilemap(Vector2f(32f), Tilemap.cornerTileset(tilemap, 0), tiles.toMutableMap())
         ),
-        Entity(
-            "rect",
-            Transform2D(),
-            Rect(Vector2f(50f, 100f), Color(0.5f, 0.2f, 0.8f, 0.5f)),
-            RectCollider(Vector2f(50f, 100f)),
-            Body2D(true)
-        ),
+        Block(Vector2f(50f, 50f)),
+        Block(Vector2f(75f, 50f)),
+        Block(Vector2f(100f, 50f)),
+        Block(Vector2f(125f, 50f)),
+        Block(Vector2f(150f, 50f)),
+        Block(Vector2f(150f, 75f)),
+        Block(Vector2f(150f, 100f)),
+        Block(Vector2f(150f, 125f)),
         Entity(
             "circle",
             Transform2D().apply { matrix.translate(Vector3f(25f, 0f, 0f)) },
@@ -71,6 +87,7 @@ fun main() {
             "player",
             Transform2D().apply { matrix.translate(Vector3f(100f, 100f, 0f)) },
             Texture(circle),
+            //RectCollider(Vector2f(circle.size)),
             CircleCollider(circle.size.x / 2f),
             Camera2D(true),
             Body2D(),
