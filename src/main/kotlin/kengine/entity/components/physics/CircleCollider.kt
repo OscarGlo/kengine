@@ -8,6 +8,7 @@ class CircleCollider(private val radius: Float, offset: Vector2f = Vector2f()) :
         return (proj - radius) to (proj + radius)
     }
 
+    // TODO: Fix circle-square corner collisions
     override fun collideOne(other: Collider2D): Collision? =
         if (other is CircleCollider) {
             val axis = (other.globalPosition() - globalPosition()).normalize()
