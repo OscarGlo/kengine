@@ -9,9 +9,7 @@ import kotlin.math.max
 
 open class Collider2D(private val points: List<Vector2f>, private val offset: Vector2f = Vector2f()) :
     Entity.Component() {
-    class Collision(val axis: Vector2f, separation: Float) {
-        val distance = abs(separation)
-
+    class Collision(val axis: Vector2f, val separation: Float) {
         fun fix(from: Collider2D, to: Collider2D): Collision {
             val a = axis
             val p1 = from.globalPosition()
@@ -19,7 +17,7 @@ open class Collider2D(private val points: List<Vector2f>, private val offset: Ve
             if (p1.x > p2.x && a.x > 0 || p1.x < p2.x && a.x < 0) a.x = -a.x
             if (p1.y > p2.y && a.y > 0 || p1.y < p2.y && a.y < 0) a.y = -a.y
 
-            return Collision(a, distance)
+            return Collision(a, abs(separation))
         }
     }
 
@@ -54,8 +52,9 @@ open class Collider2D(private val points: List<Vector2f>, private val offset: Ve
         .map { i -> (points[(i + 1) % points.size] - points[i]).perpendicular().normalize() }
         .fold(null as Collision?) { col, axis ->
             val sep = separation(other, axis)
-            if (sep > 0) return null
-            if (col == null || sep > col.distance) Collision(axis, sep) else col
+            if (sep >= 0) return null
+
+            if (col == null || sep > col.separation) Collision(axis, sep) else col
         }
 
     fun collide(other: Collider2D) =
