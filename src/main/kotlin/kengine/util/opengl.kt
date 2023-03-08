@@ -1,7 +1,7 @@
 package kengine.util
 
+import kengine.math.Rect
 import kengine.math.Vector2f
-import kengine.math.Vector4f
 import org.lwjgl.glfw.GLFW.glfwTerminate
 import org.lwjgl.opengl.GL41.*
 import kotlin.math.PI
@@ -35,15 +35,15 @@ fun terminateError(message: String): Nothing {
 fun rectVertices(
     size: Vector2f,
     offset: Vector2f = Vector2f(0f, 0f),
-    uv: Vector4f = Vector4f(0f, 0f, 1f, 1f)
+    uv: Rect = Rect(0f, 0f, 1f, 1f)
 ): FloatArray {
     val w = size.x / 2
     val h = size.y / 2
     return floatArrayOf(
-        offset.x + w, offset.y + h, uv.z, uv.y,
-        offset.x - w, offset.y + h, uv.x, uv.y,
-        offset.x - w, offset.y - h, uv.x, uv.w,
-        offset.x + w, offset.y - h, uv.z, uv.w
+        offset.x + w, offset.y + h, uv.x2, uv.y1,
+        offset.x - w, offset.y + h, uv.x1, uv.y1,
+        offset.x - w, offset.y - h, uv.x1, uv.y2,
+        offset.x + w, offset.y - h, uv.x2, uv.y2
     )
 }
 
@@ -57,10 +57,10 @@ fun ellipseVertices(
     size: Vector2f,
     count: Int,
     offset: Vector2f = Vector2f(0f, 0f),
-    uv: Vector4f = Vector4f(0f, 0f, 1f, 1f)
+    uv: Rect = Rect(0f, 0f, 1f, 1f)
 ): FloatArray {
-    val uvCenter = Vector2f(uv.x + uv.z / 2f, uv.y + uv.w / 2f)
-    val uvSize = Vector2f(uv.z - uv.x, uv.w - uv.y) / 2f
+    val uvCenter = Vector2f(uv.x1 + uv.x2 / 2f, uv.y1 + uv.y2 / 2f)
+    val uvSize = uv.size / 2f
     return floatArrayOf(
         offset.x, offset.y, uvCenter.x, uvCenter.y,
         *(0 until count)
@@ -82,4 +82,4 @@ fun ellipseIndices(count: Int) = (0..count)
     .toIntArray()
 
 fun gridUvs(rows: Int, cols: Int, x: Int, y: Int) =
-    Vector4f(x.toFloat() / cols, y.toFloat() / rows, (x.toFloat() + 1) / cols, (y.toFloat() + 1) / rows)
+    Rect(x.toFloat() / cols, y.toFloat() / rows, (x.toFloat() + 1) / cols, (y.toFloat() + 1) / rows)

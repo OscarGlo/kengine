@@ -1,6 +1,6 @@
 package kengine.objects
 
-import kengine.math.Vector4f
+import kengine.math.Rect
 import kengine.objects.gl.Image
 import kengine.util.Resource
 import java.awt.Color
@@ -21,7 +21,7 @@ class Font(url: URL, val size: Int) {
     }
 
     val font: AWTFont
-    val characterBounds = mutableMapOf<Int, Vector4f>()
+    val characterBounds = mutableMapOf<Int, Rect>()
     val texture: Image
 
     init {
@@ -77,7 +77,7 @@ class Font(url: URL, val size: Int) {
             val bounds = font.createGlyphVector(gfx.fontRenderContext, Char(i).toString()).getGlyphVisualBounds(0).bounds2D
 
             // Constrain character positions
-            characterBounds[i] = Vector4f(
+            characterBounds[i] = Rect(
                 (p.first + bounds.minX - 0.5).toFloat() / width,
                 (p.second + bounds.minY - 0.5).toFloat() / height,
                 (p.first + bounds.maxX + 0.5).toFloat() / width,

@@ -191,3 +191,17 @@ class Color(r: Float, g: Float, b: Float, a: Float = 1f) :
         val white = Color(1f)
     }
 }
+
+class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
+    Vector<Four, Float, Rect>(Float::class, Rect::class, x1, y1, x2, y2) {
+    var x1 by Component(0)
+    var y1 by Component(1)
+    var x2 by Component(2)
+    var y2 by Component(3)
+
+    val start get() = Vector2f(x1, y1)
+    val end get() = Vector2f(x2, y2)
+
+    val size get() = Vector2f(x2 - x1, y2 - y1)
+    val center get() = start + size / 2f
+}

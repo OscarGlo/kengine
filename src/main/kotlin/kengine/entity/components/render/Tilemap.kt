@@ -1,9 +1,9 @@
 package kengine.entity.components.render
 
 import kengine.entity.components.render.image.ImageRender
+import kengine.math.Rect
 import kengine.math.Vector2f
 import kengine.math.Vector2i
-import kengine.math.Vector4f
 import kengine.objects.gl.Image
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
@@ -56,13 +56,13 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
 
         private fun vertices(size: Vector2f, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
             tileIds.entries.sortedWith(mapComparator).fold(floatArrayOf()) { acc, (pos, id) ->
-                acc + rectVertices(size, Vector2f(pos) * size, tileset[id].uvs)
+                acc + rectVertices(size, Vector2f(pos) * size, tileset[id].uv)
             }
     }
 
     class Ref(val id: Int, val auto: Boolean = false)
 
-    class Tile(val image: Image, val uvs: Vector4f, val bitmask: IntArray? = null) {
+    class Tile(val image: Image, val uv: Rect, val bitmask: IntArray? = null) {
         val type
             get() = bitmask?.getOrNull(4) ?: 0
     }
