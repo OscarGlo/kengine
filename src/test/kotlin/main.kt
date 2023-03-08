@@ -5,7 +5,7 @@ import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
-import kengine.entity.components.render.Rect
+import kengine.entity.components.render.RectRender
 import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.image.Text
 import kengine.entity.components.render.image.Texture
@@ -16,12 +16,11 @@ import kengine.objects.gl.Image
 import kengine.objects.gl.Window
 import kengine.util.Resource
 import java.util.*
-import kotlin.math.PI
 
 class Block(pos: Vector2f) : Entity(
     "Block$count",
     Transform2D().apply { matrix.position = Vector3f(pos) },
-    Rect(Vector2f(25f), Color(0.5f, 0.2f, 0.8f, 0.5f)),
+    RectRender(Vector2f(25f), Color(0.5f, 0.2f, 0.8f, 0.5f)),
     RectCollider(Vector2f(25f)),
     Body2D(true)
 ) {
