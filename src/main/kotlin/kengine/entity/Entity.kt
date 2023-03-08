@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 open class Entity(val id: String, vararg components: Component) : Event.Manager() {
     abstract class Component : Event.Manager() {
         lateinit var entity: Entity
-        lateinit var root: Entity
+        lateinit var root: Root2D
 
         fun attach(e: Entity) = apply { entity = e }
 
