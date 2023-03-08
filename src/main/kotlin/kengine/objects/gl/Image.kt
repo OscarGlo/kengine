@@ -6,12 +6,13 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
 import java.io.File
+import java.net.URL
 import javax.imageio.ImageIO
 import kotlin.properties.Delegates
 
 class Image(private val image: BufferedImage, bpp: Int = 4, private val filter: Boolean = true) {
-    constructor(path: String, bpp: Int = 4, filter: Boolean = true) :
-            this(ImageIO.read(Resource.local(path)), bpp, filter)
+    constructor(url: URL, bpp: Int = 4, filter: Boolean = true) : this(ImageIO.read(url), bpp, filter)
+    constructor(path: String, bpp: Int = 4, filter: Boolean = true) : this(Resource.local(path), bpp, filter)
 
     val size = Vector2i(image.width, image.height)
 

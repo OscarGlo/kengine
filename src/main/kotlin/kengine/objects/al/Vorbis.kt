@@ -2,19 +2,17 @@ package kengine.objects.al
 
 import org.lwjgl.BufferUtils
 import org.lwjgl.stb.STBVorbis.stb_vorbis_decode_filename
-import kengine.util.Resource
 import kengine.util.terminateError
+import java.net.URL
 import java.nio.ShortBuffer
 
-class Vorbis(path: String) {
+class Vorbis(url: URL) {
     val pcm: ShortBuffer
     val channels: Int
     val sampleRate: Int
     val samples = 16
 
     init {
-        val url = Resource.local(path)
-
         val channelsPtr = BufferUtils.createIntBuffer(1)
         val sampleRatePtr = BufferUtils.createIntBuffer(1)
         val dataPtr = BufferUtils.createPointerBuffer(1)

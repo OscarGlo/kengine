@@ -6,15 +6,18 @@ import kengine.util.Resource
 import java.awt.Color
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
+import java.net.URL
 import kotlin.math.sqrt
 import java.awt.Font as AWTFont
 
 const val V_STRETCH = 1.3f
 const val MARGIN = 1
 
-class Font(path: String, val size: Int) {
+class Font(url: URL, val size: Int) {
+    constructor(path: String, size: Int) : this(Resource.local(path), size)
+
     companion object {
-        val cache = mutableMapOf<String, AWTFont>()
+        val cache = mutableMapOf<URL, AWTFont>()
     }
 
     val font: AWTFont
@@ -22,8 +25,8 @@ class Font(path: String, val size: Int) {
     val texture: Image
 
     init {
-        val res = Resource.local(path).openStream()
-        font = cache.getOrPut(path) {
+        val res = url.openStream()
+        font = cache.getOrPut(url) {
             AWTFont.createFont(AWTFont.TRUETYPE_FONT, res)
         }.deriveFont(size.toFloat())
 
