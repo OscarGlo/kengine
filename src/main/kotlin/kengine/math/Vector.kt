@@ -74,8 +74,8 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
 
     fun inverse() = map { a, _ -> 1.to(numClass).numDiv(a) }
 
-    fun max(other: V) = componentwise(other) { a, b -> numMax(a, b) }
-    fun min(other: V) = componentwise(other) { a, b -> numMin(a, b) }
+    infix fun max(other: V) = componentwise(other) { a, b -> numMax(a, b) }
+    infix fun min(other: V) = componentwise(other) { a, b -> numMin(a, b) }
 
     fun floor() = map { a, _ -> kotlin.math.floor(a.to()).to(numClass) }
     fun ceil() = map { a, _ -> kotlin.math.ceil(a.to()).to(numClass) }
