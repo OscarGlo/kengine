@@ -19,6 +19,7 @@ object Resource {
     var locale: Locale = Locale.getDefault()
     var fallback: Locale = Locale.ENGLISH
 
+    // TODO: Allow multiple language files for one locale
     fun addLanguage(locale: Locale, url: URL) {
         val props = Properties().apply { load(url.openStream()) }
         val lang = props.entries.associate { e -> e.key.toString() to e.value.toString() }
