@@ -43,8 +43,8 @@ fun main() {
     val runtime = Runtime(window)
 
     // Resources
-    Resource.addLanguage(Locale.ENGLISH, Resource.local("lang/en.txt"))
-    Resource.addLanguage(Locale.FRENCH, Resource.local("lang/fr.txt"))
+    Resource.addLanguage(Locale.ENGLISH, "lang/en.txt")
+    Resource.addLanguage(Locale.FRENCH, "lang/fr.txt")
 
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png", filter = false)

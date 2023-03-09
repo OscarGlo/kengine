@@ -19,12 +19,14 @@ object Resource {
     var locale: Locale = Locale.getDefault()
     var fallback: Locale = Locale.ENGLISH
 
-    fun addLanguage(locale: Locale, res: URL) {
-        val props = Properties().apply { load(res.openStream()) }
+    fun addLanguage(locale: Locale, url: URL) {
+        val props = Properties().apply { load(url.openStream()) }
         val lang = props.entries.associate { e -> e.key.toString() to e.value.toString() }
         languages[locale.language] = lang
         languages[locale.toString()] = lang
     }
+
+    fun addLanguage(locale: Locale, path: String) = addLanguage(locale, local(path))
 
     private fun getLanguage(locale: Locale) = languages[locale.toString()] ?: languages[locale.language]
 
