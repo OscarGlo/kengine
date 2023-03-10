@@ -13,9 +13,13 @@ class Shader(private vararg val steps: Pair<Int, String>) {
         val cache = mutableMapOf<String, Int>()
     }
 
+    private var isInit = false
     private var id by Delegates.notNull<Int>()
 
     fun init() {
+        if (isInit) return
+        isInit = true
+
         id = glCreateProgram()
 
         steps.forEach { (type, path) ->
