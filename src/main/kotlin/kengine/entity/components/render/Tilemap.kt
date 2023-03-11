@@ -62,10 +62,13 @@ class Tilemap(
             16, 20, 84, 80, 213, 92, 116, 87, 28, 125, 124, 112,
             17, 21, 85, 81, 29, 127, 253, 113, 31, 119, -1, 245,
             1, 5, 69, 65, 23, 223, 247, 209, 95, 255, 221, 241,
-            0, 4, 68, 64, 117, 71, 197, 93, 7, 199, 84, 193
+            0, 4, 68, 64, 117, 71, 197, 93, 7, 199, 215, 193
         )
 
         fun fullTileset(image: Image, id: Int) = full.mapIndexed { i, mask ->
+            if (mask == -1)
+                return@mapIndexed Tile(image, Rect(0f, 0f, 0f, 0f))
+
             val m = (0..8).map { j -> mask and 2.0.pow(j).toInt() > 0 }
             fun fullCorner(i: Int) = if (m[i]) id else if (m[(i - 1) % 8] && m[(i + 1) % 8]) OTHER else ANY
             Tile(
@@ -93,7 +96,7 @@ class Tilemap(
 
     class Tile(val image: Image, val uv: Rect = Rect(0f, 0f, 1f, 1f), val bitmask: IntArray? = null) {
         val type
-            get() = bitmask?.getOrNull(4) ?: 0
+            get() = bitmask?.getOrNull(4) ?: NONE
     }
 
     override fun getShader() = ImageRender.shader
