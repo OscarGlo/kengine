@@ -4,6 +4,7 @@ import kengine.util.*
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
+import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.primaryConstructor
@@ -131,6 +132,10 @@ class Vector2f(x: Float, y: Float) : Vector2<Float, Vector2f>(Float::class, Vect
         v.getOrElse(0, default).toFloat(),
         v.getOrElse(1, default).toFloat()
     )
+
+    companion object {
+        fun random() = Vector2f(Random.nextFloat(), Random.nextFloat())
+    }
 }
 
 class Vector2i(x: Int, y: Int) : Vector2<Int, Vector2i>(Int::class, Vector2i::class, x, y) {
