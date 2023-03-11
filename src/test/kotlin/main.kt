@@ -9,7 +9,10 @@ import kengine.entity.components.render.RectRender
 import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.image.Text
 import kengine.entity.components.render.image.Texture
-import kengine.math.*
+import kengine.math.Color
+import kengine.math.Vector2f
+import kengine.math.Vector2i
+import kengine.math.Vector3f
 import kengine.objects.Font
 import kengine.objects.Runtime
 import kengine.objects.gl.Image
@@ -48,24 +51,17 @@ fun main() {
 
     val font = Font("/fonts/GeomanistBook.ttf", 16)
     val circle = Image("/images/circle.png", filter = false)
-    val tilemap = Image("/images/autotilemap_corner.png", filter = false)
+    val tilemap = Image("/images/tilemaps/full.png", filter = false)
 
-    val tiles = listOf(
-        Vector2i(0, 1),
-        Vector2i(0, 2),
-        Vector2i(1, 0),
-        Vector2i(1, 1),
-        Vector2i(1, 2),
-        Vector2i(2, 0),
-        Vector2i(2, 1),
-        Vector2i(3, 2)
-    ).associateWith { Tilemap.Ref(0, true) }
+    val tiles = (0..100).map {
+        Vector2i(Vector2f.random() * 10f)
+    }.associateWith { Tilemap.Ref(0, true) }
 
     runtime.root.children(
         Entity(
             "background",
             Transform2D(),
-            Tilemap(Vector2f(32f), Tilemap.cornerTileset(tilemap, 0), tiles.toMutableMap())
+            Tilemap(Vector2f(32f), Tilemap.fullTileset(tilemap, 0), tiles.toMutableMap())
         ),
         Block(Vector2f(50f, 50f)),
         Block(Vector2f(75f, 50f)),

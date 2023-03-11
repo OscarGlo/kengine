@@ -11,42 +11,70 @@ import kengine.util.rectVertices
 import kengine.util.sizeof
 import org.lwjgl.opengl.GL30.*
 import kotlin.collections.Map.Entry
+import kotlin.math.pow
 
-class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: MutableMap<Vector2i, Ref>) :
-    Render(vertices(size, tileset, mapOf()), rectIndicesN(tiles.size)) {
+typealias Axes = Pair<Vector2f, Vector2f>
+
+class Tilemap(
+    val size: Vector2f,
+    private val tileset: List<Tile>,
+    val tiles: MutableMap<Vector2i, Ref>,
+    val axes: Axes = rectAxes
+) : Render(vertices(size, axes, tileset, mapOf()), rectIndicesN(tiles.size)) {
     companion object {
+        val rectAxes = Vector2f(1f, 0f) to Vector2f(0f, 1f)
+        val isoAxes = Vector2f(0.5f, -0.5f) to Vector2f(0.5f, 0.5f)
+
         const val NONE = -1
         const val ANY = -2
         const val OTHER = -3
 
-        fun edgeTileset(image: Image, id: Int) = (0..15).map {
+        private val edges = listOf(4, 6, 14, 12, 5, 7, 15, 13, 1, 3, 11, 9, 0, 2, 10, 8)
+
+        fun edgeTileset(image: Image, id: Int) = edges.mapIndexed { i, e ->
             Tile(
                 image,
-                gridUvs(4, 4, it % 4, it.floorDiv(4)),
+                gridUvs(4, 4, i % 4, i / 4),
                 intArrayOf(
-                    ANY, if (it < 8) id else OTHER, ANY,
-                    if (it % 4 > 1) id else OTHER, id, if (it % 4 in 1..2) id else OTHER,
-                    ANY, if (it in 4..11) id else OTHER, ANY
+                    ANY, if (e and 4 > 0) id else OTHER, ANY,
+                    if (e and 8 > 0) id else OTHER, id, if (e and 2 > 0) id else OTHER,
+                    ANY, if (e and 1 > 0) id else OTHER, ANY
                 )
             )
         }
 
-        private val corners = listOf(
-            listOf(1, 3, 7, 8, 9, 11, 13, 14),
-            listOf(0, 2, 3, 8, 9, 10, 11, 12),
-            listOf(5, 6, 7, 9, 10, 11, 12, 13),
-            listOf(2, 4, 6, 8, 11, 12, 13, 14)
-        )
+        private val corners = listOf(4, 3, 14, 6, 10, 7, 15, 13, 1, 9, 11, 12, 0, 2, 5, 8)
 
-        fun cornerTileset(image: Image, id: Int) = (0..15).map {
-            val c = corners.map { corner -> corner.contains(it) }
+        fun cornerTileset(image: Image, id: Int) = corners.mapIndexed { i, corner ->
+            val c = (0..3).map { j -> corner and 2.0.pow(j).toInt() > 0 }
             Tile(
                 image,
-                gridUvs(4, 4, it % 4, it.floorDiv(4)),
+                gridUvs(4, 4, i % 4, i / 4),
                 intArrayOf(
-                    if (c[0]) id else ANY, if (c[0] || c[1]) id else OTHER, if (c[1]) id else ANY,
-                    if (c[0] || c[2]) id else OTHER, id, if (c[1] || c[3]) id else OTHER,
-                    if (c[2]) id else ANY, if (c[2] || c[3]) id else OTHER, if (c[3]) id else ANY
+                    if (c[2]) id else ANY, if (c[1] || c[2]) id else OTHER, if (c[1]) id else ANY,
+                    if (c[2] || c[3]) id else OTHER, id, if (c[0] || c[1]) id else OTHER,
+                    if (c[3]) id else ANY, if (c[3] || c[0]) id else OTHER, if (c[0]) id else ANY
+                )
+            )
+        }
+
+        private val full = listOf(
+            16, 20, 84, 80, 213, 92, 116, 87, 28, 125, 124, 112,
+            17, 21, 85, 81, 29, 127, 253, 113, 31, 119, -1, 245,
+            1, 5, 69, 65, 23, 223, 247, 209, 95, 255, 221, 241,
+            0, 4, 68, 64, 117, 71, 197, 93, 7, 199, 84, 193
+        )
+
+        fun fullTileset(image: Image, id: Int) = full.mapIndexed { i, mask ->
+            val m = (0..8).map { j -> mask and 2.0.pow(j).toInt() > 0 }
+            fun fullCorner(i: Int) = if (m[i]) id else if (m[(i - 1) % 8] && m[(i + 1) % 8]) OTHER else ANY
+            Tile(
+                image,
+                gridUvs(4, 12, i % 12, i / 12),
+                intArrayOf(
+                    fullCorner(5), if (m[4]) id else OTHER, fullCorner(3),
+                    if (m[6]) id else OTHER, id, if (m[2]) id else OTHER,
+                    fullCorner(7), if (m[0]) id else OTHER, fullCorner(1)
                 )
             )
         }
@@ -54,15 +82,16 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
         private val vectorComparator = compareBy<Vector2i> { it.y }.thenBy { it.x }
         private val mapComparator: Comparator<Entry<Vector2i, Int>> = compareBy(vectorComparator) { it.key }
 
-        private fun vertices(size: Vector2f, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
+        private fun vertices(size: Vector2f, axes: Axes, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
             tileIds.entries.sortedWith(mapComparator).fold(floatArrayOf()) { acc, (pos, id) ->
-                acc + rectVertices(size, Vector2f(pos) * size, tileset[id].uv)
+                val offset = (axes.first * pos.x.toFloat() + axes.second * pos.y.toFloat()) * size
+                acc + rectVertices(size, offset, tileset[id].uv)
             }
     }
 
     class Ref(val id: Int, val auto: Boolean = false)
 
-    class Tile(val image: Image, val uv: Rect, val bitmask: IntArray? = null) {
+    class Tile(val image: Image, val uv: Rect = Rect(0f, 0f, 1f, 1f), val bitmask: IntArray? = null) {
         val type
             get() = bitmask?.getOrNull(4) ?: 0
     }
@@ -98,7 +127,7 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
     }
 
     private fun updateBuffers() {
-        arrayBuffer.store(vertices(size, tileset, tileIds))
+        arrayBuffer.store(vertices(size, axes, tileset, tileIds))
         elementBuffer.store(rectIndicesN(tileIds.size))
     }
 
@@ -135,7 +164,14 @@ class Tilemap(val size: Vector2f, private val tileset: List<Tile>, val tiles: Mu
         renderBind()
         for ((i, pos) in tileIds.keys.sortedWith(vectorComparator).withIndex()) {
             tileset[tileIds[pos]!!].image.bind()
-            glDrawRangeElements(GL_TRIANGLES, i * 6, i * 6 + 6, 6, GL_UNSIGNED_INT, (i * 6).toLong() * sizeof(GL_UNSIGNED_INT))
+            glDrawRangeElements(
+                GL_TRIANGLES,
+                i * 6,
+                i * 6 + 6,
+                6,
+                GL_UNSIGNED_INT,
+                (i * 6).toLong() * sizeof(GL_UNSIGNED_INT)
+            )
         }
     }
 }
