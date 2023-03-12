@@ -32,14 +32,14 @@ class Image(private val image: BufferedImage, bpp: Int = 4, private val filter: 
         it.flip()
     }
 
-    private var texture by Delegates.notNull<Int>()
+    private var id by Delegates.notNull<Int>()
     private var isInit = false
 
     fun init() {
         if (isInit) return
 
         isInit = true
-        texture = glGenTextures().also {
+        id = glGenTextures().also {
             glBindTexture(GL_TEXTURE_2D, it)
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
@@ -57,7 +57,7 @@ class Image(private val image: BufferedImage, bpp: Int = 4, private val filter: 
         }
     }
 
-    fun bind() = glBindTexture(GL_TEXTURE_2D, texture)
+    fun bind() = glBindTexture(GL_TEXTURE_2D, id)
 
     fun save(path: String) = ImageIO.write(image, "png", File(path))
 }
