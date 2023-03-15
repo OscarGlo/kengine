@@ -35,7 +35,7 @@ fun terminateError(message: String): Nothing {
 fun rectVertices(
     size: Vector2f,
     offset: Vector2f = Vector2f(0f, 0f),
-    uv: Rect = Rect(0f, 0f, 1f, 1f)
+    uv: Rect = Rect.one()
 ): FloatArray {
     val w = size.x / 2
     val h = size.y / 2
@@ -57,7 +57,7 @@ fun ellipseVertices(
     size: Vector2f,
     count: Int,
     offset: Vector2f = Vector2f(0f, 0f),
-    uv: Rect = Rect(0f, 0f, 1f, 1f)
+    uv: Rect = Rect.one()
 ): FloatArray {
     val uvCenter = Vector2f(uv.x1 + uv.x2 / 2f, uv.y1 + uv.y2 / 2f)
     val uvSize = uv.size / 2f

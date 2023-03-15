@@ -199,6 +199,13 @@ class Color(r: Float, g: Float, b: Float, a: Float = 1f) :
 
 class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
     Vector<Four, Float, Rect>(Float::class, Rect::class, x1, y1, x2, y2) {
+    constructor(v1: Vector<Two, *, *>, v2: Vector<Two, *, *> = v1) : this(v1[0].to(), v1[1].to(), v2[0].to(), v2[1].to())
+
+    companion object {
+        fun zero() = Rect(0f, 0f, 0f, 0f)
+        fun one() = Rect(0f, 0f, 1f, 1f)
+    }
+
     var x1 by Component(0)
     var y1 by Component(1)
     var x2 by Component(2)
@@ -209,4 +216,6 @@ class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
 
     val size get() = Vector2f(x2 - x1, y2 - y1)
     val center get() = start + size / 2f
+
+    operator fun contains(v: Vector2f) = v.x in x1..x2 && v.y in y1..y2
 }

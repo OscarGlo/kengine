@@ -1,6 +1,5 @@
 package kengine.entity.components.render
 
-import kengine.entity.components.render.image.ImageRender
 import kengine.math.Rect
 import kengine.math.Vector2f
 import kengine.math.Vector2i
@@ -8,8 +7,6 @@ import kengine.objects.gl.Image
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
-import kengine.util.sizeof
-import org.lwjgl.opengl.GL30.*
 import kotlin.collections.Map.Entry
 import kotlin.math.pow
 
@@ -67,7 +64,7 @@ class Tilemap(
 
         fun fullTileset(image: Image, id: Int) = full.mapIndexed { i, mask ->
             if (mask == -1)
-                return@mapIndexed Tile(image, Rect(0f, 0f, 0f, 0f))
+                return@mapIndexed Tile(image, Rect.zero())
 
             val m = (0..8).map { j -> mask and 2.0.pow(j).toInt() > 0 }
             fun fullCorner(i: Int) = if (m[i]) id else if (m[(i - 1) % 8] && m[(i + 1) % 8]) OTHER else ANY
@@ -94,12 +91,10 @@ class Tilemap(
 
     class Ref(val id: Int, val auto: Boolean = false)
 
-    class Tile(val image: Image, val uv: Rect = Rect(0f, 0f, 1f, 1f), val bitmask: IntArray? = null) {
+    class Tile(val image: Image, val uv: Rect = Rect.one(), val bitmask: IntArray? = null) {
         val type
             get() = bitmask?.getOrNull(4) ?: NONE
     }
-
-    override fun getShader() = ImageRender.shader
 
     private val tileIds = mutableMapOf<Vector2i, Int>()
     private val bitmaskCache = mutableMapOf<Vector2i, IntArray>()
@@ -162,19 +157,8 @@ class Tilemap(
         match && (id == i2 || id == ANY || i2 == ANY || (id == OTHER && i2 != type) || (i2 == OTHER && id != type))
     }
 
-    override fun render() {
-        if (!visible) return
-        renderBind()
-        for ((i, pos) in tileIds.keys.sortedWith(vectorComparator).withIndex()) {
-            tileset[tileIds[pos]!!].image.bind()
-            glDrawRangeElements(
-                GL_TRIANGLES,
-                i * 6,
-                i * 6 + 6,
-                6,
-                GL_UNSIGNED_INT,
-                (i * 6).toLong() * sizeof(GL_UNSIGNED_INT)
-            )
-        }
+    override fun renderSteps() {
+        for (pos in tileIds.keys.sortedWith(vectorComparator))
+            textured(2, tileset[tileIds[pos]!!].image)
     }
 }

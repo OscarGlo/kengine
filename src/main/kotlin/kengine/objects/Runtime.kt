@@ -27,6 +27,8 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         window.init()
         window.listeners.add(this)
 
+        Render.init()
+
         root.forEachComponentRec<Entity.Component> {
             it.root = root
             it.initialize()

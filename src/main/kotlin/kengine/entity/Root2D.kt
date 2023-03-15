@@ -7,7 +7,7 @@ import kengine.math.Vector3f
 import kengine.objects.gl.Window
 import kengine.util.Event
 
-class Root2D(window: Window) : Entity("") {
+class Root2D(val window: Window) : Entity("") {
     class RootTransform(val viewMatrix: Matrix4) : Transform2D() {
         var currentCamera: Camera2D? = null
 

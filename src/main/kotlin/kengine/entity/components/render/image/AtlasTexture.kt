@@ -1,5 +1,6 @@
 package kengine.entity.components.render.image
 
+import kengine.entity.components.render.Render
 import kengine.math.Color
 import kengine.math.Rect
 import kengine.math.Vector2f
@@ -9,9 +10,9 @@ import kengine.util.rectVertices
 import kengine.util.terminateError
 
 open class AtlasTexture(
-    image: Image, uvs: List<Rect>, color: Color = Color.white
-) : ImageRender(
-    image, genVertices(image, uvs[0]), rectIndices, color
+    image: Image, uvs: List<Rect>, val color: Color = Color.white
+) : Render(
+    genVertices(image, uvs[0]), rectIndices, image
 ) {
     companion object {
         fun genVertices(image: Image, uv: Rect) = rectVertices(
@@ -19,7 +20,7 @@ open class AtlasTexture(
         )
     }
 
-    private val verticesCache = uvs.map { genVertices(image, it) }
+    private val verticesCache = uvs.map { genVertices(images[0], it) }
 
     val frameCount = uvs.size
     var frame = 0
@@ -28,4 +29,6 @@ open class AtlasTexture(
             arrayBuffer.store(verticesCache[f])
             field = f
         }
+
+    override fun renderSteps() = textured(2, images[0], color)
 }

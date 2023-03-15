@@ -1,5 +1,6 @@
 import kengine.entity.Entity
 import kengine.entity.components.Camera2D
+import kengine.entity.components.Script
 import kengine.entity.components.Transform2D
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
@@ -7,7 +8,8 @@ import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
 import kengine.entity.components.render.RectRender
 import kengine.entity.components.render.Tilemap
-import kengine.entity.components.render.image.Text
+import kengine.entity.components.render.gui.*
+import kengine.entity.components.render.gui.input.Button
 import kengine.entity.components.render.image.Texture
 import kengine.math.Color
 import kengine.math.Vector2f
@@ -17,6 +19,7 @@ import kengine.objects.Font
 import kengine.objects.Runtime
 import kengine.objects.gl.Image
 import kengine.objects.gl.Window
+import kengine.util.Event
 import kengine.util.Resource
 import java.util.*
 
@@ -90,9 +93,29 @@ fun main() {
         ),
         Entity(
             "fps",
-            Transform2D(true),
-            Text(font, "0 fps"),
-            FpsCounter(window)
+            Text(Resource.getString("fps").format(0f))
+                .with(Theme().also { it.font = font })
+                .with(UINode.Position(top = 5f, left = 5f)),
+            FpsCounter()
+        ),
+        Entity(
+            "window",
+            UIWindow(Vector2f(100f, 200f), "Window").with(UINode.Position(left = 20f))
+        ).children(
+            Entity(
+                "button",
+                Button(Vector2f(80f, 20f), "Button")
+                    .with(UINode.Position(top = 25f)),
+                object : Script() {
+                    lateinit var button: Button
+
+                    @Event.Listener(Button.PressedEvent::class)
+                    fun onButtonPressed(evt: Button.PressedEvent) {
+                        if (evt.button == button)
+                            println("hi :)")
+                    }
+                }
+            )
         )
     )
 

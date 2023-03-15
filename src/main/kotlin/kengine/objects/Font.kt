@@ -4,6 +4,7 @@ import kengine.math.Rect
 import kengine.objects.gl.Image
 import kengine.util.Resource
 import java.awt.Color
+import java.awt.FontMetrics
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.net.URL
@@ -24,6 +25,8 @@ class Font(url: URL, val size: Int) {
     val characterBounds = mutableMapOf<Int, Rect>()
     val texture: Image
 
+    val metrics: FontMetrics
+
     init {
         val res = url.openStream()
         font = cache.getOrPut(url) {
@@ -37,7 +40,7 @@ class Font(url: URL, val size: Int) {
 
         val printable = (0..font.numGlyphs).count(font::canDisplay)
 
-        val metrics = tmpGfx.fontMetrics
+        metrics = tmpGfx.fontMetrics
         val lineHeight = (metrics.height * V_STRETCH).toInt()
 
         val minWidth = sqrt(printable.toDouble()) * font.size

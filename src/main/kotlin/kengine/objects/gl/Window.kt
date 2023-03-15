@@ -33,6 +33,7 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         }
 
     var size = size; private set
+    var mousePosition = Vector2f()
 
     fun init() {
         if (id != -1L) return
@@ -107,7 +108,8 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         }
 
         glfwSetCursorPosCallback(id) { _, x, y ->
-            notify(MouseMoveEvent(Vector2f(x.toFloat(), y.toFloat())))
+            mousePosition = Vector2f(x.toFloat(), size.y - y.toFloat()) - Vector2f(size) / 2f
+            notify(MouseMoveEvent(mousePosition))
         }
     }
 }
