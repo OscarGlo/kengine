@@ -135,6 +135,7 @@ class Vector2f(x: Float, y: Float) : Vector2<Float, Vector2f>(Float::class, Vect
 
     companion object {
         fun random() = Vector2f(Random.nextFloat(), Random.nextFloat())
+        fun randomSigned() = Vector2f(Random.nextFloatSigned(), Random.nextFloatSigned())
     }
 }
 
