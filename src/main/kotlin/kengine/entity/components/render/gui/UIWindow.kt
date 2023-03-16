@@ -31,7 +31,7 @@ class UIWindow(size: Vector2f, var title: String = "") :
     override fun renderSteps() {
         colored(2, theme.backgroundColor)
         colored(8, theme.accentColor)
-        textured(2 * title.length, theme.font.texture, theme.textColor)
+        text(title)
     }
 
     var dragging = false

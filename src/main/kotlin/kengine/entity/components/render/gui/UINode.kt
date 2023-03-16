@@ -81,4 +81,6 @@ abstract class UINode(
         val bounds = bounds()
         return root.transform.rootViewport(true) * Matrix4().translate(Vector3f(bounds.center.x, bounds.center.y, 0f))
     }
+
+    fun text(s: String) = textured(2 * s.length, theme.font.texture, theme.textColor)
 }

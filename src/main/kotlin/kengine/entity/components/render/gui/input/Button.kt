@@ -45,6 +45,6 @@ class Button(size: Vector2f, val text: String) :
 
     override fun renderSteps() {
         colored(2, if (pressed) theme.activeColor else theme.accentColor)
-        textured(2 * text.length, theme.font.texture, theme.textColor)
+        text(text)
     }
 }

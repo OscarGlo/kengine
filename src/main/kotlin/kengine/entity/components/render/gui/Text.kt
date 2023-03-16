@@ -73,5 +73,5 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
         return root.transform.rootViewport(true) * Matrix4().translate(Vector3f(bounds.x1, bounds.y1, 0f))
     }
 
-    override fun renderSteps() = textured(2 * text.length, theme.font.texture)
+    override fun renderSteps() = text(text)
 }
