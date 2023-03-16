@@ -12,6 +12,7 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         fun attach(e: Entity) = apply { entity = e }
 
         open fun initialize() {}
+        open fun update(delta: Double, time: Double) {}
     }
 
     private val children = mutableMapOf<String, Entity>()

@@ -44,7 +44,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
 
         // Updates
         root.forEachComponentRec<Body2D> { it.physicsUpdate(delta) }
-        root.forEachComponentRec<Script> { it.update(delta, time) }
+        root.forEachComponentRec<Entity.Component> { it.update(delta, time) }
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT)
