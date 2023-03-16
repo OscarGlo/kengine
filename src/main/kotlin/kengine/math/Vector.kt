@@ -218,4 +218,6 @@ class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
     val center get() = start + size / 2f
 
     operator fun contains(v: Vector2f) = v.x in x1..x2 && v.y in y1..y2
+
+    fun randomPoint() = Vector2f(Random.nextFloat() * (x2 - x1) + x1, Random.nextFloat() * (y2 - y1) + y1)
 }
