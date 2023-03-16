@@ -6,15 +6,13 @@ import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
+import kengine.entity.components.render.ParticleSpawner
 import kengine.entity.components.render.RectRender
 import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.gui.*
 import kengine.entity.components.render.gui.input.Button
 import kengine.entity.components.render.image.Texture
-import kengine.math.Color
-import kengine.math.Vector2f
-import kengine.math.Vector2i
-import kengine.math.Vector3f
+import kengine.math.*
 import kengine.objects.Font
 import kengine.objects.Runtime
 import kengine.objects.gl.Image
@@ -84,8 +82,19 @@ fun main() {
         Entity(
             "player",
             Transform2D().apply { matrix.translate(Vector3f(100f, 100f, 0f)) },
+            ParticleSpawner(
+                0.05,
+                0.5,
+                4f,
+                Color.white,
+                Vector2f(0f),
+                Vector2f(0f, -200f),
+                Rect(-10f, -10f, 10f, 10f),
+                endColor = Color(0f, 0f),
+                sizeDelta = 1.5f,
+                initialVelocityDelta = Vector2f(100f)
+            ),
             Texture(circle),
-            //RectCollider(Vector2f(circle.size)),
             CircleCollider(circle.size.x / 2f),
             Camera2D(true),
             Body2D(),

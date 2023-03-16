@@ -2,7 +2,6 @@ package kengine.objects
 
 import kengine.entity.Entity
 import kengine.entity.Root2D
-import kengine.entity.components.Script
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Render
 import kengine.objects.gl.Window
@@ -14,7 +13,7 @@ import org.lwjgl.opengl.GL30.glClear
 
 class Runtime(private val window: Window, var vSync: Boolean = true): Event.Manager() {
     companion object {
-        private fun doubleTime() = System.nanoTime() / 1_000_000_000.0
+        fun doubleTime() = System.nanoTime() / 1_000_000_000.0
     }
 
     val root = Root2D(window)
