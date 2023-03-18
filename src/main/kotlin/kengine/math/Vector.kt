@@ -88,6 +88,9 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     }
 
     @Suppress("UNCHECKED_CAST")
+    fun interpolate(other: Vector<*, *, *>, percent: Double) = this * (1 - percent).to(numClass) + (other as V) * percent.to(numClass)
+
+    @Suppress("UNCHECKED_CAST")
     fun distance(other: V) = (other - this as V).length()
 
     // MUTABLE

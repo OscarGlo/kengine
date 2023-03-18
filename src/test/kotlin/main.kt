@@ -1,13 +1,12 @@
 import kengine.entity.Entity
+import kengine.entity.components.Animator
 import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
 import kengine.entity.components.Transform2D
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
-import kengine.entity.components.physics.RectCollider
 import kengine.entity.components.render.Ellipse
 import kengine.entity.components.render.ParticleSpawner
-import kengine.entity.components.render.RectRender
 import kengine.entity.components.render.Tilemap
 import kengine.entity.components.render.gui.*
 import kengine.entity.components.render.gui.input.Button
@@ -20,23 +19,6 @@ import kengine.objects.gl.Window
 import kengine.util.Event
 import kengine.util.Resource
 import java.util.*
-
-class Block(pos: Vector2f) : Entity(
-    "Block$count",
-    Transform2D().apply { matrix.position = Vector3f(pos) },
-    RectRender(Vector2f(25f), Color(0.5f, 0.2f, 0.8f, 0.5f)),
-    RectCollider(Vector2f(25f)),
-    Body2D(true)
-) {
-    companion object {
-        var count = 0
-            get() {
-                val tmp = field
-                field++
-                return tmp
-            }
-    }
-}
 
 fun main() {
     Resource.localPath = "src/test/resources"
@@ -64,20 +46,18 @@ fun main() {
             Transform2D(),
             Tilemap(Vector2f(32f), Tilemap.fullTileset(tilemap, 0), tiles.toMutableMap())
         ),
-        Block(Vector2f(50f, 50f)),
-        Block(Vector2f(75f, 50f)),
-        Block(Vector2f(100f, 50f)),
-        Block(Vector2f(125f, 50f)),
-        Block(Vector2f(150f, 50f)),
-        Block(Vector2f(150f, 75f)),
-        Block(Vector2f(150f, 100f)),
-        Block(Vector2f(150f, 125f)),
         Entity(
             "circle",
             Transform2D().apply { matrix.translate(Vector3f(25f, 0f, 0f)) },
             Ellipse(Vector2f(50f, 50f), 32, Color(0.5f, 0.2f, 0.8f, 0.5f)),
             CircleCollider(25f),
-            Body2D(true)
+            Body2D(true),
+            Animator(
+                Animator.Animation({ get<Transform2D>().matrix }, Matrix4::position, 1.0, listOf(
+                    Animator.Keyframe(0.0, Vector3f(0f)),
+                    Animator.Keyframe(0.5, Vector3f(100f, 100f, 0f))
+                ))
+            )
         ),
         Entity(
             "player",
