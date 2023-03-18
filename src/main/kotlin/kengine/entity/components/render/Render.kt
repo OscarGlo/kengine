@@ -76,7 +76,7 @@ abstract class Render(
         triangles(i)
     }
 
-    fun render() {
+    open fun render() {
         if (!visible) return
 
         vertexArray.bind()
