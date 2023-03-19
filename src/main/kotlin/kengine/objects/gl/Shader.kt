@@ -48,7 +48,7 @@ class Shader(private vararg val steps: Pair<Int, String>) {
         glUniformMatrix4fv(loc, false, mat.toBuffer())
     }
 
-    operator fun <V : Vector<Four, Float, V>> set(name: String, value: V) = set(name, value) { loc, vec ->
+    operator fun set(name: String, value: Vector<Four, Float, *>) = set(name, value) { loc, vec ->
         glUniform4f(loc, vec[0], vec[1], vec[2], vec[3])
     }
 }
