@@ -62,8 +62,8 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 - **Optimization**
   - Collisions
+  - Fix input handling lag
 
 
 - **New features**
-  - Perlin / Simplex noise generation
   - Scenes + scene switching
