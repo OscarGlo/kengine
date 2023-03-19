@@ -33,10 +33,12 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     }
 
     fun children(vararg entities: Entity) = apply {
-        entities.forEach {
-            it.parent = this
-            children[it.id] = it
-        }
+        entities.forEach { add(it) }
+    }
+
+    fun add(entity: Entity) {
+        entity.parent = this
+        children[entity.id] = entity
     }
 
     fun forEach(fn: (Entity) -> Unit) {
