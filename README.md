@@ -39,6 +39,10 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 ## //TODO
 
+- `Window`
+  - Custom cursor
+
+
 - `Tilemap`
   - Use entity transform
   - Z-sorting / overflow

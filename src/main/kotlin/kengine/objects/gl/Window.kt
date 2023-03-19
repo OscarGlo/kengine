@@ -3,6 +3,7 @@ package kengine.objects.gl
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i
+import kengine.objects.gl.Window.Cursor.Companion.arrow
 import kengine.util.Event
 import kengine.util.glBool
 import kengine.util.terminateError
@@ -25,6 +26,29 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     class MouseButtonEvent(val button: Int, val action: Int, val mods: Int) : Event()
     class MouseMoveEvent(val position: Vector2f) : Event()
 
+    abstract class Cursor {
+        companion object {
+            val arrow = StandardCursor(GLFW_ARROW_CURSOR)
+            val ibeam = StandardCursor(GLFW_IBEAM_CURSOR)
+            val crosshair = StandardCursor(GLFW_CROSSHAIR_CURSOR)
+            val hand = StandardCursor(GLFW_HAND_CURSOR)
+            val hresize = StandardCursor(GLFW_HRESIZE_CURSOR)
+            val vresize = StandardCursor(GLFW_VRESIZE_CURSOR)
+        }
+
+        var id = -1L; protected set
+        abstract fun init()
+    }
+
+    class StandardCursor(val shape: Int) : Cursor() {
+        override fun init() {
+            id = glfwCreateStandardCursor(shape)
+        }
+    }
+
+    var size = size; private set
+    var mousePosition = Vector2f()
+
     var clearColor = Color.black
         set(c) {
             if (id != -1L)
@@ -32,14 +56,27 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
             field = c
         }
 
-    var size = size; private set
-    var mousePosition = Vector2f()
+    var cursor = arrow
+        set(c) {
+            field = c
+            if (id != -1L)
+                glfwSetCursor(id, c.id)
+        }
+
+    var cursorMode = GLFW_CURSOR_NORMAL
+        set(mode) {
+            field = mode
+            if (id != -1L)
+                glfwSetInputMode(id, GLFW_CURSOR, mode)
+        }
 
     var fullscreen = false
         set(f) {
             field = f
-            if (f) maximize()
-            else minimize()
+            if (id != -1L) {
+                if (f) maximize()
+                else minimize()
+            }
         }
 
     fun init() {
@@ -68,8 +105,12 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
 
         glViewport(0, 0, size.x, size.y)
 
-        // Update clear color
+        // Update properties
         clearColor = clearColor
+        cursor = cursor
+        cursorMode = cursorMode
+        fullscreen = fullscreen
+
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
