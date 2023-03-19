@@ -39,10 +39,6 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 ## //TODO
 
-- `Window`
-  - Change default fullscreen / quit implementations into methods
-
-
 - `Tilemap`
   - Use entity transform
   - Z-sorting / overflow
@@ -53,6 +49,7 @@ as good as possible. The engine architecture is an entity-component tree similar
 - `UIWindow`
   - User resize
   - Configure resizable, draggable
+  - Limit position to viewport bounds
 
 
 - `Animator`

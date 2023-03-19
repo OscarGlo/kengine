@@ -23,7 +23,7 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     class ResizeEvent(val size: Vector2i) : Event()
     class KeyEvent(val key: Int, val code: Int, val action: Int, val mods: Int) : Event()
     class MouseButtonEvent(val button: Int, val action: Int, val mods: Int) : Event()
-    class MouseMoveEvent(val pos: Vector2f) : Event()
+    class MouseMoveEvent(val position: Vector2f) : Event()
 
     var clearColor = Color.black
         set(c) {
@@ -34,6 +34,13 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
 
     var size = size; private set
     var mousePosition = Vector2f()
+
+    var fullscreen = false
+        set(f) {
+            field = f
+            if (f) maximize()
+            else minimize()
+        }
 
     fun init() {
         if (id != -1L) return
@@ -61,45 +68,18 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
 
         glViewport(0, 0, size.x, size.y)
 
-        glfwSetWindowSizeCallback(id) { _, w, h ->
-            this.size = Vector2i(w, h)
-            glViewport(0, 0, w, h)
-
-            notify(ResizeEvent(this.size))
-        }
-
         // Update clear color
         clearColor = clearColor
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        val prevPosX = BufferUtils.createIntBuffer(1)
-        val prevPosY = BufferUtils.createIntBuffer(1)
-        val prevSizeX = BufferUtils.createIntBuffer(1)
-        val prevSizeY = BufferUtils.createIntBuffer(1)
-        var fullscreen = false
+        glfwSetWindowSizeCallback(id) { _, w, h ->
+            size = Vector2i(w, h)
+            glViewport(0, 0, w, h)
+            notify(ResizeEvent(size))
+        }
 
         glfwSetKeyCallback(id) { _, key, scancode, action, mods ->
-            if (action == GLFW_PRESS) when (key) {
-                GLFW_KEY_ESCAPE -> glfwSetWindowShouldClose(id, true)
-                GLFW_KEY_F -> {
-                    if (fullscreen) {
-                        glfwSetWindowPos(id, prevPosX[0], prevPosY[0])
-                        glfwSetWindowSize(id, prevSizeX[0], prevSizeY[0])
-                    } else {
-                        val monitor = glfwGetPrimaryMonitor()
-                        val mode = glfwGetVideoMode(monitor)!!
-
-                        glfwGetWindowPos(id, prevPosX, prevPosY)
-                        glfwGetWindowSize(id, prevSizeX, prevSizeY)
-
-                        glfwSetWindowPos(id, 0, 0)
-                        glfwSetWindowSize(id, mode.width(), mode.height())
-                    }
-                    fullscreen = !fullscreen
-                }
-            }
-
             notify(KeyEvent(key, scancode, action, mods))
         }
 
@@ -112,4 +92,27 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
             notify(MouseMoveEvent(mousePosition))
         }
     }
+
+    private val prevPosX: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevPosY: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevSizeX: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevSizeY: IntBuffer = BufferUtils.createIntBuffer(1)
+
+    fun maximize() {
+        val monitor = glfwGetPrimaryMonitor()
+        val mode = glfwGetVideoMode(monitor)!!
+
+        glfwGetWindowPos(id, prevPosX, prevPosY)
+        glfwGetWindowSize(id, prevSizeX, prevSizeY)
+
+        glfwSetWindowPos(id, 0, 0)
+        glfwSetWindowSize(id, mode.width(), mode.height())
+    }
+
+    fun minimize() {
+        glfwSetWindowPos(id, prevPosX[0], prevPosY[0])
+        glfwSetWindowSize(id, prevSizeX[0], prevSizeY[0])
+    }
+
+    fun close() = glfwSetWindowShouldClose(id, true)
 }

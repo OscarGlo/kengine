@@ -51,8 +51,8 @@ class UIWindow(size: Vector2f, var title: String = "") :
     @Event.Listener(Window.MouseMoveEvent::class)
     fun onMouseMove(evt: Window.MouseMoveEvent) {
         if (dragging) {
-            offset += evt.pos - prevMouse
-            prevMouse = evt.pos
+            offset += evt.position - prevMouse
+            prevMouse = evt.position
         }
     }
 }
