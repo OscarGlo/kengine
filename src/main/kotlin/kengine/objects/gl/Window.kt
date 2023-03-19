@@ -17,9 +17,36 @@ import org.lwjgl.opengl.GL30.*
 import org.lwjgl.system.MemoryUtil.NULL
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 class Window(size: Vector2i, private val title: String, private val resizable: Boolean = true) : Event.Manager() {
     var id: Long = -1L
+
+    class RequiresInit<V>(val default: V, private val setter: (value: V) -> Unit) : ReadWriteProperty<Window, V> {
+        companion object {
+            val properties = mutableListOf<RequiresInit<*>>()
+        }
+
+        private var cache = default
+
+        init {
+            properties.add(this)
+        }
+
+        fun init() {
+            if (cache != default)
+                setter(cache)
+        }
+
+        override fun getValue(thisRef: Window, property: KProperty<*>) = cache
+
+        override fun setValue(thisRef: Window, property: KProperty<*>, value: V) {
+            if (thisRef.id != -1L)
+                setter(value)
+            cache = value
+        }
+    }
 
     class ResizeEvent(val size: Vector2i) : Event()
     class KeyEvent(val key: Int, val code: Int, val action: Int, val mods: Int) : Event()
@@ -28,6 +55,8 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
 
     abstract class Cursor {
         companion object {
+            val cursors = mutableListOf<Cursor>()
+
             val arrow = StandardCursor(GLFW_ARROW_CURSOR)
             val ibeam = StandardCursor(GLFW_IBEAM_CURSOR)
             val crosshair = StandardCursor(GLFW_CROSSHAIR_CURSOR)
@@ -37,6 +66,11 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         }
 
         var id = -1L; protected set
+
+        init {
+            cursors.add(this)
+        }
+
         abstract fun init()
     }
 
@@ -49,35 +83,15 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     var size = size; private set
     var mousePosition = Vector2f()
 
-    var clearColor = Color.black
-        set(c) {
-            if (id != -1L)
-                glClearColor(c.r, c.g, c.b, c.a)
-            field = c
-        }
+    var clearColor by RequiresInit(Color.black) { glClearColor(it.r, it.g, it.b, it.a) }
+    var cursor by RequiresInit(arrow) { glfwSetCursor(id, it.id) }
+    var cursorMode by RequiresInit(GLFW_CURSOR_NORMAL) { glfwSetInputMode(id, GLFW_CURSOR, it) }
+    var fullscreen by RequiresInit(false) { if (it) maximize() else minimize() }
 
-    var cursor = arrow
-        set(c) {
-            field = c
-            if (id != -1L)
-                glfwSetCursor(id, c.id)
-        }
-
-    var cursorMode = GLFW_CURSOR_NORMAL
-        set(mode) {
-            field = mode
-            if (id != -1L)
-                glfwSetInputMode(id, GLFW_CURSOR, mode)
-        }
-
-    var fullscreen = false
-        set(f) {
-            field = f
-            if (id != -1L) {
-                if (f) maximize()
-                else minimize()
-            }
-        }
+    private val prevPosX: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevPosY: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevSizeX: IntBuffer = BufferUtils.createIntBuffer(1)
+    private val prevSizeY: IntBuffer = BufferUtils.createIntBuffer(1)
 
     fun init() {
         if (id != -1L) return
@@ -105,11 +119,11 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
 
         glViewport(0, 0, size.x, size.y)
 
-        // Update properties
-        clearColor = clearColor
-        cursor = cursor
-        cursorMode = cursorMode
-        fullscreen = fullscreen
+        glfwGetWindowPos(id, prevPosX, prevPosY)
+        glfwGetWindowSize(id, prevSizeX, prevSizeY)
+
+        Cursor.cursors.forEach { it.init() }
+        RequiresInit.properties.forEach { it.init() }
 
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -133,11 +147,6 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
             notify(MouseMoveEvent(mousePosition))
         }
     }
-
-    private val prevPosX: IntBuffer = BufferUtils.createIntBuffer(1)
-    private val prevPosY: IntBuffer = BufferUtils.createIntBuffer(1)
-    private val prevSizeX: IntBuffer = BufferUtils.createIntBuffer(1)
-    private val prevSizeY: IntBuffer = BufferUtils.createIntBuffer(1)
 
     fun maximize() {
         val monitor = glfwGetPrimaryMonitor()
