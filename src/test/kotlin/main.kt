@@ -53,10 +53,14 @@ fun main() {
             CircleCollider(25f),
             Body2D(true),
             Animator(
-                Animator.Animation({ get<Transform2D>().matrix }, Matrix4::position, 1.0, listOf(
-                    Animator.Keyframe(0.0, Vector3f(0f)),
-                    Animator.Keyframe(0.5, Vector3f(100f, 100f, 0f))
-                ))
+                Animator.Animation(
+                    { get<Transform2D>().matrix }, 1.0, true, true,
+                    Animator.PropertyAnimation(
+                        Matrix4::position,
+                        Animator.SimpleBezierKeyframe(Vector3f(0f), 0.0, -0.2, 0.2),
+                        Animator.SimpleBezierKeyframe(Vector3f(100f, 100f, 0f), 0.5, -0.2,0.2)
+                    )
+                )
             )
         ),
         Entity(

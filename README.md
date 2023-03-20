@@ -39,6 +39,10 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 ## //TODO
 
+- `Component`
+  - Component compatibility / requirements
+
+
 - `Window`
   - Custom cursor
 
@@ -54,11 +58,6 @@ as good as possible. The engine architecture is an entity-component tree similar
   - User resize
   - Configure resizable, draggable
   - Limit position to viewport bounds
-
-
-- `Animator`
-  - Add more interpolation types
-  - Configure looping
 
 
 - **Optimization**
