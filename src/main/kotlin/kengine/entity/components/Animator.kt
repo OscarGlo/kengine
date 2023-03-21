@@ -5,24 +5,35 @@ import kengine.math.*
 import kengine.util.numPlus
 import kengine.util.numTimes
 import kengine.util.terminateError
+import kotlin.math.pow
+import kotlin.math.sqrt
 import kotlin.reflect.KMutableProperty1
 
 typealias Tangent<V> = Pair<V, Double>
 
+object Shaping {
+    val linear = { t: Double -> t }
+    val smoothstep = { t: Double -> 3 * t.pow(2) - 2 * t.pow(3) }
+    fun pow(n: Double) = { t: Double -> t.pow(n) }
+    val sqrt = { t: Double -> sqrt(t) }
+}
+
 class Animator(vararg val animations: Animation<*>) : Entity.Component() {
-    open class Keyframe<V : Any>(val value: V, val time: Double) {
+    open class Keyframe<V : Any>(val value: V, val time: Double, val damping: (Double) -> Double = Shaping.linear) {
         open fun interpolate(next: Keyframe<V>, delta: Double): V {
-            if (next is BezierKeyframe) return next.interpolate(this, 1 - delta)
+            val d = next.damping(delta)
+
+            if (next is BezierKeyframe)
+                return next.interpolate(this, 1 - d)
 
             if (value is Number && next.value is Number) {
-                val prevPart = value.numTimes(1 - delta)
-                val nextPart = next.value.numTimes(delta)
+                val prevPart = value.numTimes(1 - d)
+                val nextPart = next.value.numTimes(d)
 
                 return prevPart.numPlus(nextPart)
             } else if (value is Vector<*, *, *> && next.value is Vector<*, *, *>) {
-                println(value.interpolate(next.value, delta))
                 @Suppress("UNCHECKED_CAST")
-                return value.interpolate(next.value, delta) as V
+                return value.interpolate(next.value, d) as V
             }
 
             terminateError("Cannot interpolate between ${value::class.simpleName} and ${next.value::class.simpleName}")

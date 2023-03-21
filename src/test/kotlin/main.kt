@@ -1,8 +1,5 @@
 import kengine.entity.Entity
-import kengine.entity.components.Animator
-import kengine.entity.components.Camera2D
-import kengine.entity.components.Script
-import kengine.entity.components.Transform2D
+import kengine.entity.components.*
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.render.Ellipse
@@ -57,8 +54,8 @@ fun main() {
                     { get<Transform2D>().matrix }, 1.0, true, true,
                     Animator.PropertyAnimation(
                         Matrix4::position,
-                        Animator.SimpleBezierKeyframe(Vector3f(0f), 0.0, -0.2, 0.2),
-                        Animator.SimpleBezierKeyframe(Vector3f(100f, 100f, 0f), 0.5, -0.2,0.2)
+                        Animator.Keyframe(Vector3f(0f), 0.0, Shaping.smoothstep),
+                        Animator.Keyframe(Vector3f(100f, 100f, 0f), 0.5, Shaping.smoothstep)
                     )
                 )
             )
