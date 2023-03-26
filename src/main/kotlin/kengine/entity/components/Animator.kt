@@ -75,7 +75,7 @@ class Animator(vararg val animations: Animation<*>) : Entity.Component() {
         }
     }
 
-    class SimpleBezierKeyframe<V : Any>(value: V, time: Double, before: Double, after: Double) :
+    class SimpleBezierKeyframe<V : Any>(value: V, time: Double, before: Double, after: Double = before) :
         BezierKeyframe<V>(value, time, value to before, value to after)
 
     class Animation<T : Any>(

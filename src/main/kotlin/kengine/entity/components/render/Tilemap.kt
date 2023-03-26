@@ -1,8 +1,7 @@
 package kengine.entity.components.render
 
-import kengine.math.Rect
-import kengine.math.Vector2f
-import kengine.math.Vector2i
+import kengine.entity.components.Transform2D
+import kengine.math.*
 import kengine.objects.gl.Image
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
@@ -16,8 +15,9 @@ class Tilemap(
     val size: Vector2f,
     private val tileset: List<Tile>,
     val tiles: MutableMap<Vector2i, Ref>,
-    val axes: Axes = rectAxes
-) : Render(vertices(size, axes, tileset, mapOf()), rectIndicesN(tiles.size)) {
+    val bounds: Rect = Rect(Vector2f(), size),
+    val axes: Axes = rectAxes,
+) : Render(vertices(size, bounds, axes, tileset, mapOf()), rectIndicesN(tiles.size)) {
     companion object {
         val rectAxes = Vector2f(1f, 0f) to Vector2f(0f, 1f)
         val isoAxes = Vector2f(0.5f, -0.5f) to Vector2f(0.5f, 0.5f)
@@ -79,13 +79,13 @@ class Tilemap(
             )
         }
 
-        private val vectorComparator = compareBy<Vector2i> { it.y }.thenBy { it.x }
+        private val vectorComparator = compareByDescending<Vector2i> { it.y }.thenBy { it.x }
         private val mapComparator: Comparator<Entry<Vector2i, Int>> = compareBy(vectorComparator) { it.key }
 
-        private fun vertices(size: Vector2f, axes: Axes, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
+        private fun vertices(size: Vector2f, bounds: Rect, axes: Axes, tileset: List<Tile>, tileIds: Map<Vector2i, Int>) =
             tileIds.entries.sortedWith(mapComparator).fold(floatArrayOf()) { acc, (pos, id) ->
-                val offset = (axes.first * pos.x.toFloat() + axes.second * pos.y.toFloat()) * size
-                acc + rectVertices(size, offset, tileset[id].uv)
+                val offset = (axes.first * (pos.x + bounds.x1) + axes.second * (pos.y + bounds.y1)) * size
+                acc + rectVertices(bounds.size, offset, tileset[id].uv)
             }
     }
 
@@ -125,7 +125,7 @@ class Tilemap(
     }
 
     private fun updateBuffers() {
-        arrayBuffer.store(vertices(size, axes, tileset, tileIds))
+        arrayBuffer.store(vertices(size, bounds, axes, tileset, tileIds))
         elementBuffer.store(rectIndicesN(tileIds.size))
     }
 
@@ -161,4 +161,8 @@ class Tilemap(
         for (pos in tileIds.keys.sortedWith(vectorComparator))
             textured(2, tileset[tileIds[pos]!!].image)
     }
+
+    // Helper functions
+    fun worldPos(tilePos: Vector2i) =
+        Matrix4().translate(Vector3f(size * Vector2f(tilePos))) * entity.get<Transform2D>().global()
 }
