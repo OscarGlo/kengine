@@ -7,6 +7,7 @@ import kengine.math.Matrix4
 import kengine.objects.gl.*
 import kengine.util.sizeof
 import org.lwjgl.opengl.GL30.*
+import kotlin.reflect.KClass
 
 abstract class Render(
     protected val vertices: FloatArray,
@@ -31,6 +32,8 @@ abstract class Render(
             imageShader.init()
         }
     }
+
+    override val required: List<KClass<out Entity.Component>> = listOf(Transform2D::class)
 
     protected val vertexArray = VertexArray()
     protected val arrayBuffer = GLBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW)

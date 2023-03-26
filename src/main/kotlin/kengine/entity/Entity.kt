@@ -9,6 +9,26 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         lateinit var entity: Entity
         lateinit var root: Root2D
 
+        open val required: List<KClass<out Component>> = emptyList()
+        open val incompatible: List<KClass<out Component>> = emptyList()
+
+        fun checkCompatibility() {
+            val requiredMap = required.associateWith { false }.toMutableMap()
+
+            for (component in entity.components) {
+                if (component::class in incompatible)
+                    terminateError("Incompatible component types ${component::class.simpleName} and ${this::class.simpleName} on entity ${entity.path()}")
+
+                if (requiredMap.containsKey(component::class))
+                    requiredMap[component::class] = true
+            }
+
+            for (component in requiredMap.keys) {
+                if (requiredMap[component] == false)
+                    terminateError("Missing required component ${component.simpleName} for ${this::class.simpleName} on entity ${entity.path()}")
+            }
+        }
+
         fun attach(e: Entity) = apply { entity = e }
 
         open fun initialize() {}
@@ -41,14 +61,14 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         children[entity.id] = entity
     }
 
-    fun forEach(fn: (Entity) -> Unit) {
+    fun forEachRec(fn: (Entity) -> Unit) {
         fn(this)
-        children.values.forEach { it.forEach(fn) }
+        children.values.forEach { it.forEachRec(fn) }
     }
 
     fun <R> map(fn: (Entity) -> R): List<R> = listOf(fn(this)) + children.values.flatMap { it.map(fn) }
 
-    inline fun <reified T : Component> forEachComponentRec(crossinline fn: (T) -> Unit) = forEach {
+    inline fun <reified T : Component> forEachComponentRec(crossinline fn: (T) -> Unit) = forEachRec {
         it.getAll<T>().forEach(fn)
     }
 

@@ -31,6 +31,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         root.forEachComponentRec<Entity.Component> {
             it.root = root
             it.initialize()
+            it.checkCompatibility()
         }
 
         glfwSwapInterval(if (vSync) 1 else 0)

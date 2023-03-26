@@ -1,8 +1,10 @@
 package kengine.entity.components.render.gui
 
+import kengine.entity.Entity
 import kengine.entity.components.render.Render
 import kengine.math.*
 import kengine.objects.gl.Image
+import kotlin.reflect.KClass
 
 abstract class UINode(
     vertices: FloatArray,
@@ -10,6 +12,8 @@ abstract class UINode(
     vararg images: Image
 ) :
     Render(vertices, indices, *images) {
+    override val required: List<KClass<out Entity.Component>> = emptyList()
+
     class Position(
         var top: Float? = null,
         var bottom: Float? = null,

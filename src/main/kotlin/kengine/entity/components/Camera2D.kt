@@ -5,6 +5,7 @@ import kengine.math.Matrix3
 import kengine.math.Matrix4
 import kengine.math.Vector3f
 import kengine.util.Event
+import kotlin.reflect.KClass
 
 class Camera2D(
     current: Boolean = false,
@@ -17,6 +18,8 @@ class Camera2D(
         if (current)
             root.update(SetCurrentEvent(this))
     }
+
+    override val required: List<KClass<out Entity.Component>> = listOf(Transform2D::class)
 
     private var _current = current
     var current

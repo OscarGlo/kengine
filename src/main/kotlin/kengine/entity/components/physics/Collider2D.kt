@@ -6,6 +6,7 @@ import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kotlin.math.abs
 import kotlin.math.max
+import kotlin.reflect.KClass
 
 open class Collider2D(private val points: List<Vector2f>, private val offset: Vector2f = Vector2f()) :
     Entity.Component() {
@@ -20,6 +21,8 @@ open class Collider2D(private val points: List<Vector2f>, private val offset: Ve
             return Collision(a, abs(separation))
         }
     }
+
+    override val required: List<KClass<out Entity.Component>> = listOf(Body2D::class)
 
     fun globalPosition(): Vector2f {
         val entityTransform = entity.get<Transform2D>().global()
