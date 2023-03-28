@@ -4,7 +4,7 @@ import kengine.entity.components.Camera2D
 import kengine.entity.components.Transform2D
 import kengine.math.Matrix4
 import kengine.math.Vector3f
-import kengine.objects.gl.Window
+import kengine.objects.glfw.Window
 import kengine.util.Event
 
 class Root2D(val window: Window) : Entity("") {

@@ -4,7 +4,7 @@ import kengine.entity.Entity
 import kengine.entity.components.Transform2D
 import kengine.entity.components.render.Ellipse
 import kengine.objects.Runtime
-import kengine.objects.gl.Window
+import kengine.objects.glfw.Window
 import kotlin.math.pow
 
 object Bezier {

@@ -2,7 +2,7 @@ import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
 import kengine.entity.components.physics.Body2D
 import kengine.math.Vector2f
-import kengine.objects.gl.Window
+import kengine.objects.glfw.Window
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 

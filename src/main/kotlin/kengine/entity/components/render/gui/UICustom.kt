@@ -1,12 +1,12 @@
 package kengine.entity.components.render.gui
 
 import kengine.math.Vector2f
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 
 abstract class UICustom(
     var size: Vector2f,
     indices: IntArray,
-    vararg images: Image
+    vararg images: GLImage
 ) :
     UINode(floatArrayOf(), indices, *images) {
     override fun size() = size

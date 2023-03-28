@@ -4,18 +4,18 @@ import kengine.entity.components.render.Render
 import kengine.math.Color
 import kengine.math.Rect
 import kengine.math.Vector2f
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 import kengine.util.rectIndices
 import kengine.util.rectVertices
 import kengine.util.terminateError
 
 open class AtlasTexture(
-    image: Image, uvs: List<Rect>, val color: Color = Color.white
+    image: GLImage, uvs: List<Rect>, val color: Color = Color.white
 ) : Render(
     genVertices(image, uvs[0]), rectIndices, image
 ) {
     companion object {
-        fun genVertices(image: Image, uv: Rect) = rectVertices(
+        fun genVertices(image: GLImage, uv: Rect) = rectVertices(
             uv.size * Vector2f(image.size), uv = uv
         )
     }

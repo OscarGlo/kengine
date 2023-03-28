@@ -4,7 +4,7 @@ import kengine.entity.Entity
 import kengine.entity.Root2D
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Render
-import kengine.objects.gl.Window
+import kengine.objects.glfw.Window
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL11.glFlush

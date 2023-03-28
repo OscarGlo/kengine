@@ -3,13 +3,13 @@ package kengine.entity.components.render.gui
 import kengine.entity.Entity
 import kengine.entity.components.render.Render
 import kengine.math.*
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 import kotlin.reflect.KClass
 
 abstract class UINode(
     vertices: FloatArray,
     indices: IntArray,
-    vararg images: Image
+    vararg images: GLImage
 ) :
     Render(vertices, indices, *images) {
     override val required: List<KClass<out Entity.Component>> = emptyList()

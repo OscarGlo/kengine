@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 abstract class Render(
     protected val vertices: FloatArray,
     private val indices: IntArray,
-    protected vararg val images: Image
+    protected vararg val images: GLImage
 ) : Entity.Component() {
     companion object {
         val defaultAttributes = VertexAttributes(VertexAttribute(2), VertexAttribute(2))
@@ -73,7 +73,7 @@ abstract class Render(
         triangles(i)
     }
 
-    protected fun textured(i: Int, image: Image, color: Color = Color.white) {
+    protected fun textured(i: Int, image: GLImage, color: Color = Color.white) {
         bindShader(imageShader, color)
         image.bind()
         triangles(i)

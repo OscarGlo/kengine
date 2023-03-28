@@ -1,9 +1,9 @@
 package kengine.entity.components.render.image
 
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 import kengine.util.gridUvs
 
-class GridAtlasTexture(image: Image, rows: Int = 1, cols: Int = 1) :
+class GridAtlasTexture(image: GLImage, rows: Int = 1, cols: Int = 1) :
     AtlasTexture(image, generateUVs(rows, cols)) {
     companion object {
         fun generateUVs(rows: Int, cols: Int) =

@@ -2,7 +2,7 @@ package kengine.entity.components.render
 
 import kengine.entity.components.Transform2D
 import kengine.math.*
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
@@ -28,7 +28,7 @@ class Tilemap(
 
         private val edges = listOf(4, 6, 14, 12, 5, 7, 15, 13, 1, 3, 11, 9, 0, 2, 10, 8)
 
-        fun edgeTileset(image: Image, id: Int) = edges.mapIndexed { i, e ->
+        fun edgeTileset(image: GLImage, id: Int) = edges.mapIndexed { i, e ->
             Tile(
                 image,
                 gridUvs(4, 4, i % 4, i / 4),
@@ -42,7 +42,7 @@ class Tilemap(
 
         private val corners = listOf(4, 3, 14, 6, 10, 7, 15, 13, 1, 9, 11, 12, 0, 2, 5, 8)
 
-        fun cornerTileset(image: Image, id: Int) = corners.mapIndexed { i, corner ->
+        fun cornerTileset(image: GLImage, id: Int) = corners.mapIndexed { i, corner ->
             val c = (0..3).map { j -> corner and 2.0.pow(j).toInt() > 0 }
             Tile(
                 image,
@@ -62,7 +62,7 @@ class Tilemap(
             0, 4, 68, 64, 117, 71, 197, 93, 7, 199, 215, 193
         )
 
-        fun fullTileset(image: Image, id: Int) = full.mapIndexed { i, mask ->
+        fun fullTileset(image: GLImage, id: Int) = full.mapIndexed { i, mask ->
             if (mask == -1)
                 return@mapIndexed Tile(image, Rect.zero())
 
@@ -91,7 +91,7 @@ class Tilemap(
 
     class Ref(val id: Int, val auto: Boolean = false)
 
-    class Tile(val image: Image, val uv: Rect = Rect.one(), val bitmask: IntArray? = null) {
+    class Tile(val image: GLImage, val uv: Rect = Rect.one(), val bitmask: IntArray? = null) {
         val type
             get() = bitmask?.getOrNull(4) ?: NONE
     }

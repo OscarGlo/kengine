@@ -1,7 +1,7 @@
 package kengine.objects
 
 import kengine.math.Rect
-import kengine.objects.gl.Image
+import kengine.objects.gl.GLImage
 import kengine.util.Resource
 import java.awt.Color
 import java.awt.FontMetrics
@@ -23,7 +23,7 @@ class Font(url: URL, val size: Int) {
 
     val font: AWTFont
     val characterBounds = mutableMapOf<Int, Rect>()
-    val texture: Image
+    val texture: GLImage
 
     val metrics: FontMetrics
 
@@ -89,6 +89,6 @@ class Font(url: URL, val size: Int) {
         }
         gfx.dispose()
 
-        texture = Image(bitmap, 4)
+        texture = GLImage(bitmap, 4)
     }
 }

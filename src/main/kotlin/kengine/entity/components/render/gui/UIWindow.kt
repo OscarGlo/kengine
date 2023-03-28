@@ -3,7 +3,7 @@ package kengine.entity.components.render.gui
 import kengine.entity.components.render.gui.Text.Companion.stringVertices
 import kengine.math.Rect
 import kengine.math.Vector2f
-import kengine.objects.gl.Window
+import kengine.objects.glfw.Window
 import kengine.util.Event
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices

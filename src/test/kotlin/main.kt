@@ -11,8 +11,9 @@ import kengine.entity.components.render.image.Texture
 import kengine.math.*
 import kengine.objects.Font
 import kengine.objects.Runtime
-import kengine.objects.gl.Image
-import kengine.objects.gl.Window
+import kengine.objects.gl.GLImage
+import kengine.objects.glfw.GLFWImageWrapper
+import kengine.objects.glfw.Window
 import kengine.util.Event
 import kengine.util.Resource
 import java.util.*
@@ -22,6 +23,7 @@ fun main() {
 
     val window = Window(Vector2i(800, 600), "KEngine")
     window.clearColor = Color(0.3f, 0.1f, 0.5f)
+    window.icon = GLFWImageWrapper("images/square.png")
 
     val runtime = Runtime(window)
 
@@ -30,8 +32,8 @@ fun main() {
     Resource.addLanguage(Locale.FRENCH, "lang/fr.txt")
 
     val font = Font("/fonts/GeomanistBook.ttf", 16)
-    val circle = Image("/images/circle.png", filter = false)
-    val tilemap = Image("/images/tilemaps/full.png", filter = false)
+    val circle = GLImage("/images/circle.png", filter = false)
+    val tilemap = GLImage("/images/tilemaps/full.png", filter = false)
 
     val tiles = (0..100).map {
         Vector2i(Vector2f.random() * 10f)

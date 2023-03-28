@@ -1,14 +1,15 @@
-package kengine.objects.gl
+package kengine.objects.glfw
 
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i
-import kengine.objects.gl.Window.Cursor.Companion.arrow
+import kengine.objects.glfw.Window.Cursor.Companion.arrow
 import kengine.util.Event
 import kengine.util.glBool
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10.*
@@ -35,15 +36,13 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         }
 
         fun init() {
-            if (cache != default)
-                setter(cache)
+            if (cache != default) setter(cache)
         }
 
         override fun getValue(thisRef: Window, property: KProperty<*>) = cache
 
         override fun setValue(thisRef: Window, property: KProperty<*>, value: V) {
-            if (thisRef.id != -1L)
-                setter(value)
+            if (thisRef.id != -1L) setter(value)
             cache = value
         }
     }
@@ -74,9 +73,18 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         abstract fun init()
     }
 
-    class StandardCursor(val shape: Int) : Cursor() {
+    class StandardCursor(private val shape: Int) : Cursor() {
         override fun init() {
             id = glfwCreateStandardCursor(shape)
+            if (id == NULL) terminateError("Error creating standard cursor with shape $shape")
+        }
+    }
+
+    class CustomCursor(private val image: GLFWImageWrapper, private val hotspot: Vector2i = Vector2i()) : Cursor() {
+        override fun init() {
+            image.init()
+            id = glfwCreateCursor(image.glfwImage, hotspot.x, hotspot.y)
+            if (id == NULL) terminateError("Error creating custom cursor")
         }
     }
 
@@ -84,7 +92,11 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     var mousePosition = Vector2f()
 
     var clearColor by RequiresInit(Color.black) { glClearColor(it.r, it.g, it.b, it.a) }
-    var cursor by RequiresInit(arrow) { glfwSetCursor(id, it.id) }
+    var cursor by RequiresInit<Cursor>(arrow) { glfwSetCursor(id, it.id) }
+    var icon by RequiresInit<GLFWImageWrapper?>(null) {
+        it?.init()
+        glfwSetWindowIcon(id, it?.toBuffer() ?: GLFWImage.malloc(0))
+    }
     var cursorMode by RequiresInit(GLFW_CURSOR_NORMAL) { glfwSetInputMode(id, GLFW_CURSOR, it) }
     var fullscreen by RequiresInit(false) { if (it) maximize() else minimize() }
 
@@ -104,8 +116,7 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         glfwWindowHint(GLFW_RESIZABLE, glBool(resizable))
 
         id = glfwCreateWindow(size.x, size.y, title, NULL, NULL)
-        if (id == NULL)
-            terminateError("Failed to create GLFW window")
+        if (id == NULL) terminateError("Failed to create GLFW window")
         glfwMakeContextCurrent(id)
         GL.createCapabilities()
 
