@@ -46,8 +46,7 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 - `UIWindow`
   - User resize
-  - Configure resizable, draggable
-  - Limit position to viewport bounds
+  - Configure resizable
 
 
 - **Optimization**

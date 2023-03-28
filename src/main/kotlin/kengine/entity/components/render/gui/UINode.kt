@@ -39,7 +39,7 @@ abstract class UINode(
 
     abstract fun size(): Vector2f
 
-    private fun parentBounds(): Rect =
+    protected fun parentBounds(): Rect =
         if (entity.parent == null || !entity.parent!!.has<UINode>()) {
             val winSize = root.window.size
             Rect(-winSize.x / 2f, -winSize.y / 2f, winSize.x / 2f, winSize.y / 2f)

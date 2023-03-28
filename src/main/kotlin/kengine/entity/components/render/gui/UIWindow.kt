@@ -9,13 +9,11 @@ import kengine.util.rectIndicesN
 import kengine.util.rectVertices
 import org.lwjgl.glfw.GLFW.*
 
-class UIWindow(size: Vector2f, var title: String = "") :
+class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = true, var constrained: Boolean = true) :
     UICustom(size, rectIndicesN(5 + title.length)) {
     private var offset = Vector2f()
 
-    override fun bounds(): Rect {
-        return super.bounds() + Rect(offset)
-    }
+    override fun bounds() = super.bounds() + Rect(offset)
 
     override fun calculateVertices(): FloatArray {
         val bounds = bounds()
@@ -34,18 +32,32 @@ class UIWindow(size: Vector2f, var title: String = "") :
         text(title)
     }
 
-    var dragging = false
-    var prevMouse = Vector2f()
+    private var dragging = false
+    private var prevMouse = Vector2f()
 
     @Event.Listener(Window.MouseButtonEvent::class)
     fun onMouseButton(evt: Window.MouseButtonEvent) {
-        val topbar = bounds().apply { y1 = y2 - theme.topbarHeight }
-        if (evt.action == GLFW_PRESS && evt.button == GLFW_MOUSE_BUTTON_LEFT && root.window.mousePosition in topbar) {
-            dragging = true
-            prevMouse = root.window.mousePosition
-        } else if (evt.action == GLFW_RELEASE) {
-            dragging = false
+        if (!draggable) return
+
+        if (evt.button == GLFW_MOUSE_BUTTON_LEFT) {
+            val topbar = bounds().apply { y1 = y2 - theme.topbarHeight }
+            if (evt.action == GLFW_PRESS && root.window.mousePosition in topbar) {
+                dragging = true
+                prevMouse = root.window.mousePosition
+            } else if (evt.action == GLFW_RELEASE) {
+                dragging = false
+            }
         }
+    }
+
+    private fun constrain() {
+        val bounds = bounds()
+        val parent = parentBounds()
+
+        if (bounds.x1 < parent.x1) offset.x += parent.x1 - bounds.x1
+        if (bounds.y1 < parent.y1) offset.y += parent.y1 - bounds.y1
+        if (bounds.x2 > parent.x2) offset.x -= bounds.x2 - parent.x2
+        if (bounds.y2 > parent.y2) offset.y -= bounds.y2 - parent.y2
     }
 
     @Event.Listener(Window.MouseMoveEvent::class)
@@ -53,6 +65,8 @@ class UIWindow(size: Vector2f, var title: String = "") :
         if (dragging) {
             offset += evt.position - prevMouse
             prevMouse = evt.position
+
+            if (constrained) constrain()
         }
     }
 }
