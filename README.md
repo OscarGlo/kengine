@@ -45,8 +45,9 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 
 - `UIWindow`
-  - User resize
-  - Configure resizable
+  - User resize / resizable property
+  - Close button / closable property
+  - Min / Max size
 
 
 - **Optimization**

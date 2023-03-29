@@ -5,6 +5,7 @@ import kengine.math.Vector2f
 import kengine.math.Vector2i
 import kengine.objects.glfw.Window.Cursor.Companion.arrow
 import kengine.util.Event
+import kengine.util.Resource
 import kengine.util.glBool
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
@@ -60,8 +61,17 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
             val ibeam = StandardCursor(GLFW_IBEAM_CURSOR)
             val crosshair = StandardCursor(GLFW_CROSSHAIR_CURSOR)
             val hand = StandardCursor(GLFW_HAND_CURSOR)
-            val hresize = StandardCursor(GLFW_HRESIZE_CURSOR)
-            val vresize = StandardCursor(GLFW_VRESIZE_CURSOR)
+            val resizeH = StandardCursor(GLFW_HRESIZE_CURSOR)
+            val resizeV = StandardCursor(GLFW_VRESIZE_CURSOR)
+
+            val resizeNWSE = OSCursor(
+                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nwse.png")), Vector2i(8)),
+                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nwse.png")), Vector2i(6))
+            )
+            val resizeNESW = OSCursor(
+                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nesw.png")), Vector2i(8)),
+                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nesw.png")), Vector2i(6))
+            )
         }
 
         var id = -1L; protected set
@@ -77,6 +87,16 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
         override fun init() {
             id = glfwCreateStandardCursor(shape)
             if (id == NULL) terminateError("Error creating standard cursor with shape $shape")
+        }
+    }
+
+    class OSCursor(private val windows: Cursor, private val other: Cursor) : Cursor() {
+        private lateinit var cursor: Cursor
+
+        override fun init() {
+            cursor = if ("windows" in System.getProperty("os.name").lowercase()) windows else other
+            cursor.init()
+            id = cursor.id
         }
     }
 
