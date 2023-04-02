@@ -3,9 +3,7 @@ package kengine.objects.glfw
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i
-import kengine.objects.glfw.Window.Cursor.Companion.arrow
 import kengine.util.Event
-import kengine.util.Resource
 import kengine.util.glBool
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
@@ -53,66 +51,11 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     class MouseButtonEvent(val button: Int, val action: Int, val mods: Int) : Event()
     class MouseMoveEvent(val position: Vector2f) : Event()
 
-    abstract class Cursor {
-        companion object {
-            val cursors = mutableListOf<Cursor>()
-
-            val arrow = StandardCursor(GLFW_ARROW_CURSOR)
-            val ibeam = StandardCursor(GLFW_IBEAM_CURSOR)
-            val crosshair = StandardCursor(GLFW_CROSSHAIR_CURSOR)
-            val hand = StandardCursor(GLFW_HAND_CURSOR)
-            val resizeH = StandardCursor(GLFW_HRESIZE_CURSOR)
-            val resizeV = StandardCursor(GLFW_VRESIZE_CURSOR)
-
-            val resizeNWSE = OSCursor(
-                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nwse.png")), Vector2i(8)),
-                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nwse.png")), Vector2i(6))
-            )
-            val resizeNESW = OSCursor(
-                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nesw.png")), Vector2i(8)),
-                CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nesw.png")), Vector2i(6))
-            )
-        }
-
-        var id = -1L; protected set
-
-        init {
-            cursors.add(this)
-        }
-
-        abstract fun init()
-    }
-
-    class StandardCursor(private val shape: Int) : Cursor() {
-        override fun init() {
-            id = glfwCreateStandardCursor(shape)
-            if (id == NULL) terminateError("Error creating standard cursor with shape $shape")
-        }
-    }
-
-    class OSCursor(private val windows: Cursor, private val other: Cursor) : Cursor() {
-        private lateinit var cursor: Cursor
-
-        override fun init() {
-            cursor = if ("windows" in System.getProperty("os.name").lowercase()) windows else other
-            cursor.init()
-            id = cursor.id
-        }
-    }
-
-    class CustomCursor(private val image: GLFWImageWrapper, private val hotspot: Vector2i = Vector2i()) : Cursor() {
-        override fun init() {
-            image.init()
-            id = glfwCreateCursor(image.glfwImage, hotspot.x, hotspot.y)
-            if (id == NULL) terminateError("Error creating custom cursor")
-        }
-    }
-
     var size = size; private set
     var mousePosition = Vector2f()
 
     var clearColor by RequiresInit(Color.black) { glClearColor(it.r, it.g, it.b, it.a) }
-    var cursor by RequiresInit<Cursor>(arrow) { glfwSetCursor(id, it.id) }
+    var cursor by RequiresInit<Cursor>(Cursor.arrow) { glfwSetCursor(id, it.id) }
     var icon by RequiresInit<GLFWImageWrapper?>(null) {
         it?.init()
         glfwSetWindowIcon(id, it?.toBuffer() ?: GLFWImage.malloc(0))

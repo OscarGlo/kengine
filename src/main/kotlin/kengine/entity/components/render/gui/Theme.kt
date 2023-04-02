@@ -2,6 +2,7 @@ package kengine.entity.components.render.gui
 
 import kengine.math.Color
 import kengine.objects.Font
+import kengine.objects.glfw.Cursor
 import kengine.util.Resource
 
 class Theme {
@@ -10,6 +11,12 @@ class Theme {
     }
 
     var font = Font(Resource.global("/fonts/JetBrainsMono.ttf"), 14)
+
+    var defaultCursor = Cursor.arrow
+    var resizeHCursor = Cursor.resizeH
+    var resizeVCursor = Cursor.resizeV
+    var resizeNWSECursor = Cursor.resizeNWSE
+    var resizeNESWCursor = Cursor.resizeNESW
 
     var textColor = Color(0.95f)
     var backgroundColor = Color(0.2f, 0.2f, 0.25f)
