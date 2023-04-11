@@ -1,6 +1,6 @@
 package kengine.entity.components.render.gui
 
-import kengine.math.Matrix4
+import kengine.entity.components.Transform
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.Font
@@ -22,7 +22,7 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
 
             return s.mapIndexed { i, c ->
                 characterVertices(font, c, vec.getGlyphMetrics(i), vec.getGlyphPosition(i), offset)
-            }.reduce(FloatArray::plus)
+            }.fold(floatArrayOf(), FloatArray::plus)
         }
 
         private fun characterVertices(font: Font, c: Char, metrics: GlyphMetrics, pos: Point2D, offset: Vector2f) =
@@ -68,9 +68,8 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
 
     override fun calculateVertices() = stringVertices(theme.font, text)
 
-    override fun transform(): Matrix4 {
-        val bounds = bounds()
-        return root.transform.rootViewport(true) * Matrix4().translate(Vector3f(bounds.x1, bounds.y1, 0f))
+    override fun model() = bounds().run {
+        Transform().translate(Vector3f(x1, y1, 0f)).matrix
     }
 
     override fun renderSteps() = text(text)

@@ -1,8 +1,6 @@
 package kengine.objects.gl
 
-import kengine.math.Four
-import kengine.math.Matrix4
-import kengine.math.Vector
+import kengine.math.*
 import kengine.util.Resource
 import kengine.util.terminateError
 import org.lwjgl.opengl.GL20.*
@@ -11,6 +9,13 @@ import kotlin.properties.Delegates
 class Shader(private vararg val steps: Pair<Int, String>) {
     companion object {
         val cache = mutableMapOf<String, Int>()
+        val instances = mutableListOf<Shader>()
+
+        fun init() = instances.forEach { it.init() }
+    }
+
+    init {
+        instances.add(this)
     }
 
     private var isInit = false
@@ -42,13 +47,19 @@ class Shader(private vararg val steps: Pair<Int, String>) {
 
     fun use() = this.apply { glUseProgram(id) }
 
-    private fun <T> set(name: String, value: T, fn: (Int, T) -> Unit) = fn(glGetUniformLocation(id, name), value)
-
-    operator fun set(name: String, value: Matrix4) = set(name, value) { loc, mat ->
-        glUniformMatrix4fv(loc, false, mat.toBuffer())
-    }
-
-    operator fun set(name: String, value: Vector<Four, Float, *>) = set(name, value) { loc, vec ->
-        glUniform4f(loc, vec[0], vec[1], vec[2], vec[3])
+    @Suppress("UNCHECKED_CAST")
+    operator fun set(name: String, value: Any) {
+        val loc = glGetUniformLocation(id, name)
+        when (value::class) {
+            Float::class -> glUniform1f(loc, value as Float)
+            Vector3f::class -> (value as Vector3f).let {
+                glUniform3f(loc, it[0], it[1], it[2])
+            }
+            Vector4f::class, Color::class -> (value as Vector<Four, Float, *>).let {
+                glUniform4f(loc, it[0], it[1], it[2], it[3])
+            }
+            Matrix4::class -> glUniformMatrix4fv(loc, false, (value as Matrix4).toBuffer())
+            else -> terminateError("Invalid object class ${value::class.simpleName} for shader parameter")
+        }
     }
 }

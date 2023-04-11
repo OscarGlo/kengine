@@ -31,8 +31,8 @@ object Resource {
 
     private fun getLanguage(locale: Locale) = languages[locale.toString()] ?: languages[locale.language]
 
-    fun getString(key: String): String {
+    fun getString(key: String, notFound: String = UNKNOWN_STRING): String {
         val lang = getLanguage(locale) ?: getLanguage(fallback)
-        return lang?.getOrDefault(key, UNKNOWN_STRING) ?: UNKNOWN_STRING
+        return lang?.getOrDefault(key, notFound) ?: notFound
     }
 }

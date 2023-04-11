@@ -1,12 +1,14 @@
 package kengine.objects
 
 import kengine.entity.Entity
-import kengine.entity.Root2D
+import kengine.entity.Root
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Render
+import kengine.objects.gl.Shader
 import kengine.objects.glfw.Window
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT
 import org.lwjgl.opengl.GL11.glFlush
 import org.lwjgl.opengl.GL30.GL_COLOR_BUFFER_BIT
 import org.lwjgl.opengl.GL30.glClear
@@ -16,7 +18,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         fun doubleTime() = System.nanoTime() / 1_000_000_000.0
     }
 
-    val root = Root2D(window)
+    val root = Root(window)
 
     // Pass global events to Scripts
     @Event.Listener(eventClass = Event::class)
@@ -26,7 +28,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         window.init()
         window.listeners.add(this)
 
-        Render.init()
+        Shader.init()
 
         root.forEachComponentRec<Entity.Component> {
             it.root = root
@@ -47,7 +49,7 @@ class Runtime(private val window: Window, var vSync: Boolean = true): Event.Mana
         root.forEachComponentRec<Entity.Component> { it.update(delta, time) }
 
         // Render
-        glClear(GL_COLOR_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         root.forEachComponentRec(Render::render)
 
         // Update viewport

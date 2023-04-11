@@ -1,6 +1,6 @@
-package kengine.entity.components.render
+package kengine.entity.components.render.r2d
 
-import kengine.entity.components.Transform2D
+import kengine.entity.components.Transform
 import kengine.math.Color
 import kengine.math.Rect
 import kengine.math.Vector2f
@@ -23,7 +23,7 @@ class ParticleSpawner(
     var sizeDelta: Float = 0f,
     var endColor: Color = startColor,
     var initialVelocityDelta: Vector2f = Vector2f()
-) : Render(floatArrayOf(), intArrayOf()) {
+) : Render2D(floatArrayOf(), intArrayOf()) {
     class Particle(
         val birth: Double,
         val lifespan: Double,
@@ -43,7 +43,7 @@ class ParticleSpawner(
                 time,
                 lifespan + Random.nextFloatSigned() * lifespanDelta,
                 Vector2f(size + Random.nextFloatSigned() * sizeDelta),
-                Vector2f(entity.get<Transform2D>().global().position) + area.randomPoint(),
+                Vector2f(entity.get<Transform>().position) + area.randomPoint(),
                 initialVelocity + Vector2f.randomSigned() * initialVelocityDelta
             )
         )
@@ -69,7 +69,7 @@ class ParticleSpawner(
         elementBuffer.store(rectIndicesN(particles.size))
     }
 
-    override fun transform() = entity.get<Transform2D>().rootViewport()
+    override fun model() = root.view(false)
 
     override fun renderSteps() {
         particles.forEach {

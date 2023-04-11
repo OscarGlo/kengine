@@ -1,16 +1,21 @@
-import kengine.entity.components.Camera2D
 import kengine.entity.components.Script
+import kengine.entity.components.Transform
 import kengine.entity.components.physics.Body2D
+import kengine.entity.components.render.Camera
+import kengine.math.Quaternion
 import kengine.math.Vector2f
+import kengine.math.Vector3f
 import kengine.objects.glfw.Window
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 
 class PlayerController : Script() {
-    lateinit var camera: Camera2D
+    lateinit var tf: Transform
+    lateinit var camera: Camera
     lateinit var body: Body2D
 
     private var direction = Vector2f()
+    private var rotation = 0f
     private val speed = 50
 
     @Event.Listener(Window.KeyEvent::class)
@@ -23,6 +28,8 @@ class PlayerController : Script() {
                 GLFW_KEY_RIGHT -> direction.x += sign
                 GLFW_KEY_DOWN -> direction.y -= sign
                 GLFW_KEY_UP -> direction.y += sign
+
+                GLFW_KEY_R -> rotation += sign
             }
 
             // On press
@@ -35,5 +42,7 @@ class PlayerController : Script() {
     override fun update(delta: Double, time: Double) {
         val dir = direction.normalize() * speed.toFloat()
         body.velocity.add(dir).multiply(0.9f)
+
+        tf.rotate(Quaternion.axisAngle(Vector3f.right, 5 * delta.toFloat() * rotation))
     }
 }

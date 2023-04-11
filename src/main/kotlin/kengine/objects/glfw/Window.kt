@@ -52,6 +52,7 @@ class Window(size: Vector2i, private val title: String, private val resizable: B
     class MouseMoveEvent(val position: Vector2f) : Event()
 
     var size = size; private set
+    val aspect: Float; get() = size.x / size.y.toFloat()
     var mousePosition = Vector2f()
 
     var clearColor by RequiresInit(Color.black) { glClearColor(it.r, it.g, it.b, it.a) }

@@ -1,21 +1,21 @@
 import kengine.entity.Entity
 import kengine.entity.components.Script
-import kengine.entity.components.Transform2D
-import kengine.entity.components.render.Ellipse
+import kengine.entity.components.Transform
+import kengine.entity.components.render.r2d.Ellipse
 import kengine.math.*
 import kengine.objects.Runtime
 import kengine.objects.glfw.Window
 
 class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
     "Point${n++}",
-    Transform2D().apply { matrix.position = offset },
+    Transform().translate(offset),
     Ellipse(Vector2f(5f), 10, color),
     object : Script() {
-        lateinit var transform: Transform2D
+        lateinit var transform: Transform
 
         override fun update(delta: Double, time: Double) {
             val noise = Noise.fractal(octaves, 0.5f, Vector2f(i / 100f, time.toFloat() / 5))
-            transform.matrix.position = offset + Vector3f(0f, 100 * noise, 0f)
+            transform.position = offset + Vector3f(0f, 100 * noise, 0f)
         }
     }
 ) {

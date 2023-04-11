@@ -1,7 +1,9 @@
 package kengine.math
 
 import kengine.util.*
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.properties.ReadWriteProperty
 import kotlin.random.Random
@@ -59,17 +61,17 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     operator fun minus(other: V) = componentwise(other) { a, b -> a.numMinus(b) }
     operator fun minus(n: T) = map { a, _ -> a.numMinus(n) }
 
-    operator fun times(other: V) = componentwise(other) { a, b -> a.numTimes(b) }
+    open operator fun times(other: V) = componentwise(other) { a, b -> a.numTimes(b) }
     operator fun times(n: T) = map { a, _ -> a.numTimes(n) }
 
     operator fun div(other: V) = componentwise(other) { a, b -> a.numDiv(b) }
     operator fun div(n: T) = map { a, _ -> a.numDiv(n) }
 
-    infix fun dot(other: V): Float = components
+    infix fun dot(other: V) = components
         .mapIndexed { i, a -> a.toFloat() * other[i].toFloat() }
         .fold(0f) { acc, a -> acc + a }
 
-    infix fun proj(other: V): Float = dot(other) / other.length()
+    infix fun proj(other: V) = dot(other) / other.length()
 
     operator fun unaryMinus() = map { a, _ -> 0.to(numClass).numMinus(a) }
 
@@ -88,7 +90,8 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun interpolate(other: Vector<*, *, *>, percent: Double) = this * (1 - percent).to(numClass) + (other as V) * percent.to(numClass)
+    fun interpolate(other: Vector<*, *, *>, percent: Double) =
+        this * (1 - percent).to(numClass) + (other as V) * percent.to(numClass)
 
     @Suppress("UNCHECKED_CAST")
     fun distance(other: V) = (other - this as V).length()
@@ -155,6 +158,12 @@ abstract class Vector3<T : Number, V : Vector3<T, V>>(numClass: KClass<T>, vecCl
     var x by Component(0)
     var y by Component(1)
     var z by Component(2)
+
+    infix fun cross(other: V) = vecClass.primaryConstructor!!.call(
+        y.numTimes(other.z).numMinus(z.numTimes(other.y)),
+        z.numTimes(other.x).numMinus(x.numTimes(other.z)),
+        x.numTimes(other.y).numMinus(y.numTimes(other.x))
+    )
 }
 
 class Vector3f(x: Float, y: Float, z: Float) : Vector3<Float, Vector3f>(Float::class, Vector3f::class, x, y, z) {
@@ -164,6 +173,15 @@ class Vector3f(x: Float, y: Float, z: Float) : Vector3<Float, Vector3f>(Float::c
         v.getOrElse(1, default).to(),
         v.getOrElse(2, default).to()
     )
+
+    companion object {
+        val right = Vector3f(1f, 0f, 0f)
+        val left = -right
+        val up = Vector3f(0f, 1f, 0f)
+        val down = -up
+        val back = Vector3f(0f, 0f, 1f)
+        val front = -back
+    }
 }
 
 abstract class Vector4<T : Number, V : Vector4<T, V>>(
@@ -203,7 +221,8 @@ class Color(r: Float, g: Float, b: Float, a: Float = 1f) :
 
 class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
     Vector<Four, Float, Rect>(Float::class, Rect::class, x1, y1, x2, y2) {
-    constructor(v1: Vector<Two, *, *>, v2: Vector<Two, *, *> = v1) : this(v1[0].to(), v1[1].to(), v2[0].to(), v2[1].to())
+    constructor(v1: Vector<Two, *, *>, v2: Vector<Two, *, *> = v1) :
+            this(v1[0].to(), v1[1].to(), v2[0].to(), v2[1].to())
 
     companion object {
         fun zero() = Rect(0f, 0f, 0f, 0f)
@@ -224,4 +243,42 @@ class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
     operator fun contains(v: Vector2f) = v.x in x1..x2 && v.y in y1..y2
 
     fun randomPoint() = Vector2f(Random.nextFloat() * (x2 - x1) + x1, Random.nextFloat() * (y2 - y1) + y1)
+}
+
+class Quaternion(a: Float, b: Float, c: Float, d: Float) :
+    Vector<Four, Float, Quaternion>(Float::class, Quaternion::class, a, b, c, d) {
+    constructor() : this(0f, 0f, 0f, 1f)
+
+    companion object {
+        fun axisAngle(axis: Vector3f, angle: Float) = (axis * sin(angle / 2)).run {
+            Quaternion(cos(angle / 2), x, y, z).normalize()
+        }
+
+        fun euler(x: Float = 0f, y: Float = 0f, z: Float = 0f) =
+            (axisAngle(Vector3f.right, x) *
+            axisAngle(Vector3f.up, y) *
+            axisAngle(Vector3f.front, z)).normalize()
+    }
+
+    var a by Component(0)
+    var b by Component(1)
+    var c by Component(2)
+    var d by Component(3)
+
+    override operator fun times(other: Quaternion) = Quaternion(
+        a * other.a - b * other.b - c * other.c - d * other.d,
+        a * other.b + b * other.a + c * other.d - d * other.c,
+        a * other.c - b * other.d + c * other.a + d * other.b,
+        a * other.d + b * other.c - c * other.b + d * other.a
+    )
+
+    fun matrix() = Matrix3(
+        mutableListOf(
+            mutableListOf(1 - 2 * (b * b + c * c), 2 * (a * b - c * d), 2 * (a * c + b * d)),
+            mutableListOf(2 * (a * b + c * d), 1 - 2 * (a * a + c * c), 2 * (b * c - a * d)),
+            mutableListOf(2 * (a * c - b * d), 2 * (b * c + a * d), 1 - 2 * (a * a + b * b)),
+        )
+    )
+
+    fun conj() = Quaternion(a, -b, -c, -d)
 }

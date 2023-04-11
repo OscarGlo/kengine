@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 open class Entity(val id: String, vararg components: Component) : Event.Manager() {
     abstract class Component : Event.Manager() {
         lateinit var entity: Entity
-        lateinit var root: Root2D
+        lateinit var root: Root
 
         open val required: List<KClass<out Component>> = emptyList()
         open val incompatible: List<KClass<out Component>> = emptyList()

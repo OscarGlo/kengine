@@ -1,7 +1,7 @@
 package kengine.entity.components.physics
 
 import kengine.entity.Entity
-import kengine.entity.components.Transform2D
+import kengine.entity.components.Transform
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kotlin.math.abs
@@ -25,7 +25,7 @@ open class Collider2D(private val points: List<Vector2f>, private val offset: Ve
     override val required: List<KClass<out Entity.Component>> = listOf(Body2D::class)
 
     fun globalPosition(): Vector2f {
-        val entityTransform = entity.get<Transform2D>().global()
+        val entityTransform = entity.get<Transform>()
         entityTransform.translate(Vector3f(offset))
         return Vector2f(entityTransform.position)
     }

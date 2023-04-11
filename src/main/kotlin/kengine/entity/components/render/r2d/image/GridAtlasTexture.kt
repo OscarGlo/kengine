@@ -1,4 +1,4 @@
-package kengine.entity.components.render.image
+package kengine.entity.components.render.r2d.image
 
 import kengine.objects.gl.GLImage
 import kengine.util.gridUvs

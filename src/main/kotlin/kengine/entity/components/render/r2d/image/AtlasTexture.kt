@@ -1,6 +1,6 @@
-package kengine.entity.components.render.image
+package kengine.entity.components.render.r2d.image
 
-import kengine.entity.components.render.Render
+import kengine.entity.components.render.r2d.Render2D
 import kengine.math.Color
 import kengine.math.Rect
 import kengine.math.Vector2f
@@ -11,7 +11,7 @@ import kengine.util.terminateError
 
 open class AtlasTexture(
     image: GLImage, uvs: List<Rect>, val color: Color = Color.white
-) : Render(
+) : Render2D(
     genVertices(image, uvs[0]), rectIndices, image
 ) {
     companion object {

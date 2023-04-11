@@ -1,7 +1,10 @@
-package kengine.entity.components.render
+package kengine.entity.components.render.r2d
 
-import kengine.entity.components.Transform2D
-import kengine.math.*
+import kengine.entity.components.Transform
+import kengine.math.Rect
+import kengine.math.Vector2f
+import kengine.math.Vector2i
+import kengine.math.Vector3f
 import kengine.objects.gl.GLImage
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
@@ -17,7 +20,7 @@ class Tilemap(
     val tiles: MutableMap<Vector2i, Ref>,
     val bounds: Rect = Rect(Vector2f(), size),
     val axes: Axes = rectAxes,
-) : Render(vertices(size, bounds, axes, tileset, mapOf()), rectIndicesN(tiles.size)) {
+) : Render2D(vertices(size, bounds, axes, tileset, mapOf()), rectIndicesN(tiles.size)) {
     companion object {
         val rectAxes = Vector2f(1f, 0f) to Vector2f(0f, 1f)
         val isoAxes = Vector2f(0.5f, -0.5f) to Vector2f(0.5f, 0.5f)
@@ -164,5 +167,5 @@ class Tilemap(
 
     // Helper functions
     fun worldPos(tilePos: Vector2i) =
-        Matrix4().translate(Vector3f(size * Vector2f(tilePos))) * entity.get<Transform2D>().global()
+        Transform().translate(Vector3f(size * Vector2f(tilePos))).matrix * entity.get<Transform>().global()
 }

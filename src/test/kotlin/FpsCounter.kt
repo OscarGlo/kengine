@@ -12,6 +12,6 @@ class FpsCounter : Script() {
         if (deltas.size > 30)
             deltas.removeAt(0)
 
-        text.text = Resource.getString("fps").format(1 / deltas.average())
+        text.text = Resource.getString("fps", "%.0f fps").format(1 / deltas.average())
     }
 }

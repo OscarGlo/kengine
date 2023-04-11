@@ -1,7 +1,8 @@
 package kengine.entity.components.render.gui
 
 import kengine.entity.Entity
-import kengine.entity.components.render.Render
+import kengine.entity.components.Transform
+import kengine.entity.components.render.r2d.Render2D
 import kengine.math.*
 import kengine.objects.gl.GLImage
 import kotlin.reflect.KClass
@@ -11,7 +12,7 @@ abstract class UINode(
     indices: IntArray,
     vararg images: GLImage
 ) :
-    Render(vertices, indices, *images) {
+    Render2D(vertices, indices, *images) {
     override val required: List<KClass<out Entity.Component>> = emptyList()
 
     class Position(
@@ -81,10 +82,11 @@ abstract class UINode(
         }
     }
 
-    override fun transform(): Matrix4 {
-        val bounds = bounds()
-        return root.transform.rootViewport(true) * Matrix4().translate(Vector3f(bounds.center.x, bounds.center.y, 0f))
+    override fun model() = bounds().run {
+        Transform().translate(Vector3f(center.x, center.y, 0f)).matrix
     }
+
+    override fun view() = root.view(fixed = true)
 
     fun text(s: String) = textured(2 * s.length, theme.font.texture, theme.textColor)
 }

@@ -3,9 +3,7 @@ package kengine.math
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
 import java.nio.FloatBuffer
-import kotlin.math.cos
 import kotlin.math.max
-import kotlin.math.sin
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -37,8 +35,19 @@ open class Matrix<S : Size, M : Matrix<S, M>>(
         values.mapIndexed { i, l -> l[i] = v[i] }
     } as M
 
+    private fun componentwise(m: M, f: (Float, Float) -> Float) =
+        kClass.primaryConstructor!!.call(values.mapIndexed { x, c ->
+            c.mapIndexed { y, v -> f(v, m[x, y]) }.toMutableList()
+        }.toMutableList())
+
+    operator fun plus(m: M) = componentwise(m, Float::plus)
+    operator fun minus(m: M) = componentwise(m, Float::minus)
+
+    operator fun times(f: Float) =
+        kClass.primaryConstructor!!.call(values.map { c -> c.map { it * f }.toMutableList() }.toMutableList())
+
     operator fun <V : Vector<S, Float, V>> times(v: V) = v::class.primaryConstructor!!.call(
-        *transpose().values.mapIndexed { i, c -> c.map { f -> f * v[i] }.sum() }.toTypedArray()
+        *values.map { c -> c.mapIndexed { i, f -> f * v[i] }.sum() }.toTypedArray()
     )
 
     operator fun times(m: M): M {
@@ -68,16 +77,6 @@ class Matrix3(values: MatrixValues) : Matrix<Three, Matrix3>(Three::class, Matri
     constructor(v: Vector3f) : this() {
         setDiagonal(v)
     }
-
-    companion object {
-        fun rotateZ(angle: Float) = Matrix3(
-            mutableListOf(
-                mutableListOf(cos(angle), -sin(angle), 0f),
-                mutableListOf(sin(angle), cos(angle), 0f),
-                mutableListOf(0f, 0f, 1f),
-            )
-        )
-    }
 }
 
 class Matrix4(values: MatrixValues) : Matrix<Four, Matrix4>(Four::class, Matrix4::class, values) {
@@ -86,40 +85,4 @@ class Matrix4(values: MatrixValues) : Matrix<Four, Matrix4>(Four::class, Matrix4
     constructor(v: Vector4f) : this() {
         setDiagonal(v)
     }
-
-    var position: Vector3f
-        get() = Vector3f(values[0][3], values[1][3], values[2][3])
-        set(v) {
-            values[0][3] = v.x
-            values[1][3] = v.y
-            values[2][3] = v.z
-        }
-
-    var rotationScale: Matrix3
-        get() = Matrix3(
-            values.slice(0..2).map {
-                it.slice(0..2).toMutableList()
-            }.toMutableList()
-        )
-        set(m) = m.values.forEachIndexed { x, l -> l.forEachIndexed { y, v -> values[x][y] = v } }
-
-    var scaling: Vector3f
-        get() = Vector3f(
-            Vector3f(values[0][0], values[1][0], values[2][0]).length(),
-            Vector3f(values[0][1], values[1][1], values[2][1]).length(),
-            Vector3f(values[0][2], values[1][2], values[2][2]).length(),
-        )
-        set(v) {
-            rotationScale = rotation * Matrix3(v)
-        }
-
-    var rotation: Matrix3
-        get() = rotationScale * Matrix3(Vector3f(1f) / scaling)
-        set(m) {
-            rotationScale = m * Matrix3(scaling)
-        }
-
-    fun translate(v: Vector3f) = apply { position += v }
-    fun scale(v: Vector3f) = apply { scaling *= v }
-    fun rotate(m: Matrix3) = apply { rotationScale *= m }
 }

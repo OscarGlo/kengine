@@ -2,12 +2,13 @@ import kengine.entity.Entity
 import kengine.entity.components.*
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
-import kengine.entity.components.render.Ellipse
-import kengine.entity.components.render.ParticleSpawner
-import kengine.entity.components.render.Tilemap
+import kengine.entity.components.render.Camera
 import kengine.entity.components.render.gui.*
 import kengine.entity.components.render.gui.input.Button
-import kengine.entity.components.render.image.Texture
+import kengine.entity.components.render.r2d.Ellipse
+import kengine.entity.components.render.r2d.ParticleSpawner
+import kengine.entity.components.render.r2d.Tilemap
+import kengine.entity.components.render.r2d.image.Texture
 import kengine.math.*
 import kengine.objects.Font
 import kengine.objects.Runtime
@@ -42,20 +43,20 @@ fun main() {
     runtime.root.children(
         Entity(
             "background",
-            Transform2D(),
+            Transform(),
             Tilemap(Vector2f(32f), Tilemap.fullTileset(tilemap, 0), tiles.toMutableMap())
         ),
         Entity(
             "circle",
-            Transform2D().apply { matrix.translate(Vector3f(25f, 0f, 0f)) },
+            Transform().translate(Vector3f(25f, 0f, 0f)),
             Ellipse(Vector2f(50f, 50f), 32, Color(0.5f, 0.2f, 0.8f, 0.5f)),
             CircleCollider(25f),
             Body2D(true),
             Animator(
                 Animator.Animation(
-                    { get<Transform2D>().matrix }, 1.0, true, true,
+                    { get<Transform>() }, 1.0, true, true,
                     Animator.PropertyAnimation(
-                        Matrix4::position,
+                        Transform::position,
                         Animator.Keyframe(Vector3f(0f), 0.0, Shaping.smoothstep),
                         Animator.Keyframe(Vector3f(100f, 100f, 0f), 0.5, Shaping.smoothstep)
                     )
@@ -64,7 +65,7 @@ fun main() {
         ),
         Entity(
             "player",
-            Transform2D().apply { matrix.translate(Vector3f(100f, 100f, 0f)) },
+            Transform().translate(Vector3f(100f, 100f, 0f)),
             ParticleSpawner(
                 0.05,
                 0.5,
@@ -79,7 +80,7 @@ fun main() {
             ),
             Texture(circle),
             CircleCollider(circle.size.x / 2f),
-            Camera2D(true),
+            Camera(true),
             Body2D(),
             PlayerController()
         ),

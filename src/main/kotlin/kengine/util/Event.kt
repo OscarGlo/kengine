@@ -8,7 +8,7 @@ abstract class Event {
     @Target(AnnotationTarget.FUNCTION)
     annotation class Listener(val eventClass: KClass<out Event>)
 
-    abstract class Manager {
+    abstract class Manager : Dirtyable() {
         val listeners = mutableListOf<Manager>()
 
         protected inline fun <reified E : Event> notify(event: E) = listeners.forEach { it.update(event) }
