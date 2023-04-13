@@ -17,7 +17,7 @@ as good as possible. The engine architecture is an entity-component tree similar
 - `Matrix4` to represent transforms
 
 ### Rendering
-- Switchable `Camera2D`
+- Switchable `Camera`
 - Basic colored `Rectangle` and `Ellipse`
 - `Texture` as well as `AtlasTexture` and `GridAtlasTexture`
 - `Tilemap` with tilesets and auto-tiling

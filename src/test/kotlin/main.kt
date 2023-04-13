@@ -1,5 +1,6 @@
 import kengine.entity.Entity
 import kengine.entity.components.*
+import kengine.entity.components.anim.*
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.render.Camera
@@ -53,12 +54,12 @@ fun main() {
             CircleCollider(25f),
             Body2D(true),
             Animator(
-                Animator.Animation(
+                Animation(
                     { get<Transform>() }, 1.0, true, true,
-                    Animator.PropertyAnimation(
+                    PropertyAnimation(
                         Transform::position,
-                        Animator.Keyframe(Vector3f(0f), 0.0, Shaping.smoothstep),
-                        Animator.Keyframe(Vector3f(100f, 100f, 0f), 0.5, Shaping.smoothstep)
+                        Keyframe(Vector3f(0f), 0.0, Shaping.smoothstep),
+                        Keyframe(Vector3f(100f, 100f, 0f), 0.5, Shaping.smoothstep)
                     )
                 )
             )
