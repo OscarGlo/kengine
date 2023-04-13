@@ -3,6 +3,7 @@ package kengine.entity.components.render
 import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.math.Matrix4
+import kengine.objects.KERuntime
 import kengine.objects.gl.*
 import kengine.util.sizeof
 import org.lwjgl.opengl.GL30.*
@@ -37,10 +38,10 @@ abstract class Render(
 
     open fun model() = entity.get<Transform>().global()
 
-    open fun projection() = root.currentCamera?.projection() ?: Matrix4()
+    open fun projection() = KERuntime.scene.currentCamera?.projection() ?: Matrix4()
 
     open fun view() = entity.get<Transform>().let {
-        root.view(it.is3D, it.fixed)
+        KERuntime.scene.view(it.is3D, it.fixed)
     }
 
     fun bindShader(shader: Shader, vararg params: Pair<String, Any>) {

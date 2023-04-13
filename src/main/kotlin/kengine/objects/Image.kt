@@ -3,12 +3,13 @@ package kengine.objects
 import kengine.math.Vector2i
 import org.lwjgl.BufferUtils
 import java.awt.image.BufferedImage
+import java.nio.ByteBuffer
 
 abstract class Image(protected val image: BufferedImage, bpp: Int) {
     val size = Vector2i(image.width, image.height)
     protected var isInit = false
 
-    protected val buffer = BufferUtils.createByteBuffer(size.x * size.y * bpp).also {
+    protected val buffer: ByteBuffer = BufferUtils.createByteBuffer(size.x * size.y * bpp).also {
         val pixels = IntArray(size.x * size.y)
         image.getRGB(0, 0, size.x, size.y, pixels, 0, size.x)
 

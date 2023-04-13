@@ -45,7 +45,7 @@ class Shader(private vararg val steps: Pair<Int, String>) {
         if (success == GL_FALSE) terminateError("Shader program linking error ${glGetProgramInfoLog(id)}")
     }
 
-    fun use() = this.apply { glUseProgram(id) }
+    fun use() = apply { glUseProgram(id) }
 
     @Suppress("UNCHECKED_CAST")
     operator fun set(name: String, value: Any) {

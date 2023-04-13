@@ -6,7 +6,8 @@ import kengine.entity.components.render.gui.Text
 import kengine.entity.components.render.gui.UINode
 import kengine.entity.components.render.r3d.Render3D
 import kengine.math.*
-import kengine.objects.Runtime
+import kengine.objects.KERuntime
+import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.Window
 import kengine.util.Event
@@ -72,14 +73,13 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
 fun main() {
     Resource.localPath = "src/test/resources"
 
-    val window = Window(Vector2i(800, 600), "KEngine")
-    window.cursorMode = GLFW_CURSOR_DISABLED
-
-    val runtime = Runtime(window)
+    KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
+        cursorMode = GLFW_CURSOR_DISABLED
+    }
 
     val square = GLImage("images/square.png", filter = false)
 
-    runtime.root.children(
+    KERuntime.scene = Scene(
         Entity(
             "camera",
             Transform(true).translate(Vector3f(0f, 0f, 8f)),
@@ -94,7 +94,7 @@ fun main() {
                 private lateinit var mousePos: Vector2f
 
                 override fun init() {
-                    mousePos = root.window.mousePosition
+                    mousePos = KERuntime.window.mousePosition
                 }
 
                 @Event.Listener(Window.KeyEvent::class)
@@ -142,7 +142,7 @@ fun main() {
         Entity("init", object : Script() {
             override fun init() = Render3D.phong.let {
                 it.use()
-                it["viewPos"] = root.currentCamera?.entity?.get<Transform>()?.position ?: Vector3f()
+                it["viewPos"] = KERuntime.scene.currentCamera?.entity?.get<Transform>()?.position ?: Vector3f()
 
                 it["material.ambient"] = Color(0.2f, 0.4f, 0.3f)
                 it["material.diffuse"] = Color(0.2f, 0.9f, 0.3f)
@@ -157,5 +157,5 @@ fun main() {
         })
     )
 
-    runtime.run()
+    KERuntime.run()
 }

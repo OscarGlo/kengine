@@ -5,6 +5,7 @@ import kengine.math.Color
 import kengine.math.Rect
 import kengine.math.Vector2f
 import kengine.math.nextFloatSigned
+import kengine.objects.KERuntime
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
 import kotlin.random.Random
@@ -69,7 +70,7 @@ class ParticleSpawner(
         elementBuffer.store(rectIndicesN(particles.size))
     }
 
-    override fun model() = root.view(false)
+    override fun model() = KERuntime.scene.view(false)
 
     override fun renderSteps() {
         particles.forEach {

@@ -3,7 +3,7 @@ import kengine.entity.components.Script
 import kengine.entity.components.Transform
 import kengine.entity.components.render.r2d.Ellipse
 import kengine.math.*
-import kengine.objects.Runtime
+import kengine.objects.KERuntime
 import kengine.objects.glfw.Window
 
 class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
@@ -25,11 +25,11 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
 }
 
 fun main() {
-    val runtime = Runtime(Window(Vector2i(1000, 600), "KEngine"))
+    KERuntime.window = Window(Vector2i(1000, 600), "KEngine")
 
     for (j in (1..5))
         for (i in (-100..100))
-            runtime.root.add(Point(j, i, Vector3f(5f * i, 0f, 0f), Color(j / 5f, 0.5f)))
+            KERuntime.scene.add(Point(j, i, Vector3f(5f * i, 0f, 0f), Color(j / 5f, 0.5f)))
 
-    runtime.run()
+    KERuntime.run()
 }

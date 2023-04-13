@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
 open class Entity(val id: String, vararg components: Component) : Event.Manager() {
     abstract class Component : Event.Manager() {
         lateinit var entity: Entity
-        lateinit var root: Root
+        lateinit var root: Entity
 
         open val required: List<KClass<out Component>> = emptyList()
         open val incompatible: List<KClass<out Component>> = emptyList()
@@ -52,13 +52,11 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         }
     }
 
-    fun children(vararg entities: Entity) = apply {
-        entities.forEach { add(it) }
-    }
-
-    fun add(entity: Entity) {
-        entity.parent = this
-        children[entity.id] = entity
+    fun add(vararg entities: Entity) = apply {
+        entities.forEach {
+            it.parent = this
+            children[it.id] = it
+        }
     }
 
     fun forEachRec(fn: (Entity) -> Unit) {

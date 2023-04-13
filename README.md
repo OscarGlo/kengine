@@ -39,6 +39,10 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 ## //TODO
 
+- `Entity`
+  - Pausing
+
+
 - `Tilemap`
   - Tile collisions
   - World/tile position conversion
@@ -57,3 +61,7 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 - **New features**
   - Scenes + scene switching
+
+
+- **Future ideas**
+  - Modding via mixin injection

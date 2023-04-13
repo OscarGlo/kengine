@@ -3,6 +3,7 @@ package kengine.entity.components.render
 import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.math.*
+import kengine.objects.KERuntime
 import kengine.util.Event
 import kotlin.math.tan
 import kotlin.reflect.KClass
@@ -46,7 +47,7 @@ class Camera(
         val dist = -(far + near) / (far - near)
         return Matrix4(
             mutableListOf(
-                mutableListOf(1 / (root.window.aspect * tFov), 0f, 0f, 0f),
+                mutableListOf(1 / (KERuntime.window.aspect * tFov), 0f, 0f, 0f),
                 mutableListOf(0f, 1 / tFov, 0f, 0f),
                 mutableListOf(0f, 0f, dist, 2 * dist),
                 mutableListOf(0f, 0f, -1f, 0f)

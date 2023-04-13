@@ -234,11 +234,11 @@ class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
     var x2 by Component(2)
     var y2 by Component(3)
 
-    val start get() = Vector2f(x1, y1)
-    val end get() = Vector2f(x2, y2)
+    val start = Vector2f(x1, y1)
+    val end = Vector2f(x2, y2)
 
-    val size get() = Vector2f(x2 - x1, y2 - y1)
-    val center get() = start + size / 2f
+    val size = Vector2f(x2 - x1, y2 - y1)
+    val center = start + size / 2f
 
     operator fun contains(v: Vector2f) = v.x in x1..x2 && v.y in y1..y2
 

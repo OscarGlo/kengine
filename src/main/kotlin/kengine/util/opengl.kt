@@ -3,7 +3,7 @@ package kengine.util
 import kengine.math.Rect
 import kengine.math.Vector2f
 import org.lwjgl.glfw.GLFW.glfwTerminate
-import org.lwjgl.opengl.GL41.*
+import org.lwjgl.opengl.GL30.*
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -15,7 +15,6 @@ fun sizeof(type: Int) = when (type) {
     GL_UNSIGNED_SHORT -> Short.SIZE_BYTES
     GL_INT -> Int.SIZE_BYTES
     GL_UNSIGNED_INT -> Int.SIZE_BYTES
-    GL_FIXED -> Int.SIZE_BYTES
     GL_HALF_FLOAT -> Float.SIZE_BYTES / 2
     GL_FLOAT -> Float.SIZE_BYTES
     GL_DOUBLE -> Double.SIZE_BYTES

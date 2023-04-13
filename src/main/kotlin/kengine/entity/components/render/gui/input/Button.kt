@@ -3,6 +3,7 @@ package kengine.entity.components.render.gui.input
 import kengine.entity.components.render.gui.Text
 import kengine.entity.components.render.gui.UICustom
 import kengine.math.Vector2f
+import kengine.objects.KERuntime
 import kengine.objects.glfw.Window
 import kengine.util.Event
 import kengine.util.rectIndicesN
@@ -31,7 +32,7 @@ class Button(size: Vector2f, val text: String) :
 
     @Event.Listener(Window.MouseButtonEvent::class)
     fun onMouseClick(evt: Window.MouseButtonEvent): Boolean {
-        val mouse = root.window.mousePosition
+        val mouse = KERuntime.window.mousePosition
         if (evt.action == GLFW_PRESS && evt.button == GLFW_MOUSE_BUTTON_LEFT && mouse in bounds()) {
             pressed = true
             root.update(PressedEvent(this))

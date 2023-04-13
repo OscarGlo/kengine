@@ -4,6 +4,7 @@ import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.entity.components.render.r2d.Render2D
 import kengine.math.*
+import kengine.objects.KERuntime
 import kengine.objects.gl.GLImage
 import kotlin.reflect.KClass
 
@@ -25,8 +26,8 @@ abstract class UINode(
     var position: Position = Position()
     lateinit var theme: Theme
 
-    fun with(position: Position) = this.apply { this.position = position }
-    fun with(theme: Theme) = this.apply { this.theme = theme }
+    fun with(position: Position) = apply { this.position = position }
+    fun with(theme: Theme) = apply { this.theme = theme }
 
     override fun initialize() {
         if (!::theme.isInitialized)
@@ -42,7 +43,7 @@ abstract class UINode(
 
     protected fun parentBounds(): Rect =
         if (entity.parent == null || !entity.parent!!.has<UINode>()) {
-            val winSize = root.window.size
+            val winSize = KERuntime.window.size
             Rect(-winSize.x / 2f, -winSize.y / 2f, winSize.x / 2f, winSize.y / 2f)
         } else {
             entity.parent!!.get<UINode>().bounds()
@@ -86,7 +87,7 @@ abstract class UINode(
         Transform().translate(Vector3f(center.x, center.y, 0f)).matrix
     }
 
-    override fun view() = root.view(fixed = true)
+    override fun view() = KERuntime.scene.view(fixed = true)
 
     fun text(s: String) = textured(2 * s.length, theme.font.texture, theme.textColor)
 }

@@ -12,7 +12,8 @@ import kengine.entity.components.render.r2d.Tilemap
 import kengine.entity.components.render.r2d.image.Texture
 import kengine.math.*
 import kengine.objects.Font
-import kengine.objects.Runtime
+import kengine.objects.KERuntime
+import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.GLFWImageWrapper
 import kengine.objects.glfw.Window
@@ -23,11 +24,10 @@ import java.util.*
 fun main() {
     Resource.localPath = "src/test/resources"
 
-    val window = Window(Vector2i(800, 600), "KEngine")
-    window.clearColor = Color(0.3f, 0.1f, 0.5f)
-    window.icon = GLFWImageWrapper("images/square.png")
-
-    val runtime = Runtime(window)
+    KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
+        clearColor = Color(0.3f, 0.1f, 0.5f)
+        icon = GLFWImageWrapper("images/square.png")
+    }
 
     // Resources
     Resource.addLanguage(Locale.ENGLISH, "lang/en.txt")
@@ -41,7 +41,7 @@ fun main() {
         Vector2i(Vector2f.random() * 10f)
     }.associateWith { Tilemap.Ref(0, true) }
 
-    runtime.root.children(
+    KERuntime.scene = Scene(
         Entity(
             "background",
             Transform(),
@@ -95,7 +95,7 @@ fun main() {
         Entity(
             "window",
             UIWindow(Vector2f(100f, 200f), "Window").with(UINode.Position(left = 20f))
-        ).children(
+        ).add(
             Entity(
                 "button",
                 Button(Vector2f(80f, 20f), "Button")
@@ -113,5 +113,5 @@ fun main() {
         )
     )
 
-    runtime.run()
+    KERuntime.run()
 }

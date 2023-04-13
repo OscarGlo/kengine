@@ -3,6 +3,7 @@ package kengine.entity.components.render.gui
 import kengine.entity.components.render.gui.Text.Companion.stringVertices
 import kengine.math.Rect
 import kengine.math.Vector2f
+import kengine.objects.KERuntime
 import kengine.objects.glfw.Window
 import kengine.util.Event
 import kengine.util.rectIndicesN
@@ -41,9 +42,9 @@ class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = 
 
         if (evt.button == GLFW_MOUSE_BUTTON_LEFT) {
             val topbar = bounds().apply { y1 = y2 - theme.topbarHeight }
-            if (evt.action == GLFW_PRESS && root.window.mousePosition in topbar) {
+            if (evt.action == GLFW_PRESS && KERuntime.window.mousePosition in topbar) {
                 dragging = true
-                prevMouse = root.window.mousePosition
+                prevMouse = KERuntime.window.mousePosition
             } else if (evt.action == GLFW_RELEASE) {
                 dragging = false
             }
