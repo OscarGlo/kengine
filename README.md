@@ -44,10 +44,6 @@ as good as possible. The engine architecture is an entity-component tree similar
   - Camera update
 
 
-- `Entity`
-  - Pausing
-
-
 - `Tilemap`
   - Tile collisions
   - World/tile position conversion
@@ -57,6 +53,10 @@ as good as possible. The engine architecture is an entity-component tree similar
   - User resize / resizable property
   - Close button / closable property
   - Min / Max size
+
+
+- `AudioPlayer`
+  - Pausing on entity pause (pause event?)
 
 
 - **Optimization**

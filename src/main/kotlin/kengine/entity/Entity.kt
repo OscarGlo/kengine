@@ -35,6 +35,10 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         open fun update(delta: Double, time: Double) {}
     }
 
+    enum class PauseMode {
+        Inherit, Pause, Ignore
+    }
+
     private val children = mutableMapOf<String, Entity>()
     var parent: Entity? = null
     val components = components.toMutableList().onEach { it.entity = this }
@@ -42,6 +46,18 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     init {
         parent?.children?.set(id, this)
     }
+
+    var pauseMode: PauseMode = PauseMode.Inherit
+    var paused: Boolean = false
+        set(p) {
+            field = p
+            children.forEach { (_, e) -> e.paused = p }
+        }
+
+    private fun canPause(): Boolean =
+        pauseMode == PauseMode.Pause || (pauseMode == PauseMode.Inherit && (parent == null || parent!!.canPause()))
+
+    fun shouldPause() = paused && canPause()
 
     @Event.Listener(Event::class)
     fun onEvent(evt: Event) {

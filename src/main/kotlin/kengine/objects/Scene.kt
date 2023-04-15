@@ -11,7 +11,7 @@ import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL30.*
 
-class Scene(vararg entities: Entity): Event.Manager() {
+class Scene(vararg entities: Entity) : Event.Manager() {
     val root = Entity("")
     var currentCamera: Camera? = null
 
@@ -39,12 +39,10 @@ class Scene(vararg entities: Entity): Event.Manager() {
 
     fun add(vararg entities: Entity) = root.add(*entities)
 
-    fun init() {
-        root.forEachComponentRec<Entity.Component> {
-            it.root = root
-            it.initialize()
-            it.checkCompatibility()
-        }
+    fun init() = root.forEachComponentRec<Entity.Component> {
+        it.root = root
+        it.initialize()
+        it.checkCompatibility()
     }
 
     fun update(t0: Double, start: Double): Double {
@@ -53,8 +51,14 @@ class Scene(vararg entities: Entity): Event.Manager() {
         val time = t - start
 
         // Updates
-        root.forEachComponentRec<Body2D> { it.physicsUpdate(delta) }
-        root.forEachComponentRec<Entity.Component> { it.update(delta, time) }
+        root.forEachComponentRec<Body2D> {
+            if (!it.entity.shouldPause())
+                it.physicsUpdate(delta)
+        }
+        root.forEachComponentRec<Entity.Component> {
+            if (!it.entity.shouldPause())
+                it.update(delta, time)
+        }
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
