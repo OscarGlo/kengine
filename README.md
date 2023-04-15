@@ -40,8 +40,11 @@ as good as possible. The engine architecture is an entity-component tree similar
 ## //TODO
 
 - **Bugfixes**
-  - UI Rendering position
   - Camera update
+
+
+- `Matrix4`
+  - Constructor from Transform properties (position, scale, rotation)
 
 
 - `Tilemap`
