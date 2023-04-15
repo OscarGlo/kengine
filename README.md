@@ -65,7 +65,6 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 
 - **New features**
-  - Scenes + scene switching
 
 
 - **Future ideas**
