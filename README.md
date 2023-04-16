@@ -40,7 +40,15 @@ as good as possible. The engine architecture is an entity-component tree similar
 ## //TODO
 
 - **Bugfixes**
-  - Camera update
+  - 3D Quaternion rotation
+
+
+- `Entity`
+  - Store time per entity to account for pausing and scene switching
+
+
+- `KERuntime`
+  - Store total app time
 
 
 - `Matrix4`

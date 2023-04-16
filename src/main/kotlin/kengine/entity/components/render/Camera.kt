@@ -19,7 +19,7 @@ class Camera(
 
     override fun initialize() {
         if (current)
-            root.update(SetCurrentEvent(this))
+            KERuntime.scene.update(SetCurrentEvent(this))
     }
 
     override val required: List<KClass<out Entity.Component>> = listOf(Transform::class)
@@ -28,8 +28,8 @@ class Camera(
     var current
         get() = _current
         set(c) {
-            if (c && !current) root.update(SetCurrentEvent(this))
-            if (!c && current) root.update(SetCurrentEvent(null))
+            if (c && !current) KERuntime.scene.update(SetCurrentEvent(this))
+            if (!c && current) KERuntime.scene.update(SetCurrentEvent(null))
             _current = c
         }
 
@@ -55,12 +55,13 @@ class Camera(
         )
     }
 
-    fun view() = entity.get<Transform>().run {
+    fun view() = entity.get<Transform>().global().let {
+        val pos = Vector3f(it[0, 3], it[1, 3], it[2, 3])
         customTransform.matrix * Matrix4(
             mutableListOf(
-                mutableListOf(right.x, right.y, right.z, -(right dot position)),
-                mutableListOf(up.x,    up.y,    up.z,    -(up    dot position)),
-                mutableListOf(front.x, front.y, front.z, -(front dot position)),
+                mutableListOf(right.x, right.y, right.z, -(right dot pos)),
+                mutableListOf(up.x,    up.y,    up.z,    -(up    dot pos)),
+                mutableListOf(front.x, front.y, front.z, -(front dot pos)),
                 mutableListOf(0f,      0f,      0f,      1f                   )
             )
         )
