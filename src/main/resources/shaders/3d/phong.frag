@@ -33,7 +33,7 @@ void main() {
     vec4 diffuse = light.diffuse * material.diffuse * diffuseStrength;
 
     float specularStrength = pow(max(dot(viewDir, reflect(-lightDir, normal)), 0.0), material.shininess);
-    vec4 specular = light.specular * material.specular * specularStrength;
+    vec4 specular = light.specular * material.specular * specularStrength * diffuseStrength;
 
     FragColor = vec4(vec3(ambient + diffuse + specular), 1);
 }
