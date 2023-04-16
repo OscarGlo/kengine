@@ -123,7 +123,7 @@ fun main() {
                 }
 
                 override fun update(delta: Double, time: Double) {
-                    tf.rotation = Quaternion.euler(0f, angle.x, angle.y)
+                    tf.rotation = Quaternion.euler(angle.y, -angle.x, 0f)
                     tf.translate((cam.right * direction.x + cam.up * direction.y + cam.front * direction.z) * delta.toFloat())
                 }
             }

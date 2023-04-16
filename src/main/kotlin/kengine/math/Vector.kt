@@ -255,9 +255,7 @@ class Quaternion(a: Float, b: Float, c: Float, d: Float) :
         }
 
         fun euler(x: Float = 0f, y: Float = 0f, z: Float = 0f) =
-            (axisAngle(Vector3f.right, x) *
-            axisAngle(Vector3f.up, y) *
-            axisAngle(Vector3f.front, z)).normalize()
+            (axisAngle(Vector3f.right, x) * axisAngle(Vector3f.up, y) * axisAngle(Vector3f.front, z)).normalize()
     }
 
     var a by Component(0)
@@ -274,9 +272,9 @@ class Quaternion(a: Float, b: Float, c: Float, d: Float) :
 
     fun matrix() = Matrix3(
         mutableListOf(
-            mutableListOf(1 - 2 * (b * b + c * c), 2 * (a * b - c * d), 2 * (a * c + b * d)),
-            mutableListOf(2 * (a * b + c * d), 1 - 2 * (a * a + c * c), 2 * (b * c - a * d)),
-            mutableListOf(2 * (a * c - b * d), 2 * (b * c + a * d), 1 - 2 * (a * a + b * b)),
+            mutableListOf(1 - 2 * (c * c + d * d), 2 * (b * c - d * a), 2 * (b * d + c * a)),
+            mutableListOf(2 * (b * c + d * a), 1 - 2 * (b * b + d * d), 2 * (c * d - b * a)),
+            mutableListOf(2 * (b * d - c * a), 2 * (c * d + b * a), 1 - 2 * (b * b + c * c)),
         )
     )
 
