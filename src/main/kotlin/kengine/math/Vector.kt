@@ -175,6 +175,9 @@ class Vector3f(x: Float, y: Float, z: Float) : Vector3<Float, Vector3f>(Float::c
     )
 
     companion object {
+        fun random() = Vector3f(Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
+        fun randomSigned() = Vector3f(Random.nextFloatSigned(), Random.nextFloatSigned(), Random.nextFloatSigned())
+
         val right = Vector3f(1f, 0f, 0f)
         val left = -right
         val up = Vector3f(0f, 1f, 0f)
@@ -255,7 +258,7 @@ class Quaternion(a: Float, b: Float, c: Float, d: Float) :
         }
 
         fun euler(x: Float = 0f, y: Float = 0f, z: Float = 0f) =
-            (axisAngle(Vector3f.right, x) * axisAngle(Vector3f.up, y) * axisAngle(Vector3f.front, z)).normalize()
+            (axisAngle(Vector3f.right, x) * axisAngle(Vector3f.up, y) * axisAngle(Vector3f.back, z)).normalize()
     }
 
     var a by Component(0)

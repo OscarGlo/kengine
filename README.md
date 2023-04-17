@@ -40,7 +40,6 @@ as good as possible. The engine architecture is an entity-component tree similar
 ## //TODO
 
 - **Bugfixes**
-  - 3D Quaternion rotation
 
 
 - `Entity`

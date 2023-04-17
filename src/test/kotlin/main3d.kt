@@ -65,7 +65,7 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
     object : Script() {
         lateinit var tf: Transform
         override fun update(delta: Double, time: Double) {
-            tf.rotation = Quaternion.axisAngle(Vector3f(1f, 0f, 0f), time.toFloat())
+            tf.rotation = Quaternion.euler(time.toFloat())
         }
     }
 )
