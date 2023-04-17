@@ -1,7 +1,6 @@
 package kengine.entity.components.render.gui
 
 import kengine.entity.Entity
-import kengine.entity.components.Transform
 import kengine.entity.components.render.r2d.Render2D
 import kengine.math.*
 import kengine.objects.KERuntime
@@ -84,7 +83,7 @@ abstract class UINode(
     }
 
     override fun model() = bounds().run {
-        Transform().translate(Vector3f(center.x, center.y, 0f)).matrix
+        Matrix4(Vector3f(center.x, center.y, 0f))
     }
 
     override fun view() = KERuntime.scene.view(fixed = true)

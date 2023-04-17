@@ -6,17 +6,7 @@ import kengine.math.Quaternion
 import kengine.math.Vector3f
 
 open class Transform(val is3D: Boolean = false, val fixed: Boolean = false) : Entity.Component() {
-    val matrix by GetDirty(Matrix4()) {
-        val rot = rotation.matrix()
-        Matrix4(
-            mutableListOf(
-                mutableListOf(scaling.x * rot[0, 0], scaling.y * rot[1, 0], scaling.z * rot[2, 0], position.x),
-                mutableListOf(scaling.x * rot[0, 1], scaling.y * rot[1, 1], scaling.z * rot[2, 1], position.y),
-                mutableListOf(scaling.x * rot[0, 2], scaling.y * rot[1, 2], scaling.z * rot[2, 2], position.z),
-                mutableListOf(0f, 0f, 0f, 1f)
-            )
-        )
-    }
+    val matrix by GetDirty(Matrix4()) { Matrix4(position, scaling, rotation)  }
 
     var position by SetDirty(Vector3f())
     var scaling by SetDirty(Vector3f(1f))

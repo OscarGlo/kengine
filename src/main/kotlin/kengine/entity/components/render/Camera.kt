@@ -13,7 +13,7 @@ class Camera(
     var fov: Float = 90f,
     var near: Float = 1f,
     var far: Float = 1000f,
-    private val customTransform: Transform = Transform(),
+    private val customTransform: Matrix4 = Matrix4(),
 ) : Entity.Component() {
     class SetCurrentEvent(val camera: Camera?) : Event()
 
@@ -57,7 +57,7 @@ class Camera(
 
     fun view() = entity.get<Transform>().global().let {
         val pos = Vector3f(it[0, 3], it[1, 3], it[2, 3])
-        customTransform.matrix * Matrix4(
+        customTransform * Matrix4(
             mutableListOf(
                 mutableListOf(right.x, right.y, right.z, -(right dot pos)),
                 mutableListOf(up.x,    up.y,    up.z,    -(up    dot pos)),

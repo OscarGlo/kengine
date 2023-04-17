@@ -1,10 +1,7 @@
 package kengine.entity.components.render.r2d
 
 import kengine.entity.components.Transform
-import kengine.math.Rect
-import kengine.math.Vector2f
-import kengine.math.Vector2i
-import kengine.math.Vector3f
+import kengine.math.*
 import kengine.objects.gl.GLImage
 import kengine.util.gridUvs
 import kengine.util.rectIndicesN
@@ -167,5 +164,5 @@ class Tilemap(
 
     // Helper functions
     fun worldPos(tilePos: Vector2i) =
-        Transform().translate(Vector3f(size * Vector2f(tilePos))).matrix * entity.get<Transform>().global()
+        Matrix4(Vector3f(size * Vector2f(tilePos))) * entity.get<Transform>().global()
 }

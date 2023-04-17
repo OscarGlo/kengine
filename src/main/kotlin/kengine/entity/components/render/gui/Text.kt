@@ -1,6 +1,6 @@
 package kengine.entity.components.render.gui
 
-import kengine.entity.components.Transform
+import kengine.math.Matrix4
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.Font
@@ -69,7 +69,7 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
     override fun calculateVertices() = stringVertices(theme.font, text)
 
     override fun model() = bounds().run {
-        Transform().translate(Vector3f(x1, y1, 0f)).matrix
+        Matrix4(Vector3f(x1, y1, 0f))
     }
 
     override fun renderSteps() = text(text)

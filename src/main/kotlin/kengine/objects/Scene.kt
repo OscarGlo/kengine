@@ -1,10 +1,10 @@
 package kengine.objects
 
 import kengine.entity.Entity
-import kengine.entity.components.Transform
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Camera
 import kengine.entity.components.render.Render
+import kengine.math.Matrix4
 import kengine.math.Vector3f
 import kengine.objects.glfw.Window
 import kengine.util.Event
@@ -16,34 +16,36 @@ class Scene(vararg entities: Entity) : Event.Manager() {
     var currentCamera: Camera? = null
     var time = 0.0; private set
 
+    init {
+        root.add(*entities)
+    }
+
     @Event.Listener(Camera.SetCurrentEvent::class)
     fun onCameraChange(evt: Camera.SetCurrentEvent) {
         currentCamera = evt.camera
     }
 
-    private val viewTransform = Transform()
+    private lateinit var viewTransform: Matrix4
 
     fun view(is3D: Boolean = false, fixed: Boolean = false) =
         if (!fixed && currentCamera != null) {
-            if (is3D) currentCamera!!.view() else viewTransform.matrix * currentCamera!!.view()
-        } else viewTransform.matrix
-
-    init {
-        viewTransform.scale(Vector3f(2f / KERuntime.window.size.x, 2f / KERuntime.window.size.y, 1f))
-        root.add(*entities)
-    }
+            if (is3D) currentCamera!!.view() else viewTransform * currentCamera!!.view()
+        } else viewTransform
 
     @Event.Listener(Window.ResizeEvent::class)
     fun setViewScaling(evt: Window.ResizeEvent) {
-        viewTransform.scaling = Vector3f(2f / evt.size.x, 2f / evt.size.y, 1f)
+        viewTransform = Matrix4(scaling = Vector3f(2f / evt.size.x, 2f / evt.size.y, 1f))
     }
 
     fun add(vararg entities: Entity) = root.add(*entities)
 
-    fun init() = root.forEachComponentRec<Entity.Component> {
-        it.root = root
-        it.initialize()
-        it.checkCompatibility()
+    fun init() {
+        viewTransform = Matrix4(scaling = Vector3f(2f / KERuntime.window.size.x, 2f / KERuntime.window.size.y, 1f))
+        root.forEachComponentRec<Entity.Component> {
+            it.root = root
+            it.initialize()
+            it.checkCompatibility()
+        }
     }
 
     fun update(t0: Double): Double {
