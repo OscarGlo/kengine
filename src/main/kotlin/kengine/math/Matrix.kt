@@ -85,7 +85,7 @@ class Matrix4(values: MatrixValues) : Matrix<Four, Matrix4>(Four::class, Matrix4
     constructor(v: Vector4f) : this() {
         setDiagonal(v)
     }
-    constructor(position: Vector3f = Vector3f(), scaling: Vector3f = Vector3f(), rotation: Quaternion = Quaternion()) : this(
+    constructor(position: Vector3f = Vector3f(), scaling: Vector3f = Vector3f(1f), rotation: Quaternion = Quaternion()) : this(
         rotation.matrix().let {
             mutableListOf(
                 mutableListOf(scaling.x * it[0, 0], scaling.y * it[1, 0], scaling.z * it[2, 0], position.x),
