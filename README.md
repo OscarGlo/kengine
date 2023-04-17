@@ -58,11 +58,16 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 
 - **Optimization**
-  - Collisions
   - Fix input handling lag
+  - Collisions
 
 
 - **New features**
+  - GUI Elements
+    - Checkbox / Radio
+    - Slider
+    - Text input?
+  - WebGL compatibility
 
 
 - **Future ideas**

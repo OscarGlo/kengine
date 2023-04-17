@@ -250,7 +250,7 @@ class Rect(x1: Float, y1: Float, x2: Float, y2: Float) :
 
 class Quaternion(a: Float, b: Float, c: Float, d: Float) :
     Vector<Four, Float, Quaternion>(Float::class, Quaternion::class, a, b, c, d) {
-    constructor() : this(0f, 0f, 0f, 1f)
+    constructor() : this(1f, 0f, 0f, 0f)
 
     companion object {
         fun axisAngle(axis: Vector3f, angle: Float) = (axis * sin(angle / 2)).run {
