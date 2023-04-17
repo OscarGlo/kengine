@@ -35,11 +35,11 @@ class Button(size: Vector2f, val text: String) :
         val mouse = KERuntime.window.mousePosition
         if (evt.action == GLFW_PRESS && evt.button == GLFW_MOUSE_BUTTON_LEFT && mouse in bounds()) {
             pressed = true
-            root.update(PressedEvent(this))
+            root.dispatch(PressedEvent(this))
             return false
         } else if (evt.action == GLFW_RELEASE && pressed) {
             pressed = false
-            root.update(ReleasedEvent(this))
+            root.dispatch(ReleasedEvent(this))
         }
         return true
     }

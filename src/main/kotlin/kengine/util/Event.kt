@@ -11,9 +11,9 @@ abstract class Event {
     abstract class Manager : Dirtyable() {
         val listeners = mutableListOf<Manager>()
 
-        protected inline fun <reified E : Event> notify(event: E) = listeners.forEach { it.update(event) }
+        protected inline fun <reified E : Event> notify(event: E) = listeners.forEach { it.dispatch(event) }
 
-        fun <E : Event> update(event: E) = this::class.functions
+        fun <E : Event> dispatch(event: E) = this::class.functions
             .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
             .filter { it.key != null && it.key!!.eventClass.isSuperclassOf(event::class) }
             .values.fold(true) { acc, fn ->

@@ -32,7 +32,7 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         fun attach(e: Entity) = apply { entity = e }
 
         open fun initialize() {}
-        open fun update(delta: Double, time: Double) {}
+        open fun update(delta: Double) {}
     }
 
     enum class PauseMode {
@@ -46,6 +46,8 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     init {
         parent?.children?.set(id, this)
     }
+
+    var time: Double = 0.0
 
     var pauseMode: PauseMode = PauseMode.Inherit
     var paused: Boolean = false
@@ -63,7 +65,7 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     fun onEvent(evt: Event) {
         var cont = true
         forEachComponentRec<Component> {
-            if (cont && !it.update(evt))
+            if (cont && !it.dispatch(evt))
                 cont = false
         }
     }

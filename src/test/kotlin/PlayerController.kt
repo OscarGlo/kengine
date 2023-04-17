@@ -39,7 +39,7 @@ class PlayerController : Script() {
         }
     }
 
-    override fun update(delta: Double, time: Double) {
+    override fun update(delta: Double) {
         val dir = direction.normalize() * speed.toFloat()
         body.velocity.add(dir).multiply(0.9f)
 

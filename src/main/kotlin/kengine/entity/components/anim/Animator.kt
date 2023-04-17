@@ -93,5 +93,5 @@ class PropertyAnimation<T : Any, V : Any>(
 class Animator(vararg val animations: Animation<*>) : Entity.Component() {
     override fun initialize() = animations.forEach { it.init(entity) }
 
-    override fun update(delta: Double, time: Double) = animations.forEach { if (it.running) it.update(delta) }
+    override fun update(delta: Double) = animations.forEach { if (it.running) it.update(delta) }
 }

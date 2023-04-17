@@ -21,6 +21,7 @@ class KERuntime private constructor(): Event.Manager() {
 
         fun run() = instance.run()
 
+        var time: Double = 0.0
         fun doubleTime() = System.nanoTime() / 1_000_000_000.0
     }
 
@@ -31,7 +32,7 @@ class KERuntime private constructor(): Event.Manager() {
 
     // Pass global events to Scripts
     @Event.Listener(eventClass = Event::class)
-    fun onEvent(evt: Event) = scene.root.update(evt)
+    fun onEvent(evt: Event) = scene.root.dispatch(evt)
 
     private var isInit = false
 
@@ -52,11 +53,9 @@ class KERuntime private constructor(): Event.Manager() {
     fun run() {
         init()
 
-        val start = doubleTime()
-        var t = start
-
+        var t = doubleTime()
         while (!glfwWindowShouldClose(window.id))
-            t = scene.update(t, start)
+            t = scene.update(t)
 
         glfwTerminate()
     }

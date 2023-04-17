@@ -7,7 +7,7 @@ class FpsCounter : Script() {
 
     private val deltas = mutableListOf<Double>()
 
-    override fun update(delta: Double, time: Double) {
+    override fun update(delta: Double) {
         deltas.add(delta)
         if (deltas.size > 30)
             deltas.removeAt(0)

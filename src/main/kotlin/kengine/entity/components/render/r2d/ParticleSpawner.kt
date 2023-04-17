@@ -50,15 +50,15 @@ class ParticleSpawner(
         )
     }
 
-    override fun update(delta: Double, time: Double) {
+    override fun update(delta: Double) {
         val tMin = spawnTime + delay
-        if (active && time >= tMin) {
+        if (active && entity.time >= tMin) {
             spawnTime = tMin + Random.nextFloatSigned() * delayDelta
-            addParticle(time)
+            addParticle(entity.time)
         }
 
         particles.forEach {
-            it.age = ((time - it.birth) / it.lifespan).toFloat()
+            it.age = ((entity.time - it.birth) / it.lifespan).toFloat()
 
             it.position.add(it.velocity * delta.toFloat())
             it.velocity.add(acceleration * delta.toFloat())

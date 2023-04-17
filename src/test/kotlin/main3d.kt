@@ -64,8 +64,8 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
     },
     object : Script() {
         lateinit var tf: Transform
-        override fun update(delta: Double, time: Double) {
-            tf.rotation = Quaternion.euler(time.toFloat())
+        override fun update(delta: Double) {
+            tf.rotation = Quaternion.euler(entity.time.toFloat())
         }
     }
 )
@@ -122,7 +122,7 @@ fun main() {
                     mousePos = evt.position
                 }
 
-                override fun update(delta: Double, time: Double) {
+                override fun update(delta: Double) {
                     tf.rotation = Quaternion.euler(angle.y, -angle.x, 0f)
                     tf.translate((cam.right * direction.x + cam.up * direction.y + cam.front * direction.z) * delta.toFloat())
                 }

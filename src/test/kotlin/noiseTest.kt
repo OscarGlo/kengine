@@ -13,8 +13,8 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
     object : Script() {
         lateinit var transform: Transform
 
-        override fun update(delta: Double, time: Double) {
-            val noise = Noise.fractal(octaves, 0.5f, Vector2f(i / 100f, time.toFloat() / 5))
+        override fun update(delta: Double) {
+            val noise = Noise.fractal(octaves, 0.5f, Vector2f(i / 100f, entity.time.toFloat() / 5))
             transform.position = offset + Vector3f(0f, 100 * noise, 0f)
         }
     }

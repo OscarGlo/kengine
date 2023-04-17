@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL30.*
 class Scene(vararg entities: Entity) : Event.Manager() {
     val root = Entity("")
     var currentCamera: Camera? = null
+    var time = 0.0; private set
 
     @Event.Listener(Camera.SetCurrentEvent::class)
     fun onCameraChange(evt: Camera.SetCurrentEvent) {
@@ -45,19 +46,25 @@ class Scene(vararg entities: Entity) : Event.Manager() {
         it.checkCompatibility()
     }
 
-    fun update(t0: Double, start: Double): Double {
+    fun update(t0: Double): Double {
         val t = KERuntime.doubleTime()
         val delta = t - t0
-        val time = t - start
+
+        KERuntime.time += delta
+        this.time += delta
 
         // Updates
-        root.forEachComponentRec<Body2D> {
-            if (!it.entity.shouldPause())
-                it.physicsUpdate(delta)
+        root.forEachRec {
+            if (!it.shouldPause())
+                it.time += delta
         }
         root.forEachComponentRec<Entity.Component> {
-            if (!it.entity.shouldPause())
-                it.update(delta, time)
+            if (!it.entity.shouldPause()) {
+                it.update(delta)
+
+                if (it is Body2D)
+                    it.physicsUpdate(delta)
+            }
         }
 
         // Render

@@ -42,14 +42,6 @@ as good as possible. The engine architecture is an entity-component tree similar
 - **Bugfixes**
 
 
-- `Entity`
-  - Store time per entity to account for pausing and scene switching
-
-
-- `KERuntime`
-  - Store total app time
-
-
 - `Matrix4`
   - Constructor from Transform properties (position, scale, rotation)
 

@@ -19,7 +19,7 @@ class Camera(
 
     override fun initialize() {
         if (current)
-            KERuntime.scene.update(SetCurrentEvent(this))
+            KERuntime.scene.dispatch(SetCurrentEvent(this))
     }
 
     override val required: List<KClass<out Entity.Component>> = listOf(Transform::class)
@@ -28,8 +28,8 @@ class Camera(
     var current
         get() = _current
         set(c) {
-            if (c && !current) KERuntime.scene.update(SetCurrentEvent(this))
-            if (!c && current) KERuntime.scene.update(SetCurrentEvent(null))
+            if (c && !current) KERuntime.scene.dispatch(SetCurrentEvent(this))
+            if (!c && current) KERuntime.scene.dispatch(SetCurrentEvent(null))
             _current = c
         }
 
