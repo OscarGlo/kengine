@@ -30,9 +30,8 @@ class KERuntime private constructor(): Event.Manager() {
 
     var vSync = true
 
-    // Pass global events to Scripts
-    @Event.Listener(eventClass = Event::class)
-    fun onEvent(evt: Event) = scene.root.dispatch(evt)
+    @Event.Listener(Event::class)
+    fun onEvent(evt: Event) = scene.dispatch(evt)
 
     private var isInit = false
 
