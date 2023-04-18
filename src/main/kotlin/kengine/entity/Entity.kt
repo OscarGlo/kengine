@@ -61,15 +61,6 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
 
     fun shouldPause() = paused && canPause()
 
-    @Event.Listener(Event::class)
-    fun onEvent(evt: Event) {
-        var cont = true
-        forEachComponentRec<Component> {
-            if (cont && !it.dispatch(evt))
-                cont = false
-        }
-    }
-
     fun add(vararg entities: Entity) = apply {
         entities.forEach {
             it.parent = this

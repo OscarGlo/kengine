@@ -1,9 +1,12 @@
 import kengine.entity.Entity
 import kengine.entity.components.Script
 import kengine.entity.components.Transform
+import kengine.entity.components.render.gui.Text
+import kengine.entity.components.render.gui.UINode
 import kengine.entity.components.render.r2d.Ellipse
 import kengine.math.*
 import kengine.objects.KERuntime
+import kengine.objects.Scene
 import kengine.objects.glfw.Window
 
 class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
@@ -26,6 +29,14 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
 
 fun main() {
     KERuntime.window = Window(Vector2i(1000, 600), "KEngine")
+
+    KERuntime.scene = Scene(
+        Entity(
+            "fps",
+            Text().with(UINode.Position(top = 5f, left = 5f)),
+            FpsCounter()
+        ),
+    )
 
     for (j in (1..5))
         for (i in (-100..100))

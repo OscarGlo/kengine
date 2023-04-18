@@ -1,25 +1,53 @@
 package kengine.util
 
+import java.lang.reflect.Method
 import kotlin.reflect.KClass
-import kotlin.reflect.full.functions
-import kotlin.reflect.full.isSuperclassOf
+
+typealias EventClass = KClass<out Event>
+typealias ListenerClass = Class<*>
 
 abstract class Event {
+    companion object {
+        private val classEvents = mutableMapOf<ListenerClass, List<EventClass>>()
+        val eventMethods = mutableMapOf<EventClass, MutableMap<ListenerClass, MutableList<Method>>>()
+        val eventListeners = mutableMapOf<EventClass, MutableList<Any>>()
+
+        init {
+            Reflect.getAllClasses()
+                .forEach { clazz ->
+                    val typeMethods = clazz.methods
+                        .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
+                        .filter { (annotation, _) -> annotation != null }
+                        .map { (annotation, method) -> annotation!!.eventClass to method }
+
+                    classEvents[clazz] = typeMethods.map { it.first }
+
+                    typeMethods.forEach { (kclass, method) ->
+                        eventMethods.getOrPut(kclass) { mutableMapOf() }.getOrPut(clazz) { mutableListOf() }.add(method)
+                    }
+                }
+        }
+
+        fun register(manager: Manager) {
+            classEvents[manager::class.java]?.forEach {
+                eventListeners.getOrPut(it) { mutableListOf() }.add(manager)
+            }
+        }
+    }
+
     @Target(AnnotationTarget.FUNCTION)
     annotation class Listener(val eventClass: KClass<out Event>)
 
     abstract class Manager : Dirtyable() {
-        val listeners = mutableListOf<Manager>()
+        init {
+            register(this)
+        }
 
-        protected inline fun <reified E : Event> notify(event: E) = listeners.forEach { it.dispatch(event) }
-
-        fun <E : Event> dispatch(event: E) = this::class.functions
-            .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
-            .filter { it.key != null && it.key!!.eventClass.isSuperclassOf(event::class) }
-            .values.fold(true) { acc, fn ->
-                val ret = fn.call(this, event)
-                acc && if (ret is Boolean) ret else true
+        protected inline fun <reified E : Event> notify(event: E) = eventListeners[E::class]?.forEach { listener ->
+            eventMethods[E::class]?.get(listener::class.java)?.forEach {
+                it.invoke(listener, event)
             }
+        }
     }
 }
 

@@ -30,16 +30,12 @@ class KERuntime private constructor(): Event.Manager() {
 
     var vSync = true
 
-    @Event.Listener(Event::class)
-    fun onEvent(evt: Event) = scene.dispatch(evt)
-
     private var isInit = false
 
     fun init() {
         if (isInit) return
 
         window.init()
-        window.listeners.add(this)
 
         Shader.init()
         scene.init()

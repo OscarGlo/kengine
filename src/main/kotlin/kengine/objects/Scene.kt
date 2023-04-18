@@ -20,9 +20,6 @@ class Scene(vararg entities: Entity) : Event.Manager() {
         root.add(*entities)
     }
 
-    @Event.Listener(Event::class)
-    fun onEvent(evt: Event) = root.dispatch(evt)
-
     @Event.Listener(Camera.SetCurrentEvent::class)
     fun onCameraChange(evt: Camera.SetCurrentEvent) {
         currentCamera = evt.camera
