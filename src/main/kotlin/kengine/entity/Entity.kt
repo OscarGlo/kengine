@@ -12,23 +12,21 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         open val incompatible: List<KClass<out Component>> = emptyList()
 
         fun checkCompatibility() {
-            val requiredMap = required.associateWith { false }.toMutableMap()
+            val componentClasses = entity.components.map { it::class }
 
-            for (component in entity.components) {
-                if (component::class in incompatible)
-                    terminateError("Incompatible component types ${component::class.simpleName} and ${this::class.simpleName} on entity ${entity.path()}")
+            val incomp = componentClasses.filter { it in incompatible }
+            if (incomp.isNotEmpty())
+                terminateError("Incompatible component(s) ${incomp.joinToString { it.simpleName ?: "?" }} with ${this::class.simpleName} on entity ${entity.path()}")
 
-                if (requiredMap.containsKey(component::class))
-                    requiredMap[component::class] = true
-            }
-
-            for (component in requiredMap.keys) {
-                if (requiredMap[component] == false)
-                    terminateError("Missing required component ${component.simpleName} for ${this::class.simpleName} on entity ${entity.path()}")
-            }
+            val missing = required.filter { it !in componentClasses }
+            if (missing.isNotEmpty())
+                terminateError("Missing required component(s) ${missing.joinToString { it.simpleName ?: "?" }} for ${this::class.simpleName} on entity ${entity.path()}")
         }
 
-        fun attach(e: Entity) = apply { entity = e }
+        fun attach(e: Entity) = apply {
+            entity = e
+            checkCompatibility()
+        }
 
         open fun initialize() {}
         open fun update(delta: Double) {}
