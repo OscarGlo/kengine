@@ -42,7 +42,6 @@ class Scene(vararg entities: Entity) : Event.Manager() {
     fun init() {
         viewTransform = Matrix4(scaling = Vector3f(2f / KERuntime.window.size.x, 2f / KERuntime.window.size.y, 1f))
         root.forEachComponentRec<Entity.Component> {
-            it.root = root
             it.initialize()
             it.checkCompatibility()
         }

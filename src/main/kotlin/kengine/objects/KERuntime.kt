@@ -9,15 +9,18 @@ class KERuntime private constructor(): Event.Manager() {
     companion object {
         private val instance = KERuntime()
 
+        var window
+            get() = instance.window
+            set(w) { instance.window = w }
+
         var scene
             get() = instance.scene
             set(s) {
                 if (instance.isInit) s.init()
                 instance.scene = s
             }
-        var window
-            get() = instance.window
-            set(w) { instance.window = w }
+
+        val root get() = instance.scene.root
 
         fun run() = instance.run()
 

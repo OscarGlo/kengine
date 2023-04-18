@@ -5,6 +5,7 @@ import kengine.entity.components.Transform
 import kengine.entity.components.physics.Collider2D.Collision
 import kengine.math.Vector2f
 import kengine.math.Vector3f
+import kengine.objects.KERuntime
 
 class Body2D(val static: Boolean = false) : Entity.Component() {
     companion object {
@@ -23,7 +24,7 @@ class Body2D(val static: Boolean = false) : Entity.Component() {
 
     private fun getCollisions() = mutableListOf<Collision>().apply {
         colliders.forEach { collider ->
-            root.forEachComponentRec<Collider2D> {
+            KERuntime.root.forEachComponentRec<Collider2D> {
                 if (it.entity != entity) {
                     val col = collider.collide(it)
                     if (col != null)
