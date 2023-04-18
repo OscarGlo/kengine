@@ -58,7 +58,6 @@ as good as possible. The engine architecture is an entity-component tree similar
 
 
 - **Optimization**
-  - Fix input handling lag
   - Collisions
 
 

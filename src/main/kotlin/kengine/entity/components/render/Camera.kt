@@ -40,30 +40,26 @@ class Camera(
 
     val front get() = Vector3f(entity.get<Transform>().global() * Vector4f(Vector3f.front, 0f))
     val right get() = Vector3f(entity.get<Transform>().global() * Vector4f(Vector3f.right, 0f))
-    val up    get() = Vector3f(entity.get<Transform>().global() * Vector4f(Vector3f.up, 0f))
+    val up    get() = Vector3f(entity.get<Transform>().global() * Vector4f(Vector3f.up,    0f))
 
     fun projection(): Matrix4 {
         val tFov = tan(fov / 2)
         val dist = -(far + near) / (far - near)
         return Matrix4(
-            mutableListOf(
-                mutableListOf(1 / (KERuntime.window.aspect * tFov), 0f, 0f, 0f),
-                mutableListOf(0f, 1 / tFov, 0f, 0f),
-                mutableListOf(0f, 0f, dist, 2 * dist),
-                mutableListOf(0f, 0f, -1f, 0f)
-            )
+            1 / (KERuntime.window.aspect * tFov), 0f, 0f, 0f,
+            0f, 1 / tFov, 0f, 0f,
+            0f, 0f, dist, -1f,
+            0f, 0f, 2 * dist, 0f
         )
     }
 
     fun view() = entity.get<Transform>().global().let {
         val pos = Vector3f(it[0, 3], it[1, 3], it[2, 3])
         customTransform * Matrix4(
-            mutableListOf(
-                mutableListOf(right.x, right.y, right.z, -(right dot pos)),
-                mutableListOf(up.x,    up.y,    up.z,    -(up    dot pos)),
-                mutableListOf(front.x, front.y, front.z, -(front dot pos)),
-                mutableListOf(0f,      0f,      0f,      1f                   )
-            )
+            right.x,          up.x,          front.x,          0f,
+            right.y,          up.y,          front.y,          0f,
+            right.z,          up.z,          front.z,          0f,
+            -(right dot pos), -(up dot pos), -(front dot pos), 1f
         )
     }
 }

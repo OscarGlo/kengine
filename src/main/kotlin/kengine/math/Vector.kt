@@ -12,14 +12,8 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.full.primaryConstructor
 
 abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
-    protected val numClass: KClass<T>, protected val vecClass: KClass<V>, components: List<T>
+    protected val numClass: KClass<T>, protected val vecClass: KClass<V>, vararg components: T
 ) {
-    constructor(numClass: KClass<T>, vecClass: KClass<V>, vararg components: T) : this(
-        numClass, vecClass, components.toList()
-    )
-
-    val components = components.toMutableList()
-
     class Component<S : Size, T : Number, V : Vector<S, T, V>>(private val index: Int) :
         ReadWriteProperty<Vector<S, T, V>, T> {
         override fun getValue(thisRef: Vector<S, T, V>, property: KProperty<*>) = thisRef[index]
@@ -28,6 +22,9 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
             thisRef[index] = value
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    var components = components as Array<T>
 
     init {
         components.map { it.javaClass }.toSet().let {
@@ -117,7 +114,7 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     fun divide(other: V) = componentAssign(other) { a, b -> a.numDiv(b) }
     fun divide(n: T) = mapAssign { a, _ -> a.numDiv(n) }
 
-    override fun equals(other: Any?) = other is Vector<*, *, *> && components == other.components
+    override fun equals(other: Any?) = other is Vector<*, *, *> && components.contentEquals(other.components)
 
     override fun toString() = components.joinToString(", ", "(", ")")
 
@@ -274,11 +271,9 @@ class Quaternion(a: Float, b: Float, c: Float, d: Float) :
     )
 
     fun matrix() = Matrix3(
-        mutableListOf(
-            mutableListOf(1 - 2 * (c * c + d * d), 2 * (b * c - d * a), 2 * (b * d + c * a)),
-            mutableListOf(2 * (b * c + d * a), 1 - 2 * (b * b + d * d), 2 * (c * d - b * a)),
-            mutableListOf(2 * (b * d - c * a), 2 * (c * d + b * a), 1 - 2 * (b * b + c * c)),
-        )
+        1 - 2 * (c * c + d * d), 2 * (b * c + d * a), 2 * (b * d - c * a),
+        2 * (b * c - d * a), 1 - 2 * (b * b + d * d), 2 * (c * d + b * a),
+        2 * (b * d + c * a), 2 * (c * d - b * a), 1 - 2 * (b * b + c * c),
     )
 
     fun conj() = Quaternion(a, -b, -c, -d)
