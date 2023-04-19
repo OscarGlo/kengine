@@ -32,6 +32,8 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         open fun update(delta: Double) {}
     }
 
+    class TogglePause(val paused: Boolean) : Event()
+
     enum class PauseMode {
         Inherit, Pause, Ignore
     }
@@ -49,7 +51,10 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     var pauseMode: PauseMode = PauseMode.Inherit
     var paused: Boolean = false
         set(p) {
+            if (p == field) return
+
             field = p
+            notify(TogglePause(p))
             children.forEach { (_, e) -> e.paused = p }
         }
 

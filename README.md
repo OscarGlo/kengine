@@ -54,10 +54,6 @@ as good as possible. The engine architecture is an entity-component tree similar
   - Min / Max size
 
 
-- `AudioPlayer`
-  - Pausing on entity pause (pause event?)
-
-
 - **Optimization**
   - Collisions
 

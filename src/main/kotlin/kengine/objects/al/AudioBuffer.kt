@@ -1,10 +1,11 @@
 package kengine.objects.al
 
 import kengine.objects.Buffer
-import org.lwjgl.openal.AL10.*
 import kengine.util.alFormat
+import org.lwjgl.openal.AL10.alBufferData
+import org.lwjgl.openal.AL10.alGenBuffers
 
-class Audio : Buffer<Vorbis>() {
+class AudioBuffer : Buffer<Vorbis>() {
     override fun gen() = alGenBuffers()
 
     override fun store(bufferData: Vorbis) =

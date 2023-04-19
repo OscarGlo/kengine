@@ -89,4 +89,12 @@ class Matrix4(vararg values: Float) : Matrix<Four, Matrix4>(Four::class, Matrix4
             )
         }
     )
+
+    var position
+        get() = Vector3f(this[0, 3], this[1, 3], this[2, 3])
+        set(p) {
+            this[0, 3] = p[0]
+            this[1, 3] = p[1]
+            this[2, 3] = p[2]
+        }
 }

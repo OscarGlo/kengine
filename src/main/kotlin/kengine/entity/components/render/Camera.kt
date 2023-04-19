@@ -5,6 +5,7 @@ import kengine.entity.components.Transform
 import kengine.math.*
 import kengine.objects.KERuntime
 import kengine.util.Event
+import org.lwjgl.openal.AL10.*
 import kotlin.math.tan
 import kotlin.reflect.KClass
 
@@ -20,6 +21,13 @@ class Camera(
     override fun initialize() {
         if (current)
             notify(SetCurrentEvent(this))
+    }
+
+    override fun update(delta: Double) {
+        if (current) {
+            val pos = entity.get<Transform>().global().position
+            alListener3f(AL_POSITION, pos[0], pos[1], pos[2])
+        }
     }
 
     override val required: List<KClass<out Entity.Component>> = listOf(Transform::class)

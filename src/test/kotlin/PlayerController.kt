@@ -47,8 +47,6 @@ class PlayerController : Script() {
         val dir = direction.normalize() * speed.toFloat()
         body.velocity.add(dir).multiply(0.9f)
 
-        println("${camera.front} ${camera.right} ${camera.up}")
-
         tf.rotate(Quaternion.axisAngle(Vector3f.front, 5 * delta.toFloat() * rotation))
         tf.scale(Vector3f(1f) + scale * delta.toFloat())
     }
