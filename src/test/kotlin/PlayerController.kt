@@ -16,6 +16,7 @@ class PlayerController : Script() {
 
     private var direction = Vector2f()
     private var rotation = 0f
+    private var scale = 0f
     private val speed = 50
 
     @Event.Listener(Window.KeyEvent::class)
@@ -30,6 +31,9 @@ class PlayerController : Script() {
                 GLFW_KEY_UP -> direction.y += sign
 
                 GLFW_KEY_R -> rotation += sign
+
+                GLFW_KEY_EQUAL -> scale += sign
+                GLFW_KEY_MINUS -> scale -= sign
             }
 
             // On press
@@ -43,6 +47,9 @@ class PlayerController : Script() {
         val dir = direction.normalize() * speed.toFloat()
         body.velocity.add(dir).multiply(0.9f)
 
+        println("${camera.front} ${camera.right} ${camera.up}")
+
         tf.rotate(Quaternion.axisAngle(Vector3f.front, 5 * delta.toFloat() * rotation))
+        tf.scale(Vector3f(1f) + scale * delta.toFloat())
     }
 }
