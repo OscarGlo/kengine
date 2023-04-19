@@ -118,7 +118,7 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
 
     override fun toString() = components.joinToString(", ", "(", ")")
 
-    override fun hashCode() = components.hashCode()
+    override fun hashCode() = components.contentHashCode()
 }
 
 abstract class Vector2<T : Number, V : Vector2<T, V>>(numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T) :
