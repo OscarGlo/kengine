@@ -65,7 +65,6 @@ as good as possible. The engine architecture is an entity-component tree similar
     - Slider
     - Text input?
   - WebGL compatibility
-    - Gradle build
     - Resource management (URL / File)
     - Image loading
     - Font bitmap generation and positioning -> opentype.js

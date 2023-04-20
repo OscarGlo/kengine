@@ -22,7 +22,7 @@ import kengine.util.Resource
 import java.util.*
 
 fun main() {
-    Resource.localPath = "src/test/resources"
+    Resource.localPath = "src/jvmTest/resources"
 
     KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
         clearColor = Color(0.3f, 0.1f, 0.5f)

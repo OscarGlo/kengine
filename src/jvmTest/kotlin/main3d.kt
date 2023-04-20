@@ -71,7 +71,7 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
 )
 
 fun main() {
-    Resource.localPath = "src/test/resources"
+    Resource.localPath = "src/jvmTest/resources"
 
     KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
         cursorMode = GLFW_CURSOR_DISABLED

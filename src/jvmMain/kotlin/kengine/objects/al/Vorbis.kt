@@ -1,8 +1,8 @@
 package kengine.objects.al
 
+import kengine.util.terminateError
 import org.lwjgl.BufferUtils
 import org.lwjgl.stb.STBVorbis.stb_vorbis_decode_filename
-import kengine.util.terminateError
 import java.net.URL
 import java.nio.ShortBuffer
 
