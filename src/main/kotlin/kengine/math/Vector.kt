@@ -27,7 +27,7 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     var components = components as Array<T>
 
     init {
-        components.map { it.javaClass }.toSet().let {
+        components.map { it::class }.toSet().let {
             if (it.size > 1) terminateError("Mismatched Vector component types ${it.map { it.simpleName }}")
         }
     }

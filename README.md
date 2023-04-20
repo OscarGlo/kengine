@@ -10,6 +10,7 @@ as good as possible. The engine architecture is an entity-component tree similar
 ### General
 - Event system
 - Fully extensible entities and components
+- `Scene` switching and pausing
 
 ### Math
 - Custom math library using genericity for simpler usage
@@ -64,6 +65,12 @@ as good as possible. The engine architecture is an entity-component tree similar
     - Slider
     - Text input?
   - WebGL compatibility
+    - Gradle build
+    - Resource management (URL / File)
+    - Image loading
+    - Font bitmap generation and positioning -> opentype.js
+    - Buffers
+    - Java class reflection in events
 
 
 - **Future ideas**
