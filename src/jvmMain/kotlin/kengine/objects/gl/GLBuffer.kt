@@ -1,14 +1,18 @@
 package kengine.objects.gl
 
-import kengine.objects.Buffer
 import kengine.util.terminateError
 import org.lwjgl.opengl.GL30.*
 import java.nio.*
+import kotlin.properties.Delegates
 
-class GLBuffer(private val target: Int, private val usage: Int) : Buffer<Any>() {
-    override fun gen() = glGenBuffers()
+actual class GLBuffer actual constructor(private val target: Int, private val usage: Int) {
+    var id by Delegates.notNull<Int>()
 
-    override fun store(bufferData: Any) {
+    actual fun init() {
+        id = glGenBuffers()
+    }
+
+    actual fun store(bufferData: Any) {
         bind()
         when (bufferData) {
             is ByteBuffer -> glBufferData(target, bufferData, usage)
@@ -27,5 +31,5 @@ class GLBuffer(private val target: Int, private val usage: Int) : Buffer<Any>() 
         }
     }
 
-    fun bind() = glBindBuffer(target, id)
+    actual fun bind() = glBindBuffer(target, id)
 }

@@ -17,12 +17,12 @@ import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.GLFWImageWrapper
 import kengine.objects.glfw.Window
-import kengine.util.Event
+import kengine.util.Language
+import kengine.util.Locale
 import kengine.util.Resource
-import java.util.*
 
-fun main() {
-    Resource.localPath = "src/jvmTest/resources"
+suspend fun main() {
+    //Resource.localPath = "src/jvmTest/resources"
 
     KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
         clearColor = Color(0.3f, 0.1f, 0.5f)
@@ -30,12 +30,12 @@ fun main() {
     }
 
     // Resources
-    Resource.addLanguage(Locale.ENGLISH, "lang/en.txt")
-    Resource.addLanguage(Locale.FRENCH, "lang/fr.txt")
+    Language.load(Locale("en"), Resource("lang/en.txt"))
+    Language.load(Locale("fr"), Resource("lang/fr.txt"))
 
-    val font = Font("/fonts/GeomanistBook.ttf", 16)
-    val circle = GLImage("/images/circle.png", filter = false)
-    val tilemap = GLImage("/images/tilemaps/full.png", filter = false)
+    val font = Font(Resource("/fonts/GeomanistBook.ttf"), 16)
+    val circle = GLImage(Resource("/images/circle.png"), filter = false)
+    val tilemap = GLImage(Resource("/images/tilemaps/full.png"), filter = false)
 
     val tiles = (0..100).map {
         Vector2i(Vector2f.random() * 10f)
@@ -87,7 +87,7 @@ fun main() {
         ),
         Entity(
             "fps",
-            Text(Resource.getString("fps").format(0f))
+            Text(Language["fps"].format(0f))
                 .with(Theme().also { it.font = font })
                 .with(UINode.Position(top = 5f, left = 5f)),
             FpsCounter()
@@ -100,10 +100,15 @@ fun main() {
                 "button",
                 Button(Vector2f(80f, 20f), "Button")
                     .with(UINode.Position(top = 25f)),
-                object : Script() {
+                object : Entity.Component() {
                     lateinit var button: Button
 
-                    @Event.Listener(Button.PressedEvent::class)
+                    override fun initialize() {
+                        button = entity.get<Button>()
+
+                        listener(this::onButtonPressed)
+                    }
+
                     fun onButtonPressed(evt: Button.PressedEvent) {
                         if (evt.button == button)
                             println("hi :)")

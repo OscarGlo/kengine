@@ -1,8 +1,8 @@
-import kengine.entity.components.Script
+import kengine.entity.Entity
 import kengine.entity.components.render.gui.Text
 import kengine.util.Resource
 
-class FpsCounter : Script() {
+class FpsCounter : Entity.Component() {
     lateinit var text: Text
 
     private val deltas = mutableListOf<Double>()

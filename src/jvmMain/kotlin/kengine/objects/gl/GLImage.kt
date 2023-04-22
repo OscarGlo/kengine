@@ -3,19 +3,14 @@ package kengine.objects.gl
 import kengine.objects.Image
 import kengine.util.Resource
 import org.lwjgl.opengl.GL30.*
-import java.awt.image.BufferedImage
-import java.io.File
-import java.net.URL
-import javax.imageio.ImageIO
 import kotlin.properties.Delegates
 
-class GLImage(image: BufferedImage, bpp: Int = 4, val filter: Boolean = true) : Image(image, bpp) {
-    constructor(url: URL, bpp: Int = 4, filter: Boolean = true) : this(ImageIO.read(url), bpp, filter)
-    constructor(path: String, bpp: Int = 4, filter: Boolean = true) : this(Resource.local(path), bpp, filter)
-
+actual class GLImage actual constructor(resource: Resource, bpp: Int, val filter: Boolean) : Image(resource, bpp) {
     private var id by Delegates.notNull<Int>()
 
-    override fun init() {
+    actual val size = _size
+
+    actual suspend fun init() {
         if (isInit) return
 
         isInit = true
@@ -37,7 +32,5 @@ class GLImage(image: BufferedImage, bpp: Int = 4, val filter: Boolean = true) : 
         }
     }
 
-    fun bind() = glBindTexture(GL_TEXTURE_2D, id)
-
-    fun save(path: String) = ImageIO.write(image, "png", File(path))
+    actual fun bind() = glBindTexture(GL_TEXTURE_2D, id)
 }

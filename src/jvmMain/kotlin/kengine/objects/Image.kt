@@ -1,13 +1,17 @@
 package kengine.objects
 
 import kengine.math.Vector2i
+import kengine.util.Resource
 import org.lwjgl.BufferUtils
 import java.awt.image.BufferedImage
 import java.nio.ByteBuffer
+import javax.imageio.ImageIO
 
-abstract class Image(protected val image: BufferedImage, bpp: Int) {
-    val size = Vector2i(image.width, image.height)
+actual abstract class Image actual constructor(resource: Resource, bpp: Int) {
     protected var isInit = false
+
+    protected val image: BufferedImage = ImageIO.read(resource.url)
+    val _size = Vector2i(image.width, image.height)
 
     protected val buffer: ByteBuffer = BufferUtils.createByteBuffer(size.x * size.y * bpp).also {
         val pixels = IntArray(size.x * size.y)
@@ -24,6 +28,4 @@ abstract class Image(protected val image: BufferedImage, bpp: Int) {
         }
         it.flip()
     }
-
-    abstract fun init()
 }

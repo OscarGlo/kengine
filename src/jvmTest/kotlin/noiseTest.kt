@@ -1,5 +1,4 @@
 import kengine.entity.Entity
-import kengine.entity.components.Script
 import kengine.entity.components.Transform
 import kengine.entity.components.render.gui.Text
 import kengine.entity.components.render.gui.UINode
@@ -13,7 +12,7 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
     "Point${n++}",
     Transform().translate(offset),
     Ellipse(Vector2f(5f), 10, color),
-    object : Script() {
+    object : Component() {
         lateinit var transform: Transform
 
         override fun update(delta: Double) {

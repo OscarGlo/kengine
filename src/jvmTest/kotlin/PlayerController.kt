@@ -1,4 +1,4 @@
-import kengine.entity.components.Script
+import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.render.Camera
@@ -6,10 +6,9 @@ import kengine.math.Quaternion
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.glfw.Window
-import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 
-class PlayerController : Script() {
+class PlayerController : Entity.Component() {
     lateinit var tf: Transform
     lateinit var camera: Camera
     lateinit var body: Body2D
@@ -19,7 +18,14 @@ class PlayerController : Script() {
     private var scale = 0f
     private val speed = 50
 
-    @Event.Listener(Window.KeyEvent::class)
+    override fun initialize() {
+        tf = entity.get<Transform>()
+        camera = entity.get<Camera>()
+        body = entity.get<Body2D>()
+
+        listener(this::onKey)
+    }
+
     fun onKey(evt: Window.KeyEvent) {
         if (evt.action == GLFW_PRESS || evt.action == GLFW_RELEASE) {
             // Character movement

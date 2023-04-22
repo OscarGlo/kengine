@@ -1,5 +1,4 @@
 import kengine.entity.Entity
-import kengine.entity.components.Script
 import kengine.entity.components.Transform
 import kengine.entity.components.render.Camera
 import kengine.entity.components.render.gui.Text
@@ -10,7 +9,6 @@ import kengine.objects.KERuntime
 import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.Window
-import kengine.util.Event
 import kengine.util.Resource
 import kengine.util.rectIndicesN
 import org.lwjgl.glfw.GLFW.*
@@ -62,7 +60,7 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
             triangles(12)
         }
     },
-    object : Script() {
+    object : Component() {
         lateinit var tf: Transform
         override fun update(delta: Double) {
             tf.rotation = Quaternion.euler(entity.time.toFloat())
@@ -71,20 +69,20 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
 )
 
 fun main() {
-    Resource.localPath = "src/jvmTest/resources"
+    //Resource.localPath = "src/jvmTest/resources"
 
     KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
         cursorMode = GLFW_CURSOR_DISABLED
     }
 
-    val square = GLImage("images/square.png", filter = false)
+    val square = GLImage(Resource("images/square.png"), filter = false)
 
     KERuntime.scene = Scene(
         Entity(
             "camera",
             Transform(true).translate(Vector3f(0f, 0f, 8f)),
             Camera(true),
-            object : Script() {
+            object : Entity.Component() {
                 lateinit var tf: Transform
                 lateinit var cam: Camera
 
@@ -93,11 +91,16 @@ fun main() {
 
                 private lateinit var mousePos: Vector2f
 
-                override fun init() {
+                override fun initialize() {
+                    tf = entity.get<Transform>()
+                    cam = entity.get<Camera>()
+
+                    listener(this::keyPress)
+                    listener(this::mouseMove)
+
                     mousePos = KERuntime.window.mousePosition
                 }
 
-                @Event.Listener(Window.KeyEvent::class)
                 fun keyPress(evt: Window.KeyEvent) {
                     val n = when (evt.action) {
                         GLFW_PRESS -> 5f
@@ -114,7 +117,6 @@ fun main() {
                     }
                 }
 
-                @Event.Listener(Window.MouseMoveEvent::class)
                 fun mouseMove(evt: Window.MouseMoveEvent) {
                     val delta = (evt.position - mousePos) / 100f
                     angle += delta
@@ -139,8 +141,8 @@ fun main() {
             Text().with(UINode.Position(top = 5f, left = 5f)),
             FpsCounter()
         ),
-        Entity("init", object : Script() {
-            override fun init() = Render3D.phong.let {
+        Entity("init", object : Entity.Component() {
+            override fun initialize() = Render3D.phong.let {
                 it.use()
                 it["viewPos"] = KERuntime.scene.currentCamera?.entity?.get<Transform>()?.position ?: Vector3f()
 

@@ -6,12 +6,15 @@ import kengine.util.terminateError
 import org.lwjgl.opengl.GL20.*
 import kotlin.properties.Delegates
 
-class Shader(private vararg val steps: Pair<Int, String>) {
-    companion object {
+actual class Shader actual constructor(private vararg val steps: Pair<Int, String>) {
+    actual companion object {
         val cache = mutableMapOf<String, Int>()
         val instances = mutableListOf<Shader>()
 
-        fun init() = instances.forEach { it.init() }
+        actual suspend fun init() = instances.forEach { it.init() }
+
+        actual val VERTEX = GL_VERTEX_SHADER
+        actual val FRAGMENT = GL_FRAGMENT_SHADER
     }
 
     init {
@@ -21,7 +24,7 @@ class Shader(private vararg val steps: Pair<Int, String>) {
     private var isInit = false
     private var id by Delegates.notNull<Int>()
 
-    fun init() {
+    actual suspend fun init() {
         if (isInit) return
         isInit = true
 
@@ -30,7 +33,7 @@ class Shader(private vararg val steps: Pair<Int, String>) {
         steps.forEach { (type, path) ->
             val sid = cache.getOrPut(path) {
                 glCreateShader(type).also {
-                    val source = Resource.global(path).readText()
+                    val source = Resource(path).getText()
                     glShaderSource(it, source)
                     glCompileShader(it)
                 }
@@ -45,10 +48,10 @@ class Shader(private vararg val steps: Pair<Int, String>) {
         if (success == GL_FALSE) terminateError("Shader program linking error ${glGetProgramInfoLog(id)}")
     }
 
-    fun use() = apply { glUseProgram(id) }
+    actual fun use() = glUseProgram(id)
 
     @Suppress("UNCHECKED_CAST")
-    operator fun set(name: String, value: Any) {
+    actual operator fun set(name: String, value: Any) {
         val loc = glGetUniformLocation(id, name)
         when (value::class) {
             Float::class -> glUniform1f(loc, value as Float)
@@ -58,7 +61,7 @@ class Shader(private vararg val steps: Pair<Int, String>) {
             Vector4f::class, Color::class -> (value as Vector<Four, Float, *>).let {
                 glUniform4f(loc, it[0], it[1], it[2], it[3])
             }
-            Matrix4::class -> glUniformMatrix4fv(loc, false, (value as Matrix4).toBuffer())
+            Matrix4::class -> glUniformMatrix4fv(loc, false, (value as Matrix4).values)
             else -> terminateError("Invalid object class ${value::class.simpleName} for shader parameter")
         }
     }

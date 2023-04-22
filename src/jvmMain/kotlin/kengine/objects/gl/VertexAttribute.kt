@@ -1,26 +1,11 @@
+@file:JvmName("VertexAttributeKt")
+
 package kengine.objects.gl
 
-import kengine.util.sizeof
-import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
+import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-class VertexAttribute(
-    val size: Int,
-    val type: Int = GL_FLOAT,
-    val normalized: Boolean = false
-) {
-    val sizeBytes = size * sizeof(type)
-}
-
-class VertexAttributes(private vararg val attributes: VertexAttribute) {
-    fun use() {
-        val totalSize = attributes.sumOf { it.sizeBytes }
-
-        var indexCount = 0
-        var offset = 0
-        attributes.forEach {
-            glVertexAttribPointer(indexCount, it.size, it.type, it.normalized, totalSize, offset.toLong())
-            glEnableVertexAttribArray(indexCount++)
-            offset += it.sizeBytes
-        }
-    }
+actual fun VertexAttribute.bind(index: Int, offset: Int, total: Int) {
+    glVertexAttribPointer(index, size, type, normalized, total, offset.toLong())
+    glEnableVertexAttribArray(index)
 }
