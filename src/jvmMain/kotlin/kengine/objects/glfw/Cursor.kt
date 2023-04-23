@@ -6,24 +6,24 @@ import kengine.util.terminateError
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil
 
-abstract class Cursor {
-    companion object {
-        val cursors = mutableListOf<Cursor>()
+actual abstract class Cursor {
+    actual companion object {
+        actual val cursors = mutableListOf<Cursor>()
 
-        val arrow = StandardCursor(GLFW.GLFW_ARROW_CURSOR)
-        val ibeam = StandardCursor(GLFW.GLFW_IBEAM_CURSOR)
-        val crosshair = StandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR)
-        val hand = StandardCursor(GLFW.GLFW_HAND_CURSOR)
-        val resizeH = StandardCursor(GLFW.GLFW_HRESIZE_CURSOR)
-        val resizeV = StandardCursor(GLFW.GLFW_VRESIZE_CURSOR)
+        actual val arrow: Cursor = StandardCursor(GLFW.GLFW_ARROW_CURSOR)
+        actual val ibeam: Cursor = StandardCursor(GLFW.GLFW_IBEAM_CURSOR)
+        actual val crosshair: Cursor = StandardCursor(GLFW.GLFW_CROSSHAIR_CURSOR)
+        actual val hand: Cursor = StandardCursor(GLFW.GLFW_HAND_CURSOR)
+        actual val resizeH: Cursor = StandardCursor(GLFW.GLFW_HRESIZE_CURSOR)
+        actual val resizeV: Cursor = StandardCursor(GLFW.GLFW_VRESIZE_CURSOR)
 
-        val resizeNWSE = OSCursor(
-            CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nwse.png")), Vector2i(8)),
-            CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nwse.png")), Vector2i(6))
+        actual val resizeNWSE: Cursor = OSCursor(
+            CustomCursor(GLFWImageWrapper(Resource("/cursors/windows/nwse.png", false)), Vector2i(8)),
+            CustomCursor(GLFWImageWrapper(Resource("/cursors/mac/nwse.png", false)), Vector2i(6))
         )
-        val resizeNESW = OSCursor(
-            CustomCursor(GLFWImageWrapper(Resource.global("/cursors/windows/nesw.png")), Vector2i(8)),
-            CustomCursor(GLFWImageWrapper(Resource.global("/cursors/mac/nesw.png")), Vector2i(6))
+        actual val resizeNESW: Cursor = OSCursor(
+            CustomCursor(GLFWImageWrapper(Resource("/cursors/windows/nesw.png", false)), Vector2i(8)),
+            CustomCursor(GLFWImageWrapper(Resource("/cursors/mac/nesw.png", false)), Vector2i(6))
         )
     }
 
@@ -33,7 +33,7 @@ abstract class Cursor {
         cursors.add(this)
     }
 
-    abstract fun init()
+    actual abstract fun init()
 }
 
 class StandardCursor(private val shape: Int) : Cursor() {
