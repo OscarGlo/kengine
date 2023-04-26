@@ -3,12 +3,13 @@ package kengine.objects.gl
 import kengine.objects.Image
 import kengine.util.Resource
 import org.lwjgl.opengl.GL30.*
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
 import kotlin.properties.Delegates
 
-actual class GLImage actual constructor(resource: Resource, bpp: Int, val filter: Boolean) : Image(resource, bpp) {
+actual class GLImage(bufferedImage: BufferedImage, bpp: Int, val filter: Boolean = true) : Image(bufferedImage, bpp) {
     private var id by Delegates.notNull<Int>()
-
-    actual val size = _size
+    actual constructor(resource: Resource, bpp: Int, filter: Boolean) : this(ImageIO.read(resource.url), bpp, filter)
 
     actual suspend fun init() {
         if (isInit) return

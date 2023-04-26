@@ -28,7 +28,7 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
             checkCompatibility()
         }
 
-        open fun initialize() {}
+        open suspend fun init() {}
         open fun update(delta: Double) {}
     }
 
@@ -67,6 +67,16 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
         entities.forEach {
             it.parent = this
             children[it.id] = it
+        }
+    }
+
+    suspend fun initAll() {
+        for (c in components) {
+            c.checkCompatibility()
+            c.init()
+        }
+        for (e in children.values) {
+            e.initAll()
         }
     }
 

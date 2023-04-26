@@ -6,6 +6,6 @@ import kengine.util.rectIndices
 import kengine.util.rectVertices
 
 class UIImage(image: GLImage, val size: Vector2f) : UINode(rectVertices(size), rectIndices, image) {
-    override fun size() = size
+    override fun calculateSize() = size
     override fun renderSteps() = textured(2, images[0])
 }

@@ -1,14 +1,18 @@
 package kengine.objects.al
 
-import kengine.objects.Buffer
 import kengine.util.alFormat
 import org.lwjgl.openal.AL10.alBufferData
 import org.lwjgl.openal.AL10.alGenBuffers
+import kotlin.properties.Delegates
 
-class AudioBuffer : Buffer<Vorbis>() {
-    override fun gen() = alGenBuffers()
+actual class AudioBuffer {
+    var id by Delegates.notNull<Int>()
 
-    override fun store(bufferData: Vorbis) =
+    actual fun init() {
+        id = alGenBuffers()
+    }
+
+    actual suspend fun store(bufferData: Vorbis) =
         alBufferData(
             id,
             alFormat(bufferData.channels, bufferData.samples),

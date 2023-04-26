@@ -3,8 +3,8 @@ package kengine.util
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-abstract class Dirtyable {
-    private var dirty = false
+interface Dirtyable {
+    var dirty: Boolean
 
     class SetDirty<T : Any>(private var value: T) : ReadWriteProperty<Dirtyable, T> {
         override fun getValue(thisRef: Dirtyable, property: KProperty<*>) = value

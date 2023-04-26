@@ -7,11 +7,12 @@ import java.awt.image.BufferedImage
 import java.nio.ByteBuffer
 import javax.imageio.ImageIO
 
-actual abstract class Image actual constructor(resource: Resource, bpp: Int) {
+actual abstract class Image(val image: BufferedImage, bpp: Int) {
+    actual constructor(resource: Resource, bpp: Int) : this(ImageIO.read(resource.url), bpp)
+
     protected var isInit = false
 
-    protected val image: BufferedImage = ImageIO.read(resource.url)
-    val _size = Vector2i(image.width, image.height)
+    actual val size = Vector2i(image.width, image.height)
 
     protected val buffer: ByteBuffer = BufferUtils.createByteBuffer(size.x * size.y * bpp).also {
         val pixels = IntArray(size.x * size.y)

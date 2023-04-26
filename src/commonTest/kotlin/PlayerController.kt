@@ -5,8 +5,8 @@ import kengine.entity.components.render.Camera
 import kengine.math.Quaternion
 import kengine.math.Vector2f
 import kengine.math.Vector3f
-import kengine.objects.glfw.Window
-import org.lwjgl.glfw.GLFW.*
+import kengine.objects.glfw.KeyEvent
+import kengine.util.Key
 
 class PlayerController : Entity.Component() {
     lateinit var tf: Transform
@@ -18,7 +18,7 @@ class PlayerController : Entity.Component() {
     private var scale = 0f
     private val speed = 50
 
-    override fun initialize() {
+    override suspend fun init() {
         tf = entity.get<Transform>()
         camera = entity.get<Camera>()
         body = entity.get<Body2D>()
@@ -26,25 +26,28 @@ class PlayerController : Entity.Component() {
         listener(this::onKey)
     }
 
-    fun onKey(evt: Window.KeyEvent) {
-        if (evt.action == GLFW_PRESS || evt.action == GLFW_RELEASE) {
+    fun onKey(evt: KeyEvent) {
+        if (!evt.repeat) {
             // Character movement
-            val sign = if (evt.action == GLFW_PRESS) 1 else -1
+            val sign = if (evt.pressed) 1 else -1
             when (evt.key) {
-                GLFW_KEY_LEFT -> direction.x -= sign
-                GLFW_KEY_RIGHT -> direction.x += sign
-                GLFW_KEY_DOWN -> direction.y -= sign
-                GLFW_KEY_UP -> direction.y += sign
+                Key.LEFT -> direction.x -= sign
+                Key.RIGHT -> direction.x += sign
+                Key.DOWN -> direction.y -= sign
+                Key.UP -> direction.y += sign
 
-                GLFW_KEY_R -> rotation += sign
+                Key.R -> rotation += sign
 
-                GLFW_KEY_EQUAL -> scale += sign
-                GLFW_KEY_MINUS -> scale -= sign
+                Key.EQUAL -> scale += sign
+                Key.MINUS -> scale -= sign
+
+                else -> {}
             }
 
             // On press
-            if (evt.action == GLFW_PRESS) when (evt.key) {
-                GLFW_KEY_SPACE -> camera.current = !camera.current
+            if (evt.pressed) when (evt.key) {
+                Key.SPACE -> camera.current = !camera.current
+                else -> {}
             }
         }
     }

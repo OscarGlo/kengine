@@ -7,7 +7,7 @@ import org.w3c.fetch.Response
 import org.w3c.files.Blob
 import kotlin.js.Promise
 
-actual class Resource actual constructor(actual val path: String, local: Boolean) {
+actual class Resource actual constructor(actual val path: String, actual val local: Boolean) {
     private var response: Response? = null
     private var text: String? = null
     private var blob: Blob? = null
@@ -42,4 +42,8 @@ actual class Resource actual constructor(actual val path: String, local: Boolean
             blob = response?.blob()?.await()
         return blob ?: Blob()
     }
+
+    override fun equals(other: Any?) = this === other || other is Resource && local == other.local && path == other.path
+
+    override fun hashCode() = path.hashCode() + local.hashCode()
 }

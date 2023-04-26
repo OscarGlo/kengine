@@ -17,7 +17,7 @@ class Body2D(val static: Boolean = false) : Entity.Component() {
     private lateinit var transform: Transform
     private lateinit var colliders: List<Collider2D>
 
-    override fun initialize() {
+    override suspend fun init() {
         transform = entity.get<Transform>()
         colliders = entity.getAll<Collider2D>()
     }

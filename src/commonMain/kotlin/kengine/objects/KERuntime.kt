@@ -3,7 +3,8 @@ package kengine.objects
 import kengine.objects.gl.Shader
 import kengine.objects.glfw.Window
 import kengine.util.Event
-import org.lwjgl.glfw.GLFW.*
+import kengine.util.doubleTime
+import kengine.util.terminate
 
 class KERuntime private constructor(): Event.Manager() {
     companion object {
@@ -13,19 +14,18 @@ class KERuntime private constructor(): Event.Manager() {
             get() = instance.window
             set(w) { instance.window = w }
 
-        var scene
-            get() = instance.scene
-            set(s) {
-                if (instance.isInit) s.init()
-                instance.scene = s
-            }
+        val scene get() = instance.scene
 
-        val root get() = instance.scene.root
+        suspend fun set(scene: Scene) {
+            if (instance.isInit) scene.init()
+            instance.scene = scene
+        }
 
-        fun run() = instance.run()
+        val root get() = scene.root
+
+        suspend fun run() = instance.run()
 
         var time: Double = 0.0
-        fun doubleTime() = System.nanoTime() / 1_000_000_000.0
     }
 
     lateinit var window: Window
@@ -35,27 +35,25 @@ class KERuntime private constructor(): Event.Manager() {
 
     private var isInit = false
 
-    fun init() {
+    suspend fun init() {
         if (isInit) return
 
         window.init()
+        window.vSync = vSync
 
         Shader.init()
         scene.init()
 
-        // TODO: Move these methods in the window class
-        glfwSwapInterval(if (vSync) 1 else 0)
-
         isInit = true
     }
 
-    fun run() {
+    suspend fun run() {
         init()
 
         var t = doubleTime()
-        while (!glfwWindowShouldClose(window.id))
+        while (!window.closed)
             t = scene.update(t)
 
-        glfwTerminate()
+        terminate()
     }
 }

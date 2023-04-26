@@ -5,17 +5,17 @@ import kengine.util.boolInt
 import org.lwjgl.openal.AL10.*
 import kotlin.properties.Delegates
 
-class Source(
-    relative: Boolean = false,
-    position: Vector3f = Vector3f(),
-    reference: Float = 1f,
-    gain: Float = 1f,
-    pitch: Float = 1f,
-    loop: Boolean = false
+actual class Source actual constructor(
+    relative: Boolean,
+    position: Vector3f,
+    reference: Float,
+    gain: Float,
+    pitch: Float,
+    loop: Boolean
 ) {
     var id by Delegates.notNull<Int>()
 
-    fun init() {
+    actual fun init() {
         id = alGenSources()
 
         alSourcei(id, AL_SOURCE_RELATIVE, boolInt(!relative))
@@ -26,63 +26,59 @@ class Source(
         alSourcei(id, AL_LOOPING, boolInt(loop))
     }
 
-    var relative = relative
+    actual var relative = relative
         set(r) {
             field = r
             alSourcei(id, AL_SOURCE_RELATIVE, boolInt(!relative))
         }
 
-    var position = position
+    actual var position = position
         set(pos) {
             field = pos
             alSource3f(id, AL_POSITION, position.x, position.y, position.z)
         }
 
-    var reference = reference
+    actual var reference = reference
         set(r) {
             field = r
             alSourcef(id, AL_REFERENCE_DISTANCE, r)
         }
 
-    var gain = gain
+    actual var gain = gain
         set(g) {
             field = g
             alSourcef(id, AL_GAIN, g)
         }
 
-    var pitch = pitch
+    actual var pitch = pitch
         set(p) {
             field = p
             alSourcef(id, AL_PITCH, p)
         }
 
-    var loop = loop
+    actual var loop = loop
         set(l) {
             field = l
             alSourcei(id, AL_LOOPING, boolInt(l))
         }
 
-    fun load(buffer: AudioBuffer) = apply { alSourcei(id, AL_BUFFER, buffer.id) }
+    actual fun load(buffer: AudioBuffer) = apply { alSourcei(id, AL_BUFFER, buffer.id) }
 
-    var playing = false; private set
+    private var _playing = false
+    actual val playing = _playing
 
-    fun play() = apply {
-        playing = true
+    actual fun play() {
+        _playing = true
         alSourcePlay(id)
     }
 
-    fun pause() = apply {
-        playing = false
+    actual fun pause() {
+        _playing = false
         alSourcePause(id)
     }
 
-    fun rewind() = apply {
-        playing = false
-        alSourceRewind(id)
-    }
-
-    fun stop() = apply {
-        playing = false
+    actual fun stop() {
+        _playing = false
         alSourceStop(id)
     }
 }

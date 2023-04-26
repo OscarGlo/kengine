@@ -1,6 +1,6 @@
 package kengine.objects.gl
 
-expect class VertexArray {
+expect class VertexArray() {
     fun init(): VertexArray
     fun bind()
 }

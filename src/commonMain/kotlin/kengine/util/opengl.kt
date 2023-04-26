@@ -7,23 +7,31 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 expect fun terminateError(message: String): Nothing
+expect fun terminate()
 
-expect val GL_BYTE: Int
-expect val GL_UNSIGNED_BYTE: Int
-expect val GL_SHORT: Int
-expect val GL_UNSIGNED_SHORT: Int
-expect val GL_INT: Int
-expect val GL_UNSIGNED_INT: Int
-expect val GL_FLOAT: Int
+expect fun glEnable(cap: Int)
+expect fun glDisable(cap: Int)
+
+expect fun glDrawTriangles(count: Int, offset: Int)
+
+expect val BYTE: Int
+expect val UNSIGNED_BYTE: Int
+expect val SHORT: Int
+expect val UNSIGNED_SHORT: Int
+expect val INT: Int
+expect val UNSIGNED_INT: Int
+expect val FLOAT: Int
+
+expect val DEPTH_TEST: Int
 
 fun sizeof(type: Int) = when (type) {
-    GL_BYTE -> Byte.SIZE_BYTES
-    GL_UNSIGNED_BYTE -> Byte.SIZE_BYTES
-    GL_SHORT -> Short.SIZE_BYTES
-    GL_UNSIGNED_SHORT -> Short.SIZE_BYTES
-    GL_INT -> Int.SIZE_BYTES
-    GL_UNSIGNED_INT -> Int.SIZE_BYTES
-    GL_FLOAT -> Float.SIZE_BYTES
+    BYTE -> Byte.SIZE_BYTES
+    UNSIGNED_BYTE -> Byte.SIZE_BYTES
+    SHORT -> Short.SIZE_BYTES
+    UNSIGNED_SHORT -> Short.SIZE_BYTES
+    INT -> Int.SIZE_BYTES
+    UNSIGNED_INT -> Int.SIZE_BYTES
+    FLOAT -> Float.SIZE_BYTES
     else -> terminateError("Size of type $type is not defined")
 }
 

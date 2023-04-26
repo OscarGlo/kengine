@@ -1,35 +1,30 @@
 package kengine.objects
 
 import kengine.math.Rect
+import kengine.math.Vector2f
 import kengine.objects.gl.GLImage
 import kengine.util.Resource
 import java.awt.Color
-import java.awt.FontMetrics
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
-import java.net.URL
 import kotlin.math.sqrt
 import java.awt.Font as AWTFont
 
-const val V_STRETCH = 1.3f
-const val MARGIN = 1
-
-class Font(url: URL, val size: Int) {
-    constructor(path: String, size: Int) : this(Resource.local(path), size)
-
+actual class Font actual constructor(resource: Resource, val size: Int) {
     companion object {
-        val cache = mutableMapOf<URL, AWTFont>()
+        val cache = mutableMapOf<String, AWTFont>()
     }
 
-    val font: AWTFont
-    val characterBounds = mutableMapOf<Int, Rect>()
-    val texture: GLImage
+    private val font: AWTFont
 
-    val metrics: FontMetrics
+    actual val characterBounds = mutableMapOf<Int, Rect>()
+    actual val texture: GLImage
+
+    actual val metrics: FontMetrics
 
     init {
-        val res = url.openStream()
-        font = cache.getOrPut(url) {
+        val res = resource.url.openStream()
+        font = cache.getOrPut(resource.url.path) {
             AWTFont.createFont(AWTFont.TRUETYPE_FONT, res)
         }.deriveFont(size.toFloat())
 
@@ -40,7 +35,8 @@ class Font(url: URL, val size: Int) {
 
         val printable = (0..font.numGlyphs).count(font::canDisplay)
 
-        metrics = tmpGfx.fontMetrics
+        val fm = tmpGfx.fontMetrics
+        metrics = FontMetrics(fm.descent, fm.height)
         val lineHeight = (metrics.height * V_STRETCH).toInt()
 
         val minWidth = sqrt(printable.toDouble()) * font.size
@@ -57,7 +53,7 @@ class Font(url: URL, val size: Int) {
 
             characterPos[i] = x to y
 
-            x += metrics.charWidth(i) + MARGIN
+            x += fm.charWidth(i) + MARGIN
             if (x > width) width = x
             if (x > minWidth) {
                 x = 0
@@ -77,7 +73,8 @@ class Font(url: URL, val size: Int) {
             // Draw character to bitmap
             gfx.drawString(i.toChar().toString(), p.first, p.second)
 
-            val bounds = font.createGlyphVector(gfx.fontRenderContext, Char(i).toString()).getGlyphVisualBounds(0).bounds2D
+            val bounds =
+                font.createGlyphVector(gfx.fontRenderContext, Char(i).toString()).getGlyphVisualBounds(0).bounds2D
 
             // Constrain character positions
             characterBounds[i] = Rect(
@@ -90,5 +87,22 @@ class Font(url: URL, val size: Int) {
         gfx.dispose()
 
         texture = GLImage(bitmap, 4)
+    }
+
+    actual fun stringMetrics(str: String): List<GlyphMetrics> {
+        val tmp = BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB)
+        val tmpGfx = tmp.createGraphics()
+        tmpGfx.font = font
+
+        val vec = font.createGlyphVector(tmpGfx.fontRenderContext, str)
+
+        return str.indices.map { i ->
+            val bounds = vec.getGlyphMetrics(i).bounds2D
+            val pos = vec.getGlyphPosition(i)
+            GlyphMetrics(
+                Rect(bounds.minX.toFloat(), bounds.minY.toFloat(), bounds.maxX.toFloat(), bounds.maxY.toFloat()),
+                Vector2f(pos.x.toFloat(), pos.y.toFloat())
+            )
+        }
     }
 }

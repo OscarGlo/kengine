@@ -88,6 +88,4 @@ fun <T : Number> T.numDiv(other: Number) = when (this::class) {
     else -> terminateError("Wrong number division to type ${this::class.simpleName}")
 } as T
 
-fun Collection<*>.array() = Array<Any>(size) { 0 }.also {
-    this.forEachIndexed { i, e -> if (e != null) it[i] = e }
-}
+fun Collection<*>.array() = iterator().let { Array(size) { _ -> it.next() } }

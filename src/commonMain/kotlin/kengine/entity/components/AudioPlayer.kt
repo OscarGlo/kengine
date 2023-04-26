@@ -5,11 +5,10 @@ import kengine.math.Vector3f
 import kengine.objects.al.AudioBuffer
 import kengine.objects.al.Source
 import kengine.objects.al.Vorbis
-import java.net.URL
+import kengine.util.Resource
 
 class AudioPlayer(
-    // TODO: Remove URL
-    val file: URL? = null,
+    val file: Resource? = null,
     val autoplay: Boolean = false,
     relative: Boolean = false,
     position: Vector3f = Vector3f(),
@@ -20,17 +19,17 @@ class AudioPlayer(
 ) : Entity.Component() {
     val source = Source(relative, position, reference, gain, pitch, loop)
 
-    override fun initialize() {
+    override suspend fun init() {
         source.init()
 
         if (file != null)
             load(file, autoplay)
     }
 
-    fun load(url: URL, autoplay: Boolean = false) {
+    suspend fun load(resource: Resource, autoplay: Boolean = false) {
         val buf = AudioBuffer().apply {
             init()
-            store(Vorbis(url))
+            store(Vorbis(resource))
         }
         source.load(buf)
 

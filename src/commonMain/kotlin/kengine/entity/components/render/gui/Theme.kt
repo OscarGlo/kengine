@@ -10,7 +10,7 @@ class Theme {
         var default: Theme = Theme()
     }
 
-    var font = Font(Resource.global("/fonts/JetBrainsMono.ttf"), 14)
+    var font = Font(Resource("/fonts/JetBrainsMono.ttf", false), 14)
 
     var defaultCursor = Cursor.arrow
     var resizeHCursor = Cursor.resizeH

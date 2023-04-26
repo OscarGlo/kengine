@@ -9,7 +9,7 @@ abstract class UICustom(
     vararg images: GLImage
 ) :
     UINode(floatArrayOf(), indices, *images) {
-    override fun size() = size
+    override fun calculateSize() = size
 
     abstract fun calculateVertices(): FloatArray
 

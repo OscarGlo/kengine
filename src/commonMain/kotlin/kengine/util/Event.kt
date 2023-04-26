@@ -7,7 +7,7 @@ abstract class Event {
         val eventListeners = mutableMapOf<KClass<out Event>, MutableList<(Event) -> Unit>>()
     }
 
-    abstract class Manager : Dirtyable() {
+    abstract class Manager {
         @Suppress("UNCHECKED_CAST")
         inline fun <reified E : Event> listener(noinline method: (E) -> Unit) {
             if (!eventListeners.containsKey(E::class))

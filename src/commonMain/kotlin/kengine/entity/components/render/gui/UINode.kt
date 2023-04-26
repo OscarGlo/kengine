@@ -28,17 +28,17 @@ abstract class UINode(
     fun with(position: Position) = apply { this.position = position }
     fun with(theme: Theme) = apply { this.theme = theme }
 
-    override fun initialize() {
+    override suspend fun init() {
         if (!::theme.isInitialized)
             theme =
                 if (entity.parent != null && entity.parent!!.has<UINode>()) entity.parent!!.get<UINode>().theme
                 else Theme.default
 
-        super.initialize()
+        super.init()
         theme.font.texture.init()
     }
 
-    abstract fun size(): Vector2f
+    abstract fun calculateSize(): Vector2f
 
     protected fun parentBounds(): Rect =
         if (entity.parent == null || !entity.parent!!.has<UINode>()) {
@@ -50,7 +50,7 @@ abstract class UINode(
 
     @Suppress("DuplicatedCode")
     open fun bounds() = Rect.zero().apply {
-        val size = size()
+        val size = calculateSize()
         val parentBounds = parentBounds()
 
         if (position.left != null && position.right != null) {

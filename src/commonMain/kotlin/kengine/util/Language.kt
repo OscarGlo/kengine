@@ -7,14 +7,14 @@ class Language {
         suspend fun load(locale: Locale, res: Resource) {
             res.waitForLoad()
 
-            languages
-                .getOrPut(locale) { Language() }
-                .translations.putAll(
-                    res.getText().split("").associate {
-                        val line = it.split(Regex("="), 1)
-                        line[0] to line[1]
-                    }
-                )
+            val translations = languages.getOrPut(locale) { Language() }.translations
+
+            res.getText().split("").forEach {
+                val line = it.split(Regex("="), 1)
+
+                if (line.size > 1)
+                    translations[line[0]] = line[1]
+            }
         }
 
         operator fun get(key: String) = getOrDefault(key)

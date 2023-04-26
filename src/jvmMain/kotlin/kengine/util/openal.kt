@@ -1,6 +1,9 @@
 package kengine.util
 
+import kengine.math.Vector3f
 import org.lwjgl.openal.AL10.*
+
+actual fun alListenerPosition(position: Vector3f) = alListener3f(AL_POSITION, position.x, position.y, position.z)
 
 fun alFormat(channels: Int, samples: Int) = when (samples) {
     16 -> when (channels) {

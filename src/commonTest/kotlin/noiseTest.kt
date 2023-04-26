@@ -26,20 +26,26 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
     }
 }
 
-fun main() {
-    KERuntime.window = Window(Vector2i(1000, 600), "KEngine")
+object NoiseTest {
+    suspend fun main() {
+        KERuntime.window = Window(Vector2i(1000, 600), "KEngine")
 
-    KERuntime.scene = Scene(
-        Entity(
-            "fps",
-            Text().with(UINode.Position(top = 5f, left = 5f)),
-            FpsCounter()
-        ),
-    )
+        KERuntime.set(
+            Scene(
+                Entity(
+                    "fps",
+                    Text().with(UINode.Position(top = 5f, left = 5f)),
+                    FpsCounter()
+                ),
+            )
+        )
 
-    for (j in (1..5))
-        for (i in (-100..100))
-            KERuntime.scene.add(Point(j, i, Vector3f(5f * i, 0f, 0f), Color(j / 5f, 0.5f)))
+        for (j in (1..5))
+            for (i in (-100..100))
+                KERuntime.scene.add(Point(j, i, Vector3f(5f * i, 0f, 0f), Color(j / 5f, 0.5f)))
 
-    KERuntime.run()
+        suspend {
+            KERuntime.run()
+        }
+    }
 }

@@ -5,9 +5,10 @@ import kengine.entity.components.Transform
 import kengine.math.Matrix4
 import kengine.objects.KERuntime
 import kengine.objects.gl.*
-import kengine.util.GL_UNSIGNED_INT
-import kengine.util.sizeof
-import org.lwjgl.opengl.GL30.*
+import kengine.util.DEPTH_TEST
+import kengine.util.glDisable
+import kengine.util.glDrawTriangles
+import kengine.util.glEnable
 import kotlin.reflect.KClass
 
 // TODO: Global opengl wrappers
@@ -21,13 +22,13 @@ abstract class Render(
     abstract val defaultAttributes: VertexAttributes
 
     protected val vertexArray = VertexArray()
-    protected val arrayBuffer = GLBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW)
-    protected val elementBuffer = GLBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW)
+    protected val arrayBuffer = GLBuffer(GLBuffer.ARRAY, GLBuffer.STATIC_DRAW)
+    protected val elementBuffer = GLBuffer(GLBuffer.ELEMENT_ARRAY, GLBuffer.STATIC_DRAW)
     protected var depthTest = true
 
     var visible = true
 
-    override fun initialize() {
+    override suspend fun init() {
         vertexArray.init().bind()
 
         arrayBuffer.init().store(vertices)
@@ -54,16 +55,11 @@ abstract class Render(
         params.forEach { (name, value) -> shader[name] = value }
     }
 
-    private var vertexOffset = 0
+    private var offset = 0
 
     protected fun triangles(i: Int) {
-        glDrawElements(
-            GL_TRIANGLES,
-            3 * i,
-            GL_UNSIGNED_INT,
-            3 * vertexOffset * sizeof(GL_UNSIGNED_INT).toLong()
-        )
-        vertexOffset += i
+        glDrawTriangles(i, offset)
+        offset += i
     }
 
     open fun render() {
@@ -72,9 +68,9 @@ abstract class Render(
         vertexArray.bind()
         elementBuffer.bind()
 
-        vertexOffset = 0
-        if (depthTest) glEnable(GL_DEPTH_TEST)
-        else glDisable(GL_DEPTH_TEST)
+        offset = 0
+        if (depthTest) glEnable(DEPTH_TEST)
+        else glDisable(DEPTH_TEST)
         renderSteps()
     }
 

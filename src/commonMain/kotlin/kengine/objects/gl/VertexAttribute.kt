@@ -1,11 +1,11 @@
 package kengine.objects.gl
 
-import kengine.util.GL_FLOAT
+import kengine.util.FLOAT
 import kengine.util.sizeof
 
 class VertexAttribute(
     val size: Int,
-    val type: Int = GL_FLOAT,
+    val type: Int = FLOAT,
     val normalized: Boolean = false
 ) {
     val sizeBytes = size * sizeof(type)

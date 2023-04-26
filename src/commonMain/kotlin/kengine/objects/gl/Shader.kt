@@ -1,6 +1,8 @@
 package kengine.objects.gl
 
-expect class Shader(vararg steps: Pair<Int, String>) {
+import kengine.util.Resource
+
+expect class Shader(vararg steps: Pair<Int, Resource>) {
     companion object {
         suspend fun init()
         val VERTEX: Int

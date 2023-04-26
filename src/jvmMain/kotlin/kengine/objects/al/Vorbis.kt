@@ -1,12 +1,12 @@
 package kengine.objects.al
 
+import kengine.util.Resource
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils
 import org.lwjgl.stb.STBVorbis.stb_vorbis_decode_filename
-import java.net.URL
 import java.nio.ShortBuffer
 
-class Vorbis(url: URL) {
+actual class Vorbis actual constructor(resource: Resource) {
     val pcm: ShortBuffer
     val channels: Int
     val sampleRate: Int
@@ -18,10 +18,10 @@ class Vorbis(url: URL) {
         val dataPtr = BufferUtils.createPointerBuffer(1)
 
         val sampleCount = stb_vorbis_decode_filename(
-            url.path.replace("/", "\\").substring(1),
+            resource.path.replace("/", "\\").substring(1),
             channelsPtr, sampleRatePtr, dataPtr
         )
-        if (sampleCount == -1) terminateError("Could not load samples from ${url.path}")
+        if (sampleCount == -1) terminateError("Could not load samples from ${resource.path}")
 
         channels = channelsPtr.get()
         sampleRate = sampleRatePtr.get()

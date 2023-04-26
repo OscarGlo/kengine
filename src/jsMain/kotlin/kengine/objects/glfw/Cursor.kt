@@ -19,8 +19,12 @@ actual abstract class Cursor {
     }
 
     actual abstract fun init()
+
+    abstract val css: String
 }
 
-class StandardCursor(val name: String) : Cursor() {
+class StandardCursor(name: String) : Cursor() {
+    override val css = name
+
     override fun init() {}
 }

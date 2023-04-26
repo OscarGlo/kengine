@@ -1,10 +1,13 @@
 import kengine.entity.Entity
-import kengine.entity.components.*
+import kengine.entity.components.Transform
 import kengine.entity.components.anim.*
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.render.Camera
-import kengine.entity.components.render.gui.*
+import kengine.entity.components.render.gui.Text
+import kengine.entity.components.render.gui.Theme
+import kengine.entity.components.render.gui.UINode
+import kengine.entity.components.render.gui.UIWindow
 import kengine.entity.components.render.gui.input.Button
 import kengine.entity.components.render.r2d.Ellipse
 import kengine.entity.components.render.r2d.ParticleSpawner
@@ -17,16 +20,14 @@ import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.GLFWImageWrapper
 import kengine.objects.glfw.Window
-import kengine.util.Language
-import kengine.util.Locale
-import kengine.util.Resource
+import kengine.util.*
 
 suspend fun main() {
-    //Resource.localPath = "src/jvmTest/resources"
+    Settings.localPath = "src/commonTest/resources"
 
     KERuntime.window = Window(Vector2i(800, 600), "KEngine").apply {
         clearColor = Color(0.3f, 0.1f, 0.5f)
-        icon = GLFWImageWrapper("images/square.png")
+        icon = GLFWImageWrapper(Resource("images/square.png"))
     }
 
     // Resources
@@ -41,7 +42,7 @@ suspend fun main() {
         Vector2i(Vector2f.random() * 10f)
     }.associateWith { Tilemap.Ref(0, true) }
 
-    KERuntime.scene = Scene(
+    KERuntime.set(Scene(
         Entity(
             "background",
             Transform(),
@@ -103,7 +104,7 @@ suspend fun main() {
                 object : Entity.Component() {
                     lateinit var button: Button
 
-                    override fun initialize() {
+                    override suspend fun init() {
                         button = entity.get<Button>()
 
                         listener(this::onButtonPressed)
@@ -116,7 +117,7 @@ suspend fun main() {
                 }
             )
         )
-    )
+    ))
 
     KERuntime.run()
 }

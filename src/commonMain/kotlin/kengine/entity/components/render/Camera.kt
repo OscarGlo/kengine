@@ -2,10 +2,13 @@ package kengine.entity.components.render
 
 import kengine.entity.Entity
 import kengine.entity.components.Transform
-import kengine.math.*
+import kengine.math.Matrix4
+import kengine.math.Vector3f
+import kengine.math.Vector4f
 import kengine.objects.KERuntime
+import kengine.objects.glfw.aspect
 import kengine.util.Event
-import org.lwjgl.openal.AL10.*
+import kengine.util.alListenerPosition
 import kotlin.math.tan
 import kotlin.reflect.KClass
 
@@ -18,7 +21,7 @@ class Camera(
 ) : Entity.Component() {
     class SetCurrentEvent(val camera: Camera?) : Event()
 
-    override fun initialize() {
+    override suspend fun init() {
         listener(this::onCameraChange)
 
         if (current)
@@ -26,11 +29,8 @@ class Camera(
     }
 
     override fun update(delta: Double) {
-        if (current) {
-            val pos = entity.get<Transform>().global().position
-            // TODO: Global openal wrappers
-            alListener3f(AL_POSITION, pos[0], pos[1], pos[2])
-        }
+        if (current)
+            alListenerPosition(entity.get<Transform>().global().position)
     }
 
     override val required: List<KClass<out Entity.Component>> = listOf(Transform::class)

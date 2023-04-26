@@ -5,6 +5,7 @@ import kengine.objects.gl.GLImage
 import kengine.objects.gl.Shader
 import kengine.objects.gl.VertexAttribute
 import kengine.objects.gl.VertexAttributes
+import kengine.util.Resource
 
 abstract class Render3D(
     vertices: FloatArray,
@@ -15,8 +16,8 @@ abstract class Render3D(
         val defaultAttributes = VertexAttributes(VertexAttribute(3), VertexAttribute(3), VertexAttribute(2))
 
         val phong = Shader(
-            Shader.VERTEX to "/shaders/3d/base.vert",
-            Shader.FRAGMENT to "/shaders/3d/phong.frag"
+            Shader.VERTEX to Resource("/shaders/3d/base.vert", false),
+            Shader.FRAGMENT to Resource("/shaders/3d/phong.frag", false)
         )
     }
 

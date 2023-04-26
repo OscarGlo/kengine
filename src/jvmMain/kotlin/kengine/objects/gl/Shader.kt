@@ -6,9 +6,9 @@ import kengine.util.terminateError
 import org.lwjgl.opengl.GL20.*
 import kotlin.properties.Delegates
 
-actual class Shader actual constructor(private vararg val steps: Pair<Int, String>) {
+actual class Shader actual constructor(private vararg val steps: Pair<Int, Resource>) {
     actual companion object {
-        val cache = mutableMapOf<String, Int>()
+        val cache = mutableMapOf<Resource, Int>()
         val instances = mutableListOf<Shader>()
 
         actual suspend fun init() = instances.forEach { it.init() }
@@ -30,10 +30,10 @@ actual class Shader actual constructor(private vararg val steps: Pair<Int, Strin
 
         id = glCreateProgram()
 
-        steps.forEach { (type, path) ->
-            val sid = cache.getOrPut(path) {
+        steps.forEach { (type, res) ->
+            val sid = cache.getOrPut(res) {
                 glCreateShader(type).also {
-                    val source = Resource(path).getText()
+                    val source = res.getText()
                     glShaderSource(it, source)
                     glCompileShader(it)
                 }

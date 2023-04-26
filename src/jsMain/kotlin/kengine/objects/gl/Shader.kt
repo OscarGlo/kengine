@@ -1,16 +1,19 @@
 package kengine.objects.gl
 
 import kengine.math.*
-import kengine.objects.Font.Companion.cache
 import kengine.util.Resource
+import kengine.util.gl
 import kengine.util.terminateError
 import org.khronos.webgl.WebGLProgram
+import org.khronos.webgl.WebGLShader
 import org.khronos.webgl.WebGLRenderingContext as GL
 
-actual class Shader actual constructor(vararg val steps: Pair<Int, String>) {
+actual class Shader actual constructor(vararg val steps: Pair<Int, Resource>) {
     actual companion object {
-        actual suspend fun init() {
-        }
+        val cache = mutableMapOf<Resource, WebGLShader>()
+        val instances = mutableListOf<Shader>()
+
+        actual suspend fun init() = instances.forEach { it.init() }
 
         actual val VERTEX = GL.VERTEX_SHADER
         actual val FRAGMENT = GL.FRAGMENT_SHADER
@@ -23,11 +26,11 @@ actual class Shader actual constructor(vararg val steps: Pair<Int, String>) {
 
         program = gl.createProgram()!!
 
-        steps.forEach { (type, path) ->
-            val sid = cache.getOrPut(path) {
-                gl.createShader(type).also {
+        steps.forEach { (type, res) ->
+            val sid = cache.getOrPut(res) {
+                gl.createShader(type)!!.also {
                     suspend {
-                        val source = Resource(path).getText()
+                        val source = res.getText()
                         gl.shaderSource(it, source)
                         gl.compileShader(it)
                     }
@@ -45,6 +48,7 @@ actual class Shader actual constructor(vararg val steps: Pair<Int, String>) {
 
     actual fun use() = gl.useProgram(program)
 
+    @Suppress("UNCHECKED_CAST")
     actual operator fun set(name: String, value: Any) {
         val loc = gl.getUniformLocation(program, name)
         when (value::class) {

@@ -100,8 +100,8 @@ class Tilemap(
     private val bitmaskCache = mutableMapOf<Vector2i, IntArray>()
     private var updateBuffer = false
 
-    override fun initialize() {
-        super.initialize()
+    override suspend fun init() {
+        super.init()
 
         tileset.forEach { tile -> tile.image.init() }
 

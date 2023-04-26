@@ -4,11 +4,10 @@ import kengine.entity.components.render.gui.Text
 import kengine.entity.components.render.gui.UICustom
 import kengine.math.Vector2f
 import kengine.objects.KERuntime
-import kengine.objects.glfw.Window
+import kengine.objects.glfw.MouseButtonEvent
 import kengine.util.Event
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
-import org.lwjgl.glfw.GLFW.*
 
 class Button(size: Vector2f, val text: String) :
     UICustom(size, rectIndicesN(1 + text.length)) {
@@ -21,7 +20,8 @@ class Button(size: Vector2f, val text: String) :
 
     val id = nextId++
 
-    override fun initialize() {
+    override suspend fun init() {
+        super.init()
         listener(this::onMouseClick)
     }
 
@@ -34,14 +34,13 @@ class Button(size: Vector2f, val text: String) :
 
     var pressed = false; private set
 
-    fun onMouseClick(evt: Window.MouseButtonEvent): Boolean {
-        // TODO: Wrap these constants
+    private fun onMouseClick(evt: MouseButtonEvent): Boolean {
         val mouse = KERuntime.window.mousePosition
-        if (evt.action == GLFW_PRESS && evt.button == GLFW_MOUSE_BUTTON_LEFT && mouse in bounds()) {
+        if (evt.pressed && evt.button == 0 && mouse in bounds()) {
             pressed = true
             notify(PressedEvent(this))
             return false
-        } else if (evt.action == GLFW_RELEASE && pressed) {
+        } else if (!evt.pressed && pressed) {
             pressed = false
             notify(ReleasedEvent(this))
         }

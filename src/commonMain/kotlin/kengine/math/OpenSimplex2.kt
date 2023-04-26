@@ -184,10 +184,10 @@ object OpenSimplex2 {
     /**
      * Generate overlapping cubic lattices for 3D OpenSimplex2 noise.
      */
-    private fun noise3_UnrotatedBase(seed: Long, xr: Double, yr: Double, zr: Double): Float {
+    private fun noise3_UnrotatedBase(baseSeed: Long, xr: Double, yr: Double, zr: Double): Float {
 
         // Get base points and offsets.
-        var seed = seed
+        var seed = baseSeed
         val xrb = fastRound(xr)
         val yrb = fastRound(yr)
         val zrb = fastRound(zr)
@@ -361,10 +361,10 @@ object OpenSimplex2 {
     /**
      * 4D OpenSimplex2 noise base.
      */
-    private fun noise4_UnskewedBase(seed: Long, xs: Double, ys: Double, zs: Double, ws: Double): Float {
+    private fun noise4_UnskewedBase(baseSeed: Long, xs: Double, ys: Double, zs: Double, ws: Double): Float {
 
         // Get base points and offsets
-        var seed = seed
+        var seed = baseSeed
         val xsb = fastFloor(xs)
         val ysb = fastFloor(ys)
         val zsb = fastFloor(zs)

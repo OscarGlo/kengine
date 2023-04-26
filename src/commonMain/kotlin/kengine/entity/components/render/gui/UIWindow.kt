@@ -4,15 +4,20 @@ import kengine.entity.components.render.gui.Text.Companion.stringVertices
 import kengine.math.Rect
 import kengine.math.Vector2f
 import kengine.objects.KERuntime
-import kengine.objects.glfw.Window
-import kengine.util.Event
+import kengine.objects.glfw.MouseButtonEvent
+import kengine.objects.glfw.MouseMoveEvent
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
-import org.lwjgl.glfw.GLFW.*
 
 class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = true, var constrained: Boolean = true) :
     UICustom(size, rectIndicesN(5 + title.length)) {
     private var offset = Vector2f()
+
+    override suspend fun init() {
+        super.init()
+        listener(this::onMouseButton)
+        listener(this::onMouseMove)
+    }
 
     override fun bounds() = super.bounds() + Rect(offset)
 
@@ -36,17 +41,16 @@ class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = 
     private var dragging = false
     private var prevMouse = Vector2f()
 
-    fun onMouseButton(evt: Window.MouseButtonEvent) {
+    fun onMouseButton(evt: MouseButtonEvent) {
         if (!draggable) return
 
-        // TODO: Wrap these constants
-        if (evt.button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (evt.button == 0) {
             val topbar = bounds().apply { y1 = y2 - theme.topbarHeight }
-            if (evt.action == GLFW_PRESS && KERuntime.window.mousePosition in topbar) {
+            if (!evt.pressed) {
+                dragging = false
+            } else if (KERuntime.window.mousePosition in topbar) {
                 dragging = true
                 prevMouse = KERuntime.window.mousePosition
-            } else if (evt.action == GLFW_RELEASE) {
-                dragging = false
             }
         }
     }
@@ -61,8 +65,7 @@ class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = 
         if (bounds.y2 > parent.y2) offset.y -= bounds.y2 - parent.y2
     }
 
-    @Event.Listener(Window.MouseMoveEvent::class)
-    fun onMouseMove(evt: Window.MouseMoveEvent) {
+    fun onMouseMove(evt: MouseMoveEvent) {
         if (dragging) {
             offset += evt.position - prevMouse
             prevMouse = evt.position

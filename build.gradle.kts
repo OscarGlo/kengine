@@ -6,7 +6,6 @@ plugins {
 
 group = "me.oscarglo"
 version = "1.0"
-description = "KEngine"
 
 repositories {
     mavenLocal()
@@ -34,7 +33,12 @@ kotlin {
         withJava()
     }
     js(IR) {
-        browser()
+        browser {
+            commonWebpackConfig {
+                cssSupport {}
+            }
+        }
+        binaries.executable()
     }
 
     fun KotlinDependencyHandler.lwjgl(name: String = "") {
