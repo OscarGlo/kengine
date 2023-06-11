@@ -1,3 +1,5 @@
+package demo
+
 import kengine.entity.Entity
 import kengine.entity.components.render.gui.Text
 import kengine.util.Language

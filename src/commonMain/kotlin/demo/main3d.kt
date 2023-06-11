@@ -1,3 +1,5 @@
+package demo
+
 import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.entity.components.render.Camera
@@ -15,6 +17,7 @@ import kengine.objects.glfw.Window
 import kengine.util.Key
 import kengine.util.Resource
 import kengine.util.rectIndicesN
+import kotlin.jvm.JvmStatic
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
@@ -72,6 +75,7 @@ class Shape(id: String, pos: Vector3f, texture: GLImage) : Entity(
 )
 
 object Main3D {
+    @JvmStatic
     suspend fun main() {
         //Resource.localPath = "src/jvmTest/resources"
 

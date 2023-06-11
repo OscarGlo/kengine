@@ -1,3 +1,5 @@
+package demo
+
 import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.entity.components.physics.Body2D

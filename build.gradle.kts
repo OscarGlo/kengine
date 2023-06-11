@@ -31,6 +31,15 @@ kotlin {
             kotlinOptions.jvmTarget = "1.8"
         }
         withJava()
+
+        tasks.register<JavaExec>("main") {
+            classpath(
+                configurations["runtimeClasspath"],
+                configurations["jvmRuntimeClasspath"],
+                "build/classes/kotlin/jvm/main"
+            )
+            main = "demo.Main"
+        }
     }
     js(IR) {
         browser {

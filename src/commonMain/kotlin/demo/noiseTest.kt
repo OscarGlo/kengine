@@ -1,3 +1,5 @@
+package demo
+
 import kengine.entity.Entity
 import kengine.entity.components.Transform
 import kengine.entity.components.render.gui.Text
@@ -7,9 +9,10 @@ import kengine.math.*
 import kengine.objects.KERuntime
 import kengine.objects.Scene
 import kengine.objects.glfw.Window
+import kotlin.jvm.JvmStatic
 
 class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
-    "Point${n++}",
+    "demo.Point${n++}",
     Transform().translate(offset),
     Ellipse(Vector2f(5f), 10, color),
     object : Component() {
@@ -27,6 +30,7 @@ class Point(octaves: Int, i: Int, offset: Vector3f, color: Color) : Entity(
 }
 
 object NoiseTest {
+    @JvmStatic
     suspend fun main() {
         KERuntime.window = Window(Vector2i(1000, 600), "KEngine")
 
