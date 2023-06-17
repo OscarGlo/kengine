@@ -36,14 +36,14 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
                     font.characterBounds[c.code]!!
                 )
             }
+
+        fun calculateWidth(vertices: FloatArray) = vertices
+            .asIterable()
+            .chunked(4)
+            .fold(-Float.MAX_VALUE) { m, vertex -> max(m, vertex[0]) }
     }
 
-    private fun calculateWidth(vertices: FloatArray) = vertices
-        .asIterable()
-        .chunked(4)
-        .fold(-Float.MAX_VALUE) { m, vertex -> max(m, vertex[0]) }
-
-    fun updateVertices() {
+    private fun updateVertices() {
         val vertices = calculateVertices()
         arrayBuffer.store(vertices)
         elementBuffer.store(rectIndicesN(text.length))
@@ -63,11 +63,12 @@ class Text(text: String = "") : UICustom(Vector2f(), rectIndicesN(text.length)) 
             updateVertices()
         }
 
-    private var _width = calculateWidth(vertices)
+    private var _width = 0f
     override fun size() = Vector2f(_width, theme.font.metrics.height.toFloat())
 
     override fun calculateVertices() = stringVertices(theme.font, text)
 
+    // TODO Add text align/baseline
     override fun model() = bounds().run {
         Matrix4(Vector3f(x1, y1, 0f))
     }

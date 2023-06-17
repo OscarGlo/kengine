@@ -2,6 +2,7 @@ package kengine.objects
 
 import kengine.objects.gl.Shader
 import kengine.objects.glfw.Window
+import kengine.util.Debug
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 
@@ -41,6 +42,7 @@ class KERuntime private constructor(): Event.Manager() {
         window.init()
 
         Shader.init()
+        Debug.init()
         scene.init()
 
         glfwSwapInterval(if (vSync) 1 else 0)

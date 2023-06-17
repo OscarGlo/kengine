@@ -17,6 +17,7 @@ import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.GLFWImageWrapper
 import kengine.objects.glfw.Window
+import kengine.util.Debug
 import kengine.util.Event
 import kengine.util.Resource
 import java.util.*
@@ -89,7 +90,7 @@ fun main() {
             "fps",
             Text(Resource.getString("fps").format(0f))
                 .with(Theme().also { it.font = font })
-                .with(UINode.Position(top = 5f, left = 5f)),
+                .with(UINode.Position(top = 5f, right = 5f)),
             FpsCounter()
         ),
         Entity(
@@ -103,10 +104,14 @@ fun main() {
                 object : Script() {
                     lateinit var button: Button
 
+                    var count = 1
+
                     @Event.Listener(Button.PressedEvent::class)
                     fun onButtonPressed(evt: Button.PressedEvent) {
-                        if (evt.button == button)
-                            println("hi :)")
+                        if (evt.button == button) {
+                            println("Button pressed!")
+                            Debug.print("Debug ${count++}", 3.0)
+                        }
                     }
                 }
             )

@@ -68,6 +68,7 @@ abstract class Render(
         if (!visible) return
 
         vertexArray.bind()
+        arrayBuffer.bind()
         elementBuffer.bind()
 
         vertexOffset = 0

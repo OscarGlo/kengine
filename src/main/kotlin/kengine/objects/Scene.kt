@@ -7,6 +7,7 @@ import kengine.entity.components.render.Render
 import kengine.math.Matrix4
 import kengine.math.Vector3f
 import kengine.objects.glfw.Window
+import kengine.util.Debug
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL30.*
@@ -25,6 +26,7 @@ class Scene(vararg entities: Entity) : Event.Manager() {
         currentCamera = evt.camera
     }
 
+    // TODO: Move to KERuntime or Window class
     private lateinit var viewTransform: Matrix4
 
     fun view(is3D: Boolean = false, fixed: Boolean = false) =
@@ -42,8 +44,8 @@ class Scene(vararg entities: Entity) : Event.Manager() {
     fun init() {
         viewTransform = Matrix4(scaling = Vector3f(2f / KERuntime.window.size.x, 2f / KERuntime.window.size.y, 1f))
         root.forEachComponentRec<Entity.Component> {
-            it.initialize()
             it.checkCompatibility()
+            it.initialize()
         }
     }
 
@@ -67,10 +69,12 @@ class Scene(vararg entities: Entity) : Event.Manager() {
                     it.physicsUpdate(delta)
             }
         }
+        Debug.update()
 
         // Render
         glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
         root.forEachComponentRec(Render::render)
+        Debug.render()
 
         // Update viewport
         glfwSwapBuffers(KERuntime.window.id)
