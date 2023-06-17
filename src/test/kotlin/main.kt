@@ -103,14 +103,12 @@ fun main() {
                     .with(UINode.Position(top = 25f)),
                 object : Script() {
                     lateinit var button: Button
-
-                    var count = 1
+                    val rand = Random()
 
                     @Event.Listener(Button.PressedEvent::class)
                     fun onButtonPressed(evt: Button.PressedEvent) {
                         if (evt.button == button) {
-                            println("Button pressed!")
-                            Debug.print("Debug ${count++}", 3.0)
+                            Debug.print("Button pressed!", 3.0, Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()))
                         }
                     }
                 }

@@ -11,7 +11,7 @@ import kengine.objects.KERuntime
 import kengine.objects.gl.*
 import org.lwjgl.opengl.GL30.*
 
-class DebugText(val text: String, time: Double) {
+class DebugText(val text: String, time: Double, val color: Color) {
     val clearTime = KERuntime.doubleTime() + time
 }
 
@@ -25,7 +25,6 @@ object Debug {
     private val elementBuffer = GLBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW)
 
     private val lines = mutableListOf<DebugText>()
-    private var characterCount = 0
 
     fun init() {
         vertexArray.init().bind()
@@ -37,8 +36,6 @@ object Debug {
     }
 
     private fun updateBuffers() {
-        characterCount = lines.sumOf { it.text.length }
-
         vertexArray.bind()
 
         val textVertices = lines.mapIndexed { i, l ->
@@ -53,11 +50,11 @@ object Debug {
         }.fold(floatArrayOf(), FloatArray::plus)
         arrayBuffer.store(boxVertices + textVertices.fold(floatArrayOf(), FloatArray::plus))
 
-        elementBuffer.store(rectIndicesN(lines.size + characterCount))
+        elementBuffer.store(rectIndicesN(lines.size + lines.sumOf { it.text.length }))
     }
 
-    fun print(text: String, time: Double) {
-        lines.add(0, DebugText(text, time))
+    fun print(text: String, time: Double, color: Color = Color.white) {
+        lines.add(0, DebugText(text, time, color))
         updateBuffers()
     }
 
@@ -75,7 +72,7 @@ object Debug {
     }
 
     fun render() {
-        if (characterCount == 0) return
+        if (lines.isEmpty()) return
 
         val size = KERuntime.window.size
 
@@ -83,21 +80,26 @@ object Debug {
         arrayBuffer.bind()
         elementBuffer.bind()
 
-        fun Shader.bindParams(color: Color) {
+        fun Shader.bindParams() {
             this.use()
             this["model"] = Matrix4(position = Vector3f(-size.x / 2f, size.y / 2f - font.size * lineHeight, 0f))
             this["view"] = KERuntime.scene.view(fixed = true)
             this["projection"] = Matrix4()
-            this["color"] = color
         }
 
         // Boxes
-        Render2D.colorShader.bindParams(Color(0f, 0f, 0f, 0.5f))
+        Render2D.colorShader.bindParams()
+        Render2D.colorShader["color"] = Color(0f, 0f, 0f, 0.5f)
         glDrawElements(GL_TRIANGLES, 6 * lines.size, GL_UNSIGNED_INT, 0)
 
         // Text
-        Render2D.imageShader.bindParams(Color.white)
-        font.texture.bind()
-        glDrawElements(GL_TRIANGLES, 6 * characterCount, GL_UNSIGNED_INT, 6L * lines.size * sizeof(GL_INT).toLong())
+        Render2D.imageShader.bindParams()
+        var chars = 0
+        lines.forEach {
+            Render2D.imageShader["color"] = it.color
+            font.texture.bind()
+            glDrawElements(GL_TRIANGLES, 6 * it.text.length, GL_UNSIGNED_INT, 6L * (lines.size + chars) * sizeof(GL_INT).toLong())
+            chars += it.text.length
+        }
     }
 }
