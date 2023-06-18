@@ -6,13 +6,15 @@ import kengine.util.Debug
 import kengine.util.Event
 import org.lwjgl.glfw.GLFW.*
 
-class KERuntime private constructor(): Event.Manager() {
+class KERuntime private constructor() : Event.Manager() {
     companion object {
         private val instance = KERuntime()
 
         var window
             get() = instance.window
-            set(w) { instance.window = w }
+            set(w) {
+                instance.window = w
+            }
 
         var scene
             get() = instance.scene

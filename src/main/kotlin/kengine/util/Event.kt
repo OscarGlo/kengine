@@ -12,23 +12,23 @@ abstract class Event {
         val eventMethods = mutableMapOf<EventClass, MutableMap<ListenerClass, MutableList<Method>>>()
         val eventListeners = mutableMapOf<EventClass, MutableList<Any>>()
 
-        init {
-            Reflect.getAllClasses()
-                .forEach { clazz ->
-                    val typeMethods = clazz.methods
-                        .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
-                        .filter { (annotation, _) -> annotation != null }
-                        .map { (annotation, method) -> annotation!!.eventClass to method }
+        fun registerClass(clazz: ListenerClass) {
+            val typeMethods = clazz.methods
+                .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
+                .filter { (annotation, _) -> annotation != null }
+                .map { (annotation, method) -> annotation!!.eventClass to method }
 
-                    classEvents[clazz] = typeMethods.map { it.first }
+            classEvents[clazz] = typeMethods.map { it.first }
 
-                    typeMethods.forEach { (kclass, method) ->
-                        eventMethods.getOrPut(kclass) { mutableMapOf() }.getOrPut(clazz) { mutableListOf() }.add(method)
-                    }
-                }
+            typeMethods.forEach { (kclass, method) ->
+                eventMethods.getOrPut(kclass) { mutableMapOf() }.getOrPut(clazz) { mutableListOf() }.add(method)
+            }
         }
 
         fun register(manager: Manager) {
+            if (manager.javaClass !in classEvents)
+                registerClass(manager.javaClass)
+
             classEvents[manager::class.java]?.forEach {
                 eventListeners.getOrPut(it) { mutableListOf() }.add(manager)
             }

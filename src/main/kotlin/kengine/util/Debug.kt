@@ -53,7 +53,7 @@ object Debug {
         elementBuffer.store(rectIndicesN(lines.size + lines.sumOf { it.text.length }))
     }
 
-    fun print(text: String, time: Double, color: Color = Color.white) {
+    fun print(text: String, time: Double = 3.0, color: Color = Color.white) {
         lines.add(0, DebugText(text, time, color))
         updateBuffers()
     }
