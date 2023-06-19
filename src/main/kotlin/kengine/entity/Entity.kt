@@ -4,6 +4,7 @@ import kengine.util.Event
 import kengine.util.terminateError
 import kotlin.reflect.KClass
 
+// TODO: Auto id
 open class Entity(val id: String, vararg components: Component) : Event.Manager() {
     abstract class Component : Event.Manager() {
         lateinit var entity: Entity
@@ -101,6 +102,5 @@ open class Entity(val id: String, vararg components: Component) : Event.Manager(
     inline fun <reified T : Component> get() =
         getOrNull<T>() ?: terminateError("${T::class.simpleName} component not found on entity ${path()}")
 
-    @Suppress("UNCHECKED_CAST")
     fun getInstance(clazz: KClass<*>) = components.firstOrNull { clazz.isInstance(it) }
 }

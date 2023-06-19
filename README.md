@@ -44,6 +44,10 @@ as good as possible. The engine architecture is an entity-component tree similar
   - Camera rotation and scaling
 
 
+- `Vector`
+  - Reverse Number-Vector operations
+
+
 - `Tilemap`
   - Tile collisions
   - World/tile position conversion

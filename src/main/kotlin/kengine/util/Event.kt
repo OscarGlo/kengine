@@ -35,6 +35,7 @@ abstract class Event {
         }
     }
 
+    // TODO: Remove parameter and use function argument
     @Target(AnnotationTarget.FUNCTION)
     annotation class Listener(val eventClass: KClass<out Event>)
 

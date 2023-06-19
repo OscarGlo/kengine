@@ -7,7 +7,7 @@ import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.KERuntime
 
-class Body2D(val static: Boolean = false) : Entity.Component() {
+class Body2D(val static: Boolean = false, val layers: List<Any> = listOf(0)) : Entity.Component() {
     companion object {
         const val TICKS_PER_FRAME = 16
     }
@@ -25,7 +25,8 @@ class Body2D(val static: Boolean = false) : Entity.Component() {
     private fun getCollisions() = mutableListOf<Collision>().apply {
         colliders.forEach { collider ->
             KERuntime.root.forEachComponentRec<Collider2D> {
-                if (it.entity != entity) {
+                val body = it.entity.get<Body2D>()
+                if (it.entity != entity && body.layers.intersect(layers).isNotEmpty()) {
                     val col = collider.collide(it)
                     if (col != null)
                         this += col
