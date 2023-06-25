@@ -36,7 +36,7 @@ class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = 
     private var dragging = false
     private var prevMouse = Vector2f()
 
-    @Event.Listener(Window.MouseButtonEvent::class)
+    @Event.Listener
     fun onMouseButton(evt: Window.MouseButtonEvent) {
         if (!draggable) return
 
@@ -61,7 +61,7 @@ class UIWindow(size: Vector2f, var title: String = "", var draggable: Boolean = 
         if (bounds.y2 > parent.y2) offset.y -= bounds.y2 - parent.y2
     }
 
-    @Event.Listener(Window.MouseMoveEvent::class)
+    @Event.Listener
     fun onMouseMove(evt: Window.MouseMoveEvent) {
         if (dragging) {
             offset += evt.position - prevMouse

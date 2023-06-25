@@ -44,7 +44,7 @@ class AudioPlayer(
 
     private var wasPlaying = false
 
-    @Event.Listener(Entity.TogglePause::class)
+    @Event.Listener
     fun onTogglePause(evt: Entity.TogglePause) {
         if (evt.paused) {
             wasPlaying = source.playing

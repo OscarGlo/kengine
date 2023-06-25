@@ -109,7 +109,7 @@ fun main() {
                     lateinit var button: Button
                     val rand = Random()
 
-                    @Event.Listener(Button.PressedEvent::class)
+                    @Event.Listener
                     fun onButtonPressed(evt: Button.PressedEvent) {
                         if (evt.button == button) {
                             Debug.print("Button pressed!", 3.0, Color(rand.nextFloat(), rand.nextFloat(), rand.nextFloat()))
@@ -119,6 +119,8 @@ fun main() {
             )
         )
     )
+
+    println(Event.eventMethods.toList().joinToString())
 
     KERuntime.run()
 }

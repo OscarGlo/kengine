@@ -2,9 +2,8 @@ package kengine.tools
 
 import kengine.util.Dirtyable
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
 
-typealias EventClass = KClass<out Event>
+typealias EventClass = Class<*>
 typealias ListenerClass = Class<*>
 
 abstract class Event {
@@ -15,9 +14,8 @@ abstract class Event {
 
         fun registerClass(clazz: ListenerClass) {
             val typeMethods = clazz.methods
-                .associateBy { it.annotations.filterIsInstance<Listener>().firstOrNull() }
-                .filter { (annotation, _) -> annotation != null }
-                .map { (annotation, method) -> annotation!!.eventClass to method }
+                .filter { it.annotations.filterIsInstance<Listener>().isNotEmpty() }
+                .map { it.parameterTypes[0]!! to it }
 
             classEvents[clazz] = typeMethods.map { it.first }
 
@@ -36,17 +34,16 @@ abstract class Event {
         }
     }
 
-    // TODO: Remove parameter and use function argument
     @Target(AnnotationTarget.FUNCTION)
-    annotation class Listener(val eventClass: KClass<out Event>)
+    annotation class Listener
 
     abstract class Manager : Dirtyable() {
         init {
             register(this)
         }
 
-        protected inline fun <reified E : Event> notify(event: E) = eventListeners[E::class]?.forEach { listener ->
-            eventMethods[E::class]?.get(listener::class.java)?.forEach {
+        protected inline fun <reified E : Event> notify(event: E) = eventListeners[E::class.java]?.forEach { listener ->
+            eventMethods[E::class.java]?.get(listener::class.java)?.forEach {
                 it.invoke(listener, event)
             }
         }

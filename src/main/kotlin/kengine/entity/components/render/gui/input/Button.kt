@@ -30,7 +30,7 @@ class Button(size: Vector2f, val text: String) :
 
     var pressed = false; private set
 
-    @Event.Listener(Window.MouseButtonEvent::class)
+    @Event.Listener
     fun onMouseClick(evt: Window.MouseButtonEvent): Boolean {
         val mouse = KERuntime.window.mousePosition
         if (evt.action == GLFW_PRESS && evt.button == GLFW_MOUSE_BUTTON_LEFT && mouse in bounds()) {

@@ -22,7 +22,7 @@ class Scene(vararg entities: Entity) : Event.Manager() {
         root.add(*entities)
     }
 
-    @Event.Listener(Camera.SetCurrentEvent::class)
+    @Event.Listener
     fun onCameraChange(evt: Camera.SetCurrentEvent) {
         currentCamera = evt.camera
     }
@@ -35,7 +35,7 @@ class Scene(vararg entities: Entity) : Event.Manager() {
             if (is3D) currentCamera!!.view() else viewTransform * currentCamera!!.view()
         } else viewTransform
 
-    @Event.Listener(Window.ResizeEvent::class)
+    @Event.Listener
     fun setViewScaling(evt: Window.ResizeEvent) {
         viewTransform = Matrix4(scaling = Vector3f(2f / evt.size.x, 2f / evt.size.y, 1f))
     }

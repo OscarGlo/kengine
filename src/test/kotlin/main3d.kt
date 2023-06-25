@@ -97,7 +97,7 @@ fun main() {
                     mousePos = KERuntime.window.mousePosition
                 }
 
-                @Event.Listener(Window.KeyEvent::class)
+                @Event.Listener
                 fun keyPress(evt: Window.KeyEvent) {
                     val n = when (evt.action) {
                         GLFW_PRESS -> 5f
@@ -114,7 +114,7 @@ fun main() {
                     }
                 }
 
-                @Event.Listener(Window.MouseMoveEvent::class)
+                @Event.Listener
                 fun mouseMove(evt: Window.MouseMoveEvent) {
                     val delta = (evt.position - mousePos) / 100f
                     angle += delta

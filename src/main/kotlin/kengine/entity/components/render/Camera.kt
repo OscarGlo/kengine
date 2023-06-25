@@ -44,7 +44,7 @@ class Camera(
             _current = c
         }
 
-    @Event.Listener(SetCurrentEvent::class)
+    @Event.Listener
     fun onCameraChange(evt: SetCurrentEvent) {
         _current = evt.camera == this
     }
