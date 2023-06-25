@@ -121,6 +121,11 @@ abstract class Vector<S : Size, T : Number, V : Vector<S, T, V>>(
     override fun hashCode() = components.contentHashCode()
 }
 
+operator fun <S : Size, T : Number, V : Vector<S, T, V>> T.plus(v: V) = v + this
+operator fun <S : Size, T : Number, V : Vector<S, T, V>> T.minus(v: V) = -v + this
+operator fun <S : Size, T : Number, V : Vector<S, T, V>> T.times(v: V) = v * this
+operator fun <S : Size, T : Number, V : Vector<S, T, V>> T.div(v: V) = v.inverse() * this
+
 abstract class Vector2<T : Number, V : Vector2<T, V>>(numClass: KClass<T>, vecClass: KClass<V>, x: T, y: T) :
     Vector<Two, T, V>(numClass, vecClass, x, y) {
     var x by Component(0)
