@@ -1,7 +1,7 @@
 package kengine.objects.gl
 
 import kengine.math.*
-import kengine.util.Resource
+import kengine.tools.Resource
 import kengine.util.terminateError
 import org.lwjgl.opengl.GL20.*
 import kotlin.properties.Delegates

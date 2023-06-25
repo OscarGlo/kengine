@@ -1,5 +1,6 @@
-package kengine.util
+package kengine.tools
 
+import kengine.util.terminateError
 import java.net.URL
 import java.nio.file.Paths
 import java.util.*

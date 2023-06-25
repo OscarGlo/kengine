@@ -3,7 +3,7 @@ package kengine.entity.components.render.gui
 import kengine.math.Color
 import kengine.objects.Font
 import kengine.objects.glfw.Cursor
-import kengine.util.Resource
+import kengine.tools.Resource
 
 class Theme {
     companion object {

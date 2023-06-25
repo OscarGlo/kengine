@@ -2,8 +2,8 @@ package kengine.objects
 
 import kengine.objects.gl.Shader
 import kengine.objects.glfw.Window
-import kengine.util.Debug
-import kengine.util.Event
+import kengine.tools.Debug
+import kengine.tools.Event
 import org.lwjgl.glfw.GLFW.*
 
 class KERuntime private constructor() : Event.Manager() {

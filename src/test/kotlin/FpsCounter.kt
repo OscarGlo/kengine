@@ -1,6 +1,6 @@
 import kengine.entity.components.Script
 import kengine.entity.components.render.gui.Text
-import kengine.util.Resource
+import kengine.tools.Resource
 
 class FpsCounter : Script() {
     lateinit var text: Text

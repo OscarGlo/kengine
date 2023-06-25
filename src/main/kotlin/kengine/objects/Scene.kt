@@ -7,9 +7,10 @@ import kengine.entity.components.render.Render
 import kengine.math.Matrix4
 import kengine.math.Vector3f
 import kengine.objects.glfw.Window
-import kengine.util.Debug
-import kengine.util.Event
-import org.lwjgl.glfw.GLFW.*
+import kengine.tools.Debug
+import kengine.tools.Event
+import org.lwjgl.glfw.GLFW.glfwPollEvents
+import org.lwjgl.glfw.GLFW.glfwSwapBuffers
 import org.lwjgl.opengl.GL30.*
 
 class Scene(vararg entities: Entity) : Event.Manager() {

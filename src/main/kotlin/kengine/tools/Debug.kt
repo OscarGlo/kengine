@@ -1,4 +1,4 @@
-package kengine.util
+package kengine.tools
 
 import kengine.entity.components.render.gui.Text
 import kengine.entity.components.render.r2d.Render2D
@@ -9,11 +9,10 @@ import kengine.math.Vector3f
 import kengine.objects.Font
 import kengine.objects.KERuntime
 import kengine.objects.gl.*
+import kengine.util.rectIndicesN
+import kengine.util.rectVertices
+import kengine.util.sizeof
 import org.lwjgl.opengl.GL30.*
-
-class DebugText(val text: String, time: Double, val color: Color) {
-    val clearTime = KERuntime.doubleTime() + time
-}
 
 object Debug {
     private const val lineHeight = 1.2f
@@ -24,7 +23,11 @@ object Debug {
     private val arrayBuffer = GLBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW)
     private val elementBuffer = GLBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW)
 
-    private val lines = mutableListOf<DebugText>()
+    class Line(val text: String, time: Double, val color: Color) {
+        val clearTime = KERuntime.doubleTime() + time
+    }
+
+    private val lines = mutableListOf<Line>()
 
     fun init() {
         vertexArray.init().bind()
@@ -54,7 +57,7 @@ object Debug {
     }
 
     fun print(text: String, time: Double = 3.0, color: Color = Color.white) {
-        lines.add(0, DebugText(text, time, color))
+        lines.add(0, Line(text, time, color))
         updateBuffers()
     }
 

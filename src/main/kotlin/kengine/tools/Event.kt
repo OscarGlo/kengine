@@ -1,5 +1,6 @@
-package kengine.util
+package kengine.tools
 
+import kengine.util.Dirtyable
 import java.lang.reflect.Method
 import kotlin.reflect.KClass
 

@@ -1,7 +1,7 @@
 package kengine.objects.gl
 
 import kengine.objects.Image
-import kengine.util.Resource
+import kengine.tools.Resource
 import org.lwjgl.opengl.GL30.*
 import java.awt.image.BufferedImage
 import java.io.File

@@ -1,7 +1,7 @@
 package kengine.objects.glfw
 
 import kengine.objects.Image
-import kengine.util.Resource
+import kengine.tools.Resource
 import org.lwjgl.glfw.GLFWImage
 import java.awt.image.BufferedImage
 import java.net.URL

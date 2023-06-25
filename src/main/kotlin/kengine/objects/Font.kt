@@ -2,7 +2,7 @@ package kengine.objects
 
 import kengine.math.Rect
 import kengine.objects.gl.GLImage
-import kengine.util.Resource
+import kengine.tools.Resource
 import java.awt.Color
 import java.awt.FontMetrics
 import java.awt.RenderingHints

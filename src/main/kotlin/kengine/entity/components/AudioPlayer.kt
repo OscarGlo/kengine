@@ -5,7 +5,7 @@ import kengine.math.Vector3f
 import kengine.objects.al.AudioBuffer
 import kengine.objects.al.Source
 import kengine.objects.al.Vorbis
-import kengine.util.Event
+import kengine.tools.Event
 import java.net.URL
 
 class AudioPlayer(

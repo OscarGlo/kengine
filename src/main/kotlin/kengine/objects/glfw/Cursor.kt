@@ -1,7 +1,7 @@
 package kengine.objects.glfw
 
 import kengine.math.Vector2i
-import kengine.util.Resource
+import kengine.tools.Resource
 import kengine.util.terminateError
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.system.MemoryUtil

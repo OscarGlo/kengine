@@ -3,7 +3,7 @@ package kengine.objects.glfw
 import kengine.math.Color
 import kengine.math.Vector2f
 import kengine.math.Vector2i
-import kengine.util.Event
+import kengine.tools.Event
 import kengine.util.glBool
 import kengine.util.terminateError
 import org.lwjgl.BufferUtils

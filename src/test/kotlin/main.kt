@@ -1,10 +1,14 @@
 import kengine.entity.Entity
-import kengine.entity.components.*
+import kengine.entity.components.Script
+import kengine.entity.components.Transform
 import kengine.entity.components.anim.*
 import kengine.entity.components.physics.Body2D
 import kengine.entity.components.physics.CircleCollider
 import kengine.entity.components.render.Camera
-import kengine.entity.components.render.gui.*
+import kengine.entity.components.render.gui.Text
+import kengine.entity.components.render.gui.Theme
+import kengine.entity.components.render.gui.UINode
+import kengine.entity.components.render.gui.UIWindow
 import kengine.entity.components.render.gui.input.Button
 import kengine.entity.components.render.r2d.Ellipse
 import kengine.entity.components.render.r2d.ParticleSpawner
@@ -17,9 +21,9 @@ import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.GLFWImageWrapper
 import kengine.objects.glfw.Window
-import kengine.util.Debug
-import kengine.util.Event
-import kengine.util.Resource
+import kengine.tools.Debug
+import kengine.tools.Event
+import kengine.tools.Resource
 import java.util.*
 
 fun main() {

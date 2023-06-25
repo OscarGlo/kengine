@@ -5,7 +5,7 @@ import kengine.entity.components.render.gui.UICustom
 import kengine.math.Vector2f
 import kengine.objects.KERuntime
 import kengine.objects.glfw.Window
-import kengine.util.Event
+import kengine.tools.Event
 import kengine.util.rectIndicesN
 import kengine.util.rectVertices
 import org.lwjgl.glfw.GLFW.*

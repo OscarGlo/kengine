@@ -10,8 +10,8 @@ import kengine.objects.KERuntime
 import kengine.objects.Scene
 import kengine.objects.gl.GLImage
 import kengine.objects.glfw.Window
-import kengine.util.Event
-import kengine.util.Resource
+import kengine.tools.Event
+import kengine.tools.Resource
 import kengine.util.rectIndicesN
 import org.lwjgl.glfw.GLFW.*
 import kotlin.math.PI

@@ -2,10 +2,13 @@ package kengine.entity.components.render
 
 import kengine.entity.Entity
 import kengine.entity.components.Transform
-import kengine.math.*
+import kengine.math.Matrix4
+import kengine.math.Vector3f
+import kengine.math.Vector4f
 import kengine.objects.KERuntime
-import kengine.util.Event
-import org.lwjgl.openal.AL10.*
+import kengine.tools.Event
+import org.lwjgl.openal.AL10.AL_POSITION
+import org.lwjgl.openal.AL10.alListener3f
 import kotlin.math.tan
 import kotlin.reflect.KClass
 

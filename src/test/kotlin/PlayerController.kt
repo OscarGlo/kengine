@@ -6,7 +6,7 @@ import kengine.math.Quaternion
 import kengine.math.Vector2f
 import kengine.math.Vector3f
 import kengine.objects.glfw.Window
-import kengine.util.Event
+import kengine.tools.Event
 import org.lwjgl.glfw.GLFW.*
 
 class PlayerController : Script() {

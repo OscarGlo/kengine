@@ -1,6 +1,6 @@
 package kengine.entity
 
-import kengine.util.Event
+import kengine.tools.Event
 import kengine.util.terminateError
 import kotlin.reflect.KClass
 
